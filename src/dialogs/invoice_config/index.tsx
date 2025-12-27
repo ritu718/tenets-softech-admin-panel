@@ -1,0 +1,236 @@
+import React, { useEffect, useMemo, useState } from 'react'
+import {
+  Box,
+  Typography,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  CircularProgress,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Collapse,
+  IconButton,
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Stack,
+  Paper,
+  Tabs,
+  Tab,
+  Checkbox,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
+import { useLanguage } from '@/hooks/useLanguage';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+ import {
+  setConfigDialogOpen,setCarrierConfigs
+} from "@/store/features/invoice_data/invoiceDataSlice";
+import CarrierPricingConfigurator from '@/components/organisms/carrier_pricing_configurator';
+
+import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, buildShipmentSummaryItems, createCarrierConfig } from '@/utils/helper';
+
+import PriceCheckPreview from '@/components/organisms/price_check_preview';
+import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
+import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview/AuftragsdatenPreview';
+import InvoiceSpedition from '../invoice_spedition';
+import { getCarriersDataFromServer } from './services';
+
+
+const buildPlaceholderConfigSections = (text:any) => {
+  const sections = text.configSections;
+  return [
+    { key: "pricing", ...sections.pricing },
+    { key: "auftragsdaten", ...sections.auftragsdaten },
+    { key: "price-check", ...sections.reconciliation },
+  ];
+};
+
+const buildDefaultCarrierConfigs = (text:any) => {
+  const presetCarriers = text.config.pricing?.presets?.carriers || [];
+  if (!presetCarriers.length) {
+    return [createCarrierConfig(text, text.config.pricing.defaults.newCarrierName)];
+  }
+  return presetCarriers.map((carrier:any) => createCarrierConfig(text, carrier.name, carrier));
+};
+
+export default function InvoiceConfig() {
+
+
+ const { localeText,language } =useLanguage();
+     const dispatch = useAppDispatch();
+         const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+     const initialCarrierConfigs:any = useMemo(
+    () => buildDefaultCarrierConfigs(localeText),
+    [localeText]
+  );
+      const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
+  
+  const [activeConfigTab, setActiveConfigTab] = useState("pricing");
+  const placeholderSections = useMemo(
+    () => buildPlaceholderConfigSections(localeText),
+    [localeText]
+  );
+  // const [carrierConfigs, setCarrierConfigs] = useState(initialCarrierConfigs);
+   const activeConfigSection = useMemo(
+    () =>
+      placeholderSections.find((section) => section.key === activeConfigTab) ||
+      placeholderSections[0],
+    [placeholderSections, activeConfigTab]
+  );
+
+ const [priceFixDialog, setPriceFixDialog] = useState({
+    open: false,
+    shipment: null,
+    carrier: null,
+    error: null,
+    countryCode: "DE",
+  });
+ 
+  const countryOptions = useMemo(() => buildCountryOptions(localeText), [localeText]);
+  const shipmentRows = useMemo(
+    () => buildShipmentSampleRows(language),
+    [language]
+  );
+  const nebPresets = useMemo(() => buildNebenkostenPresets(localeText), [localeText]);
+  
+  const [priceCheckOverrides, setPriceCheckOverrides] = useState({});
+  const shipmentSummaryItems = useMemo(
+    () => buildShipmentSummaryItems(localeText),
+    [localeText]
+  );
+  useEffect(()=>{
+    getCarriersDataFromServer({userId},dispatch)
+    dispatch(setCarrierConfigs(initialCarrierConfigs))
+  },[])
+  
+  return (
+    
+      <Dialog
+            open={configDialogOpen}
+            onClose={() => dispatch(setConfigDialogOpen(false))}
+            fullWidth
+            maxWidth="lg"
+          >
+            <DialogTitle>{localeText.config.dialogTitle}</DialogTitle>
+            <DialogContent dividers>
+              <Tabs
+                value={activeConfigTab}
+                onChange={(_:any, value:any) => setActiveConfigTab(value)}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}
+              >
+                {placeholderSections.map((section) => (
+                  <Tab key={section.key} label={section.title} value={section.key} />
+                ))}
+              </Tabs>
+              {activeConfigSection ? (
+                <Stack spacing={2}>
+                  <Typography variant="h6">{activeConfigSection.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {activeConfigSection.description}
+                  </Typography>
+                  {activeConfigSection.key === "pricing" ? (
+                    <CarrierPricingConfigurator
+                      text={localeText}
+                      countryOptions={countryOptions}
+                    />
+                  ) : activeConfigSection.key === "price-check" ? (
+                    <PriceCheckPreview
+                      text={localeText}
+                      shipmentRows={shipmentRows}
+                      overrides={priceCheckOverrides}
+                      onFixIssue={({ shipment, carrier, error }:any) =>
+                        setPriceFixDialog({
+                          open: true,
+                          shipment,
+                          carrier,
+                          error,
+                          countryCode: "DE",
+                        })
+                      }
+                    />
+                  ) : activeConfigSection.key === "nebenkosten" ? (
+                    <>
+                      <NebenkostenPreview
+                        text={localeText}
+                        presets={nebPresets}
+                        countryOptions={countryOptions}
+                      />
+                      <Button variant="contained" disabled sx={{ alignSelf: "flex-start" }}>
+                        {activeConfigSection.actionLabel}
+                      </Button>
+                    </>
+                  ) : activeConfigSection.key === "auftragsdaten" ? (
+                    <>
+                      <AuftragsdatenPreview
+                        text={localeText}
+                        summaryItems={shipmentSummaryItems}
+                        shipmentRows={shipmentRows}
+                      />
+                      <Button variant="contained" disabled sx={{ alignSelf: "flex-start" }}>
+                        {activeConfigSection.actionLabel}
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Paper
+                        variant="outlined"
+                        sx={{ p: 2, borderStyle: "dashed", borderRadius: 2 }}
+                      >
+                        <Stack spacing={1}>
+                          {activeConfigSection.placeholders.map((item:any) => (
+                            <Box
+                              key={`${activeConfigSection.key}-${item.label}`}
+                              sx={{
+                                border: "1px solid",
+                                borderColor: "divider",
+                                borderRadius: 1,
+                                p: 1.25,
+                                bgcolor: "grey.50",
+                              }}
+                            >
+                              <Typography variant="caption" color="text.secondary">
+                                {item.label}
+                              </Typography>
+                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                {item.value}
+                              </Typography>
+                            </Box>
+                          ))}
+                        </Stack>
+                      </Paper>
+                      <Button variant="contained" disabled sx={{ alignSelf: "flex-start" }}>
+                        {activeConfigSection.actionLabel}
+                      </Button>
+                    </>
+                  )}
+                  {activeConfigSection.actionHint && (
+                    <Typography variant="caption" color="text.secondary">
+                      {activeConfigSection.actionHint}
+                    </Typography>
+                  )}
+                </Stack>
+              ) : (
+                <Typography>{localeText.common.noContent}</Typography>
+              )}
+              {/* <InvoiceSpedition/> */}
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => dispatch(setConfigDialogOpen(false))}>{localeText.dialogs.close}</Button>
+            </DialogActions>
+          </Dialog>
+    
+  )
+}
