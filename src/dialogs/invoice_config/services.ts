@@ -17,7 +17,9 @@ if(resp.success)
 {
      dispatch(setCarrierConfigs(resp.data))
 }
-       console.log("getCarriersDataFromServer resp: ",resp);
+
+
+       
       
 }
 
