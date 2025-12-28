@@ -51,8 +51,26 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
         customerNumber: "",
       });
 
+        const [errors, setErrors] = useState<any>({});
+
+  /* ---------------- VALIDATION ---------------- */
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    Object.keys(newCarrierForm).forEach((key) => {
+      if (!newCarrierForm[key as keyof typeof newCarrierForm].trim()) {
+        newErrors[key] = "This field is required";
+      }
+    });
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+
 
       const handleConfirmAddCarrier = () => {
+         if (!validateForm()) return;
           const defaultLabel = `${pricingText.defaults.newCarrierName} ${carriers.length + 1}`;
           const label = newCarrierForm.name?.trim() || defaultLabel;
           const reqObj = {
@@ -88,6 +106,10 @@ setNewCarrierForm({
             email: "",
             customerNumber: "",
           });
+
+            setErrors({});
+    setAddCarrierDialogOpen(false);
+
           })
         
           
@@ -167,6 +189,8 @@ setNewCarrierForm({
                       label={pricingText.addCarrierDialog.name}
                       value={newCarrierForm.name}
                       onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, name: e.target.value }))}
+                        error={!!errors.name}
+                        helperText={errors.name}
                       fullWidth
                       autoFocus
                     />
@@ -175,6 +199,8 @@ setNewCarrierForm({
                         label={pricingText.addCarrierDialog.street}
                         value={newCarrierForm.street}
                         onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, street: e.target.value }))}
+                          error={!!errors.street}
+                           helperText={errors.street}
                         fullWidth
                       />
                       <TextField
@@ -183,6 +209,8 @@ setNewCarrierForm({
                         onChange={(e) =>
                           setNewCarrierForm((prev) => ({ ...prev, streetNo: e.target.value }))
                         }
+                         error={!!errors.streetNo}
+                        helperText={errors.streetNo}
                         sx={{ width: { xs: "100%", sm: 140 } }}
                       />
                     </Stack>
@@ -191,12 +219,16 @@ setNewCarrierForm({
                         label={pricingText.addCarrierDialog.zip}
                         value={newCarrierForm.zipCode}
                         onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, zipCode: e.target.value }))}
+                            error={!!errors.zipCode}
+                           helperText={errors.zipCode}
                         sx={{ width: { xs: "100%", sm: 180 } }}
                       />
                       <TextField
                         label={pricingText.addCarrierDialog.city}
                         value={newCarrierForm.city}
                         onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, city: e.target.value }))}
+                          error={!!errors.city}
+                          helperText={errors.city}
                         fullWidth
                       />
                     </Stack>
@@ -204,6 +236,8 @@ setNewCarrierForm({
                       label={pricingText.addCarrierDialog.country}
                       value={newCarrierForm.country}
                       onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, country: e.target.value }))}
+                        error={!!errors.country}
+                       helperText={errors.country}
                       fullWidth
                     />
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
@@ -211,20 +245,26 @@ setNewCarrierForm({
                         label={pricingText.addCarrierDialog.contact}
                         value={newCarrierForm.contactName}
                         onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, contactName: e.target.value }))}
+                           error={!!errors.contactName}
+                         helperText={errors.contactName}
                         fullWidth
                       />
                       <TextField
                         label={pricingText.addCarrierDialog.phone}
                         value={newCarrierForm.phoneNo}
                         onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, phoneNo: e.target.value }))}
-                        fullWidth
+                           error={!!errors.phoneNo}
+                           helperText={errors.phoneNo}
+                          fullWidth
                       />
                     </Stack>
                     <TextField
                       label={pricingText.addCarrierDialog.email}
                       value={newCarrierForm.email}
                       onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, email: e.target.value }))}
-                      type="email"
+                      // type="email"
+                          error={!!errors.email}
+                        helperText={errors.email}
                       fullWidth
                     />
                     <TextField
@@ -233,6 +273,8 @@ setNewCarrierForm({
                       onChange={(e) =>
                         setNewCarrierForm((prev) => ({ ...prev, customerNumber: e.target.value }))
                       }
+                         error={!!errors.customerNumber}
+                       helperText={errors.customerNumber}
                       fullWidth
                     />
                   </Stack>
