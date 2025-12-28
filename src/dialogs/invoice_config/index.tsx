@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { use, useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Typography,
@@ -47,6 +47,7 @@ import InvoiceSpedition from '../invoice_spedition';
 import { getCarriersDataFromServer } from './services';
 
 
+
 const buildPlaceholderConfigSections = (text:any) => {
   const sections = text.configSections;
   return [
@@ -70,10 +71,6 @@ export default function InvoiceConfig() {
  const { localeText,language } =useLanguage();
      const dispatch = useAppDispatch();
          const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
-     const initialCarrierConfigs:any = useMemo(
-    () => buildDefaultCarrierConfigs(localeText),
-    [localeText]
-  );
       const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
   
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");
@@ -81,7 +78,7 @@ export default function InvoiceConfig() {
     () => buildPlaceholderConfigSections(localeText),
     [localeText]
   );
-  // const [carrierConfigs, setCarrierConfigs] = useState(initialCarrierConfigs);
+ 
    const activeConfigSection = useMemo(
     () =>
       placeholderSections.find((section) => section.key === activeConfigTab) ||
@@ -110,10 +107,12 @@ export default function InvoiceConfig() {
     [localeText]
   );
   useEffect(()=>{
-    getCarriersDataFromServer({userId},dispatch)
-    dispatch(setCarrierConfigs(initialCarrierConfigs))
-  },[])
-  
+   configDialogOpen&& getCarriersDataFromServer({userId},dispatch)
+  },[configDialogOpen])
+
+ 
+   
+   
   return (
     
       <Dialog

@@ -100,7 +100,7 @@ export const fetchDataFromServerWithoutDispatch = async (apiUrl, reqObj) => {
 export const fetchApi = async (data={}, apiUrl, methodType, extraHeades={}, abortController=null) => {
   const reqObj = {
     method: methodType,
-    headers:{"Content-Type":CONTENT_TYPE_APPLICATION}
+    headers:{}
   };
   let timeoutId;
   if (abortController) {

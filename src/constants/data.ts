@@ -226,60 +226,6 @@ export const LANGUAGE_TEXT :any = {
           },
           newCarrierName: "Neue Spedition",
         },
-        presets: {
-          carriers: [
-            {
-              name: "NordCargo",
-              freight: {
-              },
-              tariffs: {
-                countryCodes: ["DE"],
-                byCountry: {
-                  DE: {
-                    tariffType: "Gewicht-100-kg-Satz",
-                    zones: [
-                      { name: "Dachser", zips: "20-22" },
-                      { name: "Hellmann", zips: "23" },
-                    ],
-                    rows: ["100", "200", "300", "400", "500", "600"],
-                  },
-                },
-              },
-              surcharges: [
-                { label: "Diesel Floater", type: "percent", amount: "5,2 %" },
-                { label: "Maut", type: "flat", amount: "0,12 € / km" },
-                { label: "Avis / Zustellung", type: "flat", amount: "18,00 €" },
-              ],
-            },
-            {
-              name: "Rhine Logistics",
-              freight: {
-              },
-              tariffs: {
-                countryCodes: ["DE", "INT"],
-                byCountry: {
-                  DE: {
-                    tariffType: "Standard DE",
-                    zones: [
-                      { name: "Nord", zips: "20-29" },
-                      { name: "Süd", zips: "80-89" },
-                    ],
-                    rows: ["100", "200", "300", "400", "500"],
-                  },
-                  INT: {
-                    tariffType: "BeNeLux",
-                    zones: [{ name: "Benelux", zips: "BE/NL/LU" }],
-                    rows: ["100", "200", "300", "400", "500"],
-                  },
-                },
-              },
-              surcharges: [
-                { label: "Handling", type: "flat", amount: "12,50 €" },
-                { label: "Pick-up", type: "flat", amount: "25,00 €" },
-              ],
-            },
-          ],
-        },
       },
     },
     dialogs: {

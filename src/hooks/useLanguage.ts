@@ -6,7 +6,7 @@ export function useLanguage() {
 
 
     const language = useAppSelector((state) => state.languages.language);
-    console.log("language value: ",language);
+    
     
    const currencyFormatter = useMemo(
       () =>
@@ -32,7 +32,7 @@ export function useLanguage() {
         (value:any) => (typeof value === "number" ? currencyFormatter.format(value) : "—"),
         [currencyFormatter]
       );
-console.log("localeText: ", localeText);
+
 
   return { localeText,language,formatDate,formatCurrency };
 }
