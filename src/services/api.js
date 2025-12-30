@@ -100,7 +100,7 @@ export const fetchDataFromServerWithoutDispatch = async (apiUrl, reqObj) => {
 export const fetchApi = async (data={}, apiUrl, methodType, extraHeades={}, abortController=null) => {
   const reqObj = {
     method: methodType,
-    headers:{}
+    headers:{'Content-Type': CONTENT_TYPE_APPLICATION}
   };
   let timeoutId;
   if (abortController) {
@@ -144,10 +144,14 @@ export const fetchApi = async (data={}, apiUrl, methodType, extraHeades={}, abor
 
   try {
     const result = await fetchDataFromServerWithoutDispatch(apiUrl, reqObj);
+    console.log("result: ",result);
+    
     return result;
   } catch (error) {
+    console.log("result: error: ",error);
+    
     if (timeoutId) clearTimeout(timeoutId);
-    return new Promise((res, rej) => rej(error));
+    return error;
   } finally {
     // Cleanup timeout
     if (timeoutId) clearTimeout(timeoutId);

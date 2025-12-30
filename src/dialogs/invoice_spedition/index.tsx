@@ -83,17 +83,18 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
             contactName: newCarrierForm.contactName,
             phoneNo: newCarrierForm.phoneNo,
             email: newCarrierForm.email,
-            // customerNumber: newCarrierForm.customerNumber,
+            customerNumber: newCarrierForm.customerNumber,
             userId,
           };
           const nextCarrier = createCarrierConfig(text, label,reqObj );
-             dispatch(setCarrierConfigs(  [...carriers, nextCarrier]))
+            
              console.log('nextCarrier.id: ',nextCarrier.id);
              
-          dispatch(setActiveCarrierId( nextCarrier.id))
+          
           
           sendCarrierDataToServer(reqObj,dispatch,(respData?:any)=>{
             console.log("respData: ",respData);
+             dispatch(setCarrierConfigs(  [...carriers, respData]))
 setNewCarrierForm({
             name: "",
             street: "",

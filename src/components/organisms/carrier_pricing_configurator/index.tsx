@@ -1,47 +1,25 @@
 import React, {  useEffect, useState } from "react";
 import {
   Box,
-  Typography,
-  Table,
-  
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
- 
+  Typography, 
   Button,
-  TextField,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-
   IconButton,
   Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Stack,
+    Stack,
   Paper,
   Tabs,
   Tab,
-  Checkbox,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
 } from "@mui/material";
-
-import AddIcon from "@mui/icons-material/Add";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
 import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
-import Papa from "papaparse";
 import { BASE_COUNTRY_OPTIONS } from "@/constants/data";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
-import { buildDefaultMinWeights, createCarrierConfig, createFreightBase, createMinWeightRow, createSurchargeBase, createSurchargeRow, createTariffBase, createTariffRow, createTariffZone, makeId } from "@/utils/helper";
+import { createFreightBase } from "@/utils/helper";
 import InvoiceSpedition from "@/dialogs/invoice_spedition";
 import { useLanguage } from "@/hooks/useLanguage";
 import AddCarrier from "@/components/molecules/add_carrier";
@@ -52,18 +30,14 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import KonfiguratorRadioButton from "../konfiguration_radio_button";
 import KonfigurationMeterFirst from "../konfiguration_meter1";
 import KonfigurationLandMeter2 from "../konfiguration _0ptionen_landmeter";
-import KonfigrationTable1 from "../carrier_pricing_Minimum_weight";
-import KonfigTable1Extra from "../carrier_pricing_addition_minimum_weight";
 import CarrierPricingTariffs from "../carrier_pricing_tariffs";
 import CarrierPricingSurcharges from "../carrier_pricing_surcharges";
 import CarrierPricingMinimumWeight from "../carrier_pricing_Minimum_weight";
 import CarrierPricingAdditionMinimumWeight from "../carrier_pricing_addition_minimum_weight";
 import { setActiveCarrierId } from "@/store/features/carrier/carriersSlice";
-import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
+import { deleteCarrierDataToServer, sendShipperFreightCalc } from "@/dialogs/invoice_config/services";
+import { SHIPPER_PROJECT_FREIGHT_BASIC } from "@/data/dummy";
 
-
- 
- 
  const CarrierPricingConfigurator = ({
   countryOptions,
 }:any) => {
@@ -73,23 +47,10 @@ import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
       const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 
   const pricingText = text.config.pricing;
-  const [newCarrierName, setNewCarrierName] = useState("");
   const [addCarrierDialogOpen, setAddCarrierDialogOpen] = useState(false);
-  const [newCarrierForm, setNewCarrierForm] = useState({
-    name: "",
-    street: "",
-    houseNumber: "",
-    zip: "",
-    city: "",
-    country: "",
-    contact: "",
-    phone: "",
-    email: "",
-    customerNumber: "",
-  });
+ 
   const fileInputRef = React.useRef<any>(null);
-  const surchargeFileInputRef = React.useRef<any>(null);
-  const tariffFileInputRef = React.useRef<any>(null);
+
   const [selectedCountryOption, setSelectedCountryOption] = useState("");
   const resolvedCountryOptions =
     countryOptions && countryOptions.length
@@ -103,11 +64,7 @@ import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
   const freightCountryCodes =
     (activeCarrier && activeCarrier.freight?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
   const [freightCountryIndex, setFreightCountryIndex] = useState(0);
-  const activeCountryCode =
-    freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
-  const activeFreight =
-    (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-  const availableCountryOptions =
+    const availableCountryOptions =
     resolvedCountryOptions.filter((option:any) => !freightCountryCodes.includes(option.code)) || [];
   const getFlag = (code:any) =>
     resolvedCountryOptions.find((option:any) => option.code === code)?.flag || "🌐";
@@ -115,26 +72,13 @@ import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
   const tariffCountryCodes =
     (activeCarrier && activeCarrier.tariffs?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
   const [tariffCountryIndex, setTariffCountryIndex] = useState(0);
-  const activeTariffCountryCode =
-    tariffCountryCodes[tariffCountryIndex] ||
-    tariffCountryCodes[0] ||
-    NEBENKOSTEN_INITIAL_COUNTRIES[0];
-  const activeTariff =
-    (activeCarrier && activeCarrier.tariffs?.byCountry?.[activeTariffCountryCode]) || null;
-  const availableTariffCountryOptions =
-    resolvedCountryOptions.filter((option:any) => !tariffCountryCodes.includes(option.code)) || [];
+
+
   const surchargeCountryCodes =
     (activeCarrier && activeCarrier.surcharges?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
   const [surchargeCountryIndex, setSurchargeCountryIndex] = useState(0);
-  const activeSurchargeCountryCode =
-    surchargeCountryCodes[surchargeCountryIndex] ||
-    surchargeCountryCodes[0] ||
-    NEBENKOSTEN_INITIAL_COUNTRIES[0];
-  const activeSurcharges =
-    (activeCarrier && activeCarrier.surcharges?.byCountry?.[activeSurchargeCountryCode]) || null;
-  const availableSurchargeCountryOptions =
-    resolvedCountryOptions.filter((option:any) => !surchargeCountryCodes.includes(option.code)) || [];
 
+  
   useEffect(() => {
     setFreightCountryIndex(0);
   }, [activeCarrierId]);
@@ -170,27 +114,13 @@ import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
   };
 
   const handleAddCarrier = () => {
-    const defaultLabel = `${pricingText.defaults.newCarrierName} ${carriers.length + 1}`;
-    setNewCarrierForm((prev) => ({
-      ...prev,
-      name: prev.name || newCarrierName.trim() || defaultLabel,
-    }));
-    setAddCarrierDialogOpen(true);
+      setAddCarrierDialogOpen(true);
   }
 
   const handleRemoveCarrier = (carrierId:any) => {
-
-      //     const next = carriers.filter((carrier:any) => carrier.id !== carrierId);
-      //         if (activeCarrierId === carrierId) {
-      //           dispatch(setActiveCarrierId( next[0]?.id || null))
-      // }
-      console.log("carrierId: handleRemoveCarrier: ",carrierId);
-      
-deleteCarrierDataToServer({projectId: carrierId},dispatch)
-    // dispatch(setCarrierConfigs(next))
+deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
   };
 
- 
 
   const handleAddCountry = (code:any) => {
     if (!activeCarrier || !code) return;
@@ -252,34 +182,46 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch)
     document.body.removeChild(link);
   };
 
-  const handleImportFile = (event:any) => {
+  const handleFreightBasisImport = (event:any) => {
     const file = event.target.files?.[0];
     if (!file || !activeCarrier) return;
     const reader:any = new FileReader();
     reader.onload = () => {
       try {
-        const parsed = JSON.parse(reader.result);
-        if (!parsed.freight || typeof parsed.freight !== "object") return;
-        const parsedFreight = parsed.freight;
-        const baseFreight = activeCarrier.freight || {};
-        const countryCodes =
-          parsedFreight.countryCodes || baseFreight.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
-        const parsedByCountry = parsedFreight.byCountry || {};
-        const baseByCountry = baseFreight.byCountry || {};
-        const byCountry:any = {};
-        countryCodes.forEach((code:any) => {
-          const source =
-            parsedByCountry[code] || baseByCountry[code] || parsedFreight || createFreightBase(text);
-          byCountry[code] = createFreightBase(text, source);
-        });
+        console.log("reader.result: ",reader.result);
+        
+        // const parsed = JSON.parse(reader.result);
+        const parsed:any = SHIPPER_PROJECT_FREIGHT_BASIC;
 
-        updateCarrier(activeCarrier.id, (carrier:any) => ({
-          ...carrier,
-          freight: {
-            countryCodes,
-            byCountry,
-          },
-        }));
+
+        // if (!parsed.freight || typeof parsed.freight !== "object") return;
+        // const parsedFreight = parsed.freight;
+        // const baseFreight = activeCarrier.freight || {};
+        // const countryCodes =
+        //   parsedFreight.countryCodes || baseFreight.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
+        // const parsedByCountry = parsedFreight.byCountry || {};
+        // const baseByCountry = baseFreight.byCountry || {};
+        // const byCountry:any = {};
+        // countryCodes.forEach((code:any) => {
+        //   const source =
+        //     parsedByCountry[code] || baseByCountry[code] || parsedFreight || createFreightBase(text);
+        //   byCountry[code] = createFreightBase(text, source);
+        // });
+parsed.projectId = activeCarrierId;
+parsed["_id"]["$oid"] = activeCarrierId;
+        sendShipperFreightCalc(parsed,dispatch)
+        
+        // console.log("",{ countryCodes,
+        //     byCountry,});
+
+
+        // updateCarrier(activeCarrier.id, (carrier:any) => ({
+        //   ...carrier,
+        //   freight: {
+        //     countryCodes,
+        //     byCountry,
+        //   },
+        // }));
       } catch (err) {
         // silent fail; in real app surface toast
       }
@@ -370,7 +312,7 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch)
                 accept="application/json"
                 ref={fileInputRef}
                 style={{ display: "none" }}
-                onChange={handleImportFile}
+                onChange={handleFreightBasisImport}
               />
             <Stack spacing={1.5}>
               <Typography variant="subtitle2">{pricingText.freight.countryTitle}</Typography>

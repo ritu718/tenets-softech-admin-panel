@@ -88,7 +88,7 @@ export const LANGUAGE_TEXT :any = {
         empty: "Noch keine Spedition angelegt.",
         freight: {
           title: "Frachtberechnung",
-          countryTitle: "Länderübersicht (Demo)",
+          countryTitle: "Länderübersicht",
           countryAddLabel: "Land hinzufügen",
           countryPlaceholder: "Land auswählen",
           calculationTitle: "Berechnungsart",
@@ -121,7 +121,7 @@ export const LANGUAGE_TEXT :any = {
         },
         tariffs: {
           title: "Tarife",
-          countryTitle: "Länderübersicht (Demo)",
+          countryTitle: "Länderübersicht",
           countryAddLabel: "Land hinzufügen",
           countryPlaceholder: "Land auswählen",
           tariffTypeLabel: "Tarif Art",
@@ -157,7 +157,7 @@ export const LANGUAGE_TEXT :any = {
         },
         surcharges: {
           title: "Nebenkosten",
-          countryTitle: "Länderübersicht (Demo)",
+          countryTitle: "Länderübersicht",
           countryAddLabel: "Land hinzufügen",
           countryPlaceholder: "Land auswählen",
           columns: {
@@ -521,7 +521,7 @@ export const LANGUAGE_TEXT :any = {
         empty: "No carriers yet.",
         freight: {
           title: "Freight basis",
-          countryTitle: "Country overview (demo)",
+          countryTitle: "Country overview",
           countryAddLabel: "Add country",
           countryPlaceholder: "Select country",
           calculationTitle: "Calculation type",
@@ -554,7 +554,7 @@ export const LANGUAGE_TEXT :any = {
         },
         tariffs: {
           title: "Tariffs",
-          countryTitle: "Country overview (demo)",
+          countryTitle: "Country overview",
           countryAddLabel: "Add country",
           countryPlaceholder: "Select country",
           tariffTypeLabel: "Tariff type",
@@ -590,7 +590,7 @@ export const LANGUAGE_TEXT :any = {
         },
         surcharges: {
           title: "Surcharges",
-          countryTitle: "Country overview (demo)",
+          countryTitle: "Country overview",
           countryAddLabel: "Add country",
           countryPlaceholder: "Select country",
           columns: {

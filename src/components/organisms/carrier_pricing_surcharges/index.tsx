@@ -47,9 +47,6 @@ export default function CarrierPricingSurcharges({countryOptions,}:any) {
           const dispatch = useAppDispatch();
     const pricingText = text.config.pricing;
     const surchargeFileInputRef = React.useRef<any>(null);
-    
- 
-
 
     const resolvedCountryOptions =
         countryOptions && countryOptions.length

@@ -22,12 +22,12 @@ export const isNumeric = (inputString:any) => {
  * @returns {boolean} gives true if value is empty or false if value is not empty.
  */
 export const isEmpty = (v:any) =>
-  v === null ||
-  v === undefined ||
+  v == null ||
+  v == undefined ||
   v == false ||
-  v.length === 0 ||
+  v.length == 0 ||
   v == '' ||
-  (isNumeric(v) && parseInt(v, 10) === 0);
+  (isNumeric(v) && parseInt(v, 10) == 0);
 
   export const makeId = (prefix:any) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 

@@ -2,19 +2,16 @@ import React, { useState } from 'react'
 import {
   Typography,
   Table,
-  
   TableHead,
   TableBody,
   TableRow,
   TableCell,
- 
   Button,
   TextField,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-
   IconButton,
   Stack,
   Paper,
@@ -34,9 +31,6 @@ import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlic
 import { createTariffBase, createTariffRow, createTariffZone } from '@/utils/helper';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-
-
-
 export default function CarrierPricingTariffs({countryOptions}:any) {
     const { localeText: text } =useLanguage();
       const pricingText = text.config.pricing;
@@ -44,10 +38,6 @@ export default function CarrierPricingTariffs({countryOptions}:any) {
           const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
              const dispatch = useAppDispatch();
        const tariffFileInputRef = React.useRef<any>(null);
-     
-
-
-
          const resolvedCountryOptions =
             countryOptions && countryOptions.length
               ? countryOptions
@@ -57,15 +47,8 @@ export default function CarrierPricingTariffs({countryOptions}:any) {
                 }));
        const activeCarrier =
           carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-        const freightCountryCodes =
-          (activeCarrier && activeCarrier.freight?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-        const [freightCountryIndex, setFreightCountryIndex] = useState(0);
-        const activeCountryCode =
-          freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
-        const activeFreight =
-          (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-        const availableCountryOptions =
-          resolvedCountryOptions.filter((option:any) => !freightCountryCodes.includes(option.code)) || [];
+       
+       
         const getFlag = (code:any) =>
           resolvedCountryOptions.find((option:any) => option.code === code)?.flag || "🌐";
       

@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Table,
-  TableContainer,
   TableHead,
   TableBody,
   TableRow,
@@ -11,10 +10,6 @@ import {
   CircularProgress,
   Button,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Collapse,
   IconButton,
   Chip,
@@ -24,23 +19,17 @@ import {
   DialogActions,
   Stack,
   Paper,
-  Tabs,
-  Tab,
   Checkbox,
   FormControlLabel,
-  Radio,
-  RadioGroup,
+
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import AddIcon from "@mui/icons-material/Add";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import DownloadIcon from "@mui/icons-material/Download";
-import UploadIcon from "@mui/icons-material/Upload";
+
 import Papa from "papaparse";
 import InvoiceFilter from "./invoice_filter";
 import InvoiceFilter2 from "./invoice_filter2";
@@ -48,11 +37,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 import InvoiceTable from "./invoice_table";
 import {
-  setOverview,setConfigDialogOpen
+  setOverview
 } from "@/store/features/invoice_data/invoiceDataSlice";
 import { useFilteredOVerview } from "@/hooks/useFilteredOVerview";
 import InvoiceConfig from "@/dialogs/invoice_config";
-import { setActiveCarrierId } from "@/store/features/carrier/carriersSlice";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
 
 
@@ -171,15 +159,6 @@ const getNebenkostenDescriptor = (entry) => {
 const makeInvoiceKey = (rechnungsnummer, projektId) =>
   `${rechnungsnummer || "unbekannt"}__${projektId || "all"}`;
 
-const NEBENKOSTEN_INITIAL_COUNTRIES = ["DE", "INT"];
-
-const BASE_COUNTRY_OPTIONS = [
-  { code: "DE", flag: "🇩🇪" },
-  { code: "INT", flag: "🌍" },
-  { code: "FR", flag: "🇫🇷" },
-  { code: "PL", flag: "🇵🇱" },
-  { code: "ES", flag: "🇪🇸" },
-];
 
 const buildPlaceholderConfigSections = (text) => {
   const sections = text?.configSections;
@@ -192,15 +171,6 @@ const buildPlaceholderConfigSections = (text) => {
 
 const makeId = (prefix) => `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 
-const createSurchargeRow = (text, overrides = {}) => ({
-  id: makeId("surcharge"),
-  label: overrides.label || "",
-  type: overrides.type || (overrides.unit === "%" ? "percent" : "flat"),
-  amount: overrides.amount || "",
-  unit: overrides.unit || "€",
-  description: overrides.description || "",
-  required: typeof overrides.required === "boolean" ? overrides.required : true,
-});
 
 const MIN_WEIGHT_DEFAULTS = [
   { code: "VP", description: "Viertelpalette", weight: "" },
@@ -235,678 +205,17 @@ const createMinWeightRow = (row = {}) => ({
 
 const buildDefaultMinWeights = () => MIN_WEIGHT_DEFAULTS.map((row) => createMinWeightRow(row));
 
-const createFreightBase = (text, overrides = {}) => {
-  const defaults = text.config.pricing.defaults.freight;
-  return {
-    calculationMode: overrides.calculationMode || defaults.calculationMode || "cbm",
-    consolidatedBilling:
-      typeof overrides.consolidatedBilling === "boolean"
-        ? overrides.consolidatedBilling
-        : defaults.consolidatedBilling,
-    bulkyCbm: overrides.bulkyCbm || defaults.bulkyCbm || "",
-    bulkyLdm: overrides.bulkyLdm || defaults.bulkyLdm || "",
-    ldmFromKg: overrides.ldmFromKg || defaults.ldmFromKg || "",
-    ldmFromLdm: overrides.ldmFromLdm || defaults.ldmFromLdm || "",
-    minWeights:
-      overrides.minWeights?.map((row) => createMinWeightRow(row)) || buildDefaultMinWeights(),
-    customMinWeights: overrides.customMinWeights?.map((row) => createMinWeightRow(row)) || [],
-  };
-};
-
-const createSurchargeBase = (text, overrides = {}) => {
-  const defaults = text.config.pricing.defaults.surcharges;
-  const rowsSource =
-    (overrides.rows && overrides.rows.length && overrides.rows) ||
-    (defaults?.rows && defaults.rows.length && defaults.rows) ||
-    [];
-  return {
-    rows: rowsSource.map((row) => createSurchargeRow(text, row)),
-  };
-};
-
-const createTariffZone = (zone = {}, fallbackName = "Zone") => ({
-  id: makeId("zone"),
-  name: zone.name || fallbackName,
-  zips: zone.zips || "",
-  min: zone.min || "",
-  max: zone.max || "",
-});
-
-const createTariffRow = (zones = [], row = {}) => {
-  const values = row.values || {};
-  const valueMap = zones.reduce((acc, zone) => {
-    acc[zone.id] = values[zone.id] || "";
-    return acc;
-  }, {});
-  return {
-    id: makeId("tariff-row"),
-    weight: row.weight || "",
-    values: valueMap,
-  };
-};
-
-const createTariffBase = (text, overrides = {}) => {
-  const defaults = text.config.pricing.defaults.tariff;
-  const zones =
-    overrides.zones?.map((zone, idx) => createTariffZone(zone, `Zone ${idx + 1}`)) ||
-    defaults.zones.map((zone, idx) => createTariffZone(zone, `Zone ${idx + 1}`));
-  const rowsSource = overrides.rows?.length ? overrides.rows : defaults.rows || [];
-  const rows = rowsSource.map((row) =>
-    typeof row === "string" || typeof row === "number"
-      ? createTariffRow(zones, { weight: String(row) })
-      : createTariffRow(zones, row)
-  );
-  const defaultTariffType =
-    overrides.tariffType ||
-    defaults.tariffType ||
-    (text.config.pricing.tariffs.tariffTypes || [])[0] ||
-    "";
-  return {
-    tariffType: defaultTariffType,
-    zones,
-    rows,
-  };
-};
-
-const createCarrierConfig = (text, name, preset = {}) => {
-  const defaults = text.config.pricing.defaults;
-  const defaultFreight = defaults.freight;
-  const countryCodes = preset.freight?.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const presetByCountry = preset.freight?.byCountry || {};
-  const byCountry = countryCodes.reduce((acc, code) => {
-    acc[code] = createFreightBase(text, presetByCountry[code] || preset.freight || defaultFreight);
-    return acc;
-  }, {});
-  const freight = {
-    countryCodes: countryCodes.length ? countryCodes : [...NEBENKOSTEN_INITIAL_COUNTRIES],
-    byCountry,
-  };
-
-  const tariffCountryCodes = preset.tariffs?.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const tariffByCountryPreset = preset.tariffs?.byCountry || {};
-  const tariffsByCountry = {};
-  (tariffCountryCodes.length ? tariffCountryCodes : NEBENKOSTEN_INITIAL_COUNTRIES).forEach(
-    (code) => {
-      tariffsByCountry[code] = createTariffBase(
-        text,
-        tariffByCountryPreset[code] || preset.tariffs || defaults.tariff
-      );
-    }
-  );
-  const tariffs = {
-    countryCodes: tariffCountryCodes.length ? tariffCountryCodes : [...NEBENKOSTEN_INITIAL_COUNTRIES],
-    byCountry: tariffsByCountry,
-  };
-
-  const presetSurcharges = preset.surcharges || {};
-  const isLegacySurchargeArray = Array.isArray(presetSurcharges);
-  const surchargeCountryCodes = isLegacySurchargeArray
-    ? NEBENKOSTEN_INITIAL_COUNTRIES
-    : presetSurcharges.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const surchargeByCountryPreset = isLegacySurchargeArray
-    ? { [NEBENKOSTEN_INITIAL_COUNTRIES[0]]: { rows: presetSurcharges } }
-    : presetSurcharges.byCountry || {};
-  const surchargesByCountry = {};
-  (surchargeCountryCodes.length ? surchargeCountryCodes : NEBENKOSTEN_INITIAL_COUNTRIES).forEach(
-    (code) => {
-      surchargesByCountry[code] = createSurchargeBase(
-        text,
-        surchargeByCountryPreset[code] || presetSurcharges || defaults.surcharges
-      );
-    }
-  );
-  const surcharges = {
-    countryCodes: surchargeCountryCodes.length
-      ? surchargeCountryCodes
-      : [...NEBENKOSTEN_INITIAL_COUNTRIES],
-    byCountry: surchargesByCountry,
-  };
-
-  return {
-    id: makeId("carrier"),
-    name: name || defaults.newCarrierName,
-    address: preset.address || "",
-    contact: preset.contact || "",
-    customerNumber: preset.customerNumber || "",
-    freight,
-    tariffs,
-    surcharges,
-  };
-};
-
-const buildDefaultCarrierConfigs = (text) => {
-  const presetCarriers = text.config.pricing?.presets?.carriers || [];
-  if (!presetCarriers.length) {
-    return [createCarrierConfig(text, text.config.pricing.defaults.newCarrierName)];
-  }
-  return presetCarriers.map((carrier) => createCarrierConfig(text, carrier.name, carrier));
-};
-
-const buildNebenkostenPresets = (text) => {
-  const s = text.surcharges;
-  return {
-    DE: {
-      title: s.deTitle,
-      note: s.deNote,
-      rows: [
-        {
-          cost: s.dieselFloater,
-          description: s.dieselDescription,
-          unit: s.unitPercent,
-          value: "5,2 %",
-          updatedAt: "03.02.2025",
-        },
-        {
-          cost: s.toll,
-          description: s.tollDescription,
-          unit: s.unitEuroPerKm,
-          value: "0,12 €",
-          updatedAt: "03.02.2025",
-        },
-        {
-          cost: s.pickup,
-          description: s.pickupDescription,
-          unit: s.unitEuro,
-          value: "25,00 €",
-          updatedAt: "15.01.2025",
-        },
-      ],
-    },
-    INT: {
-      title: s.intTitle,
-      note: s.intNote,
-      rows: [
-        {
-          cost: s.handling,
-          description: s.handlingDescription,
-          unit: s.unitEuroPerShipment,
-          value: "15,00 €",
-          updatedAt: "12.12.2024",
-        },
-        {
-          cost: s.customs,
-          description: s.customsDescription,
-          unit: s.unitEuro,
-          value: "40,00 €",
-          updatedAt: "12.12.2024",
-        },
-      ],
-    },
-  };
-};
-
-const buildCountryOptions = (text) =>
-  BASE_COUNTRY_OPTIONS.map((option) => ({
-    ...option,
-    label: text.countries[option.code] || option.code,
-  }));
-
-const buildCountryPreset = (code, presets, text) => {
-  const preset = presets[code];
-  if (preset) return { ...preset, code };
-  const label = text.countries[code] || code;
-  return {
-    code,
-    title: `${label} (${code})`,
-    note: text.surcharges.defaultNote,
-    rows: [
-      {
-        cost: text.surcharges.example,
-        description: text.surcharges.exampleDescription,
-        unit: text.surcharges.unitDash,
-        value: "—",
-        updatedAt: "—",
-      },
-    ],
-  };
-};
-
-const SHIPMENT_SAMPLE_ROWS_BASE = [
-  {
-    shipmentId: "SID-2048",
-    date: { de: "12.02.2025", en: "02/12/2025" },
-    zipFrom: "20457",
-    zipTo: "13353",
-    city: "Berlin",
-    country: "DE",
-    packaging: { de: "FP (Flachpalette)", en: "FP (flat pallet)" },
-    weight: { de: "1.250 kg", en: "1,250 kg" },
-    loadingMeters: { de: "3,20", en: "3.20" },
-    expressNextDay: true,
-    b2cNational: false,
-  },
-  {
-    shipmentId: "SID-2047",
-    date: { de: "11.02.2025", en: "02/11/2025" },
-    zipFrom: "20457",
-    zipTo: "80331",
-    city: "München",
-    country: "DE",
-    packaging: { de: "GP (Gitterbox)", en: "GP (cage pallet)" },
-    weight: { de: "980 kg", en: "980 kg" },
-    loadingMeters: { de: "2,10", en: "2.10" },
-    expressNextDay: false,
-    b2cNational: true,
-  },
-];
-
-const buildShipmentSummaryItems = (text) => [
-  { label: text.shipments.summary.active, value: "248" },
-  { label: text.shipments.summary.lastUpdate, value: text.shipments.summary.lastUpdateValue },
-  { label: text.shipments.summary.importSource, value: text.shipments.summary.importValue },
-];
-
-const buildShipmentSampleRows = (language) =>
-  SHIPMENT_SAMPLE_ROWS_BASE.map((row) => ({
-    ...row,
-    date: row.date[language],
-    packaging: row.packaging[language],
-    weight: row.weight[language],
-    loadingMeters: row.loadingMeters[language],
-  }));
-
-const NebenkostenPreview = ({ text, presets, countryOptions }) => {
-  const [countryCodes, setCountryCodes] = useState(NEBENKOSTEN_INITIAL_COUNTRIES);
-  const [tabIndex, setTabIndex] = useState(0);
-  const [selectedCountryOption, setSelectedCountryOption] = useState("");
-
-  const availableCountryOptions = countryOptions.filter(
-    (option) => !countryCodes.includes(option.code)
-  );
-
-  const activeCode = countryCodes[tabIndex] || countryCodes[0];
-  const activeCountry = activeCode ? buildCountryPreset(activeCode, presets, text) : null;
-
-  const getFlag = (code) =>
-    countryOptions.find((option) => option.code === code)?.flag || "🌐";
-
-  const handleAddCountry = (code) => {
-    if (!code) return;
-    setCountryCodes((prev) => {
-      if (prev.includes(code)) return prev;
-      const next = [...prev, code];
-      setTabIndex(next.length - 1);
-      return next;
-    });
-  };
-
-  const handleDeleteCountry = (index) => {
-    setCountryCodes((prev) => {
-      if (prev.length <= 1) return prev;
-      const next = prev.filter((_, idx) => idx !== index);
-      setTabIndex((current) => {
-        if (!next.length) return 0;
-        if (current > next.length - 1) return next.length - 1;
-        if (index <= current && current > 0) return current - 1;
-        return Math.min(current, next.length - 1);
-      });
-      return next;
-    });
-  };
-
-  const handleSelectCountry = (event) => {
-    const value = event.target.value;
-    if (!value) return;
-    handleAddCountry(value);
-    setSelectedCountryOption("");
-  };
-
-  return (
-    <Stack spacing={2}>
-      <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-        <Typography variant="subtitle2" gutterBottom>
-          {text.nebPreview.title}
-        </Typography>
-        <Tabs
-          value={Math.min(tabIndex, countryCodes.length - 1)}
-          onChange={(_, value) => setTabIndex(value)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{ borderBottom: 1, borderColor: "divider" }}
-        >
-          {countryCodes.map((code, index) => (
-            <Tab
-              key={`${code}-${index}`}
-              value={index}
-              label={
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2">
-                    {getFlag(code)} {code}
-                  </Typography>
-                  {countryCodes.length > 1 && (
-                    <IconButton
-                      size="small"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        handleDeleteCountry(index);
-                      }}
-                    >
-                      <DeleteOutlineIcon fontSize="inherit" />
-                    </IconButton>
-                  )}
-                </Stack>
-              }
-            />
-          ))}
-        </Tabs>
-
-        {availableCountryOptions.length > 0 && (
-          <Select
-            value={selectedCountryOption}
-            onChange={handleSelectCountry}
-            displayEmpty
-            fullWidth
-            sx={{ mt: 2 }}
-            renderValue={(value) => {
-              if (!value) return text.nebPreview.addPlaceholder;
-              const selected = countryOptions.find((option) => option.code === value);
-              return `${text.nebPreview.addLabel} ${selected?.label || value}`;
-            }}
-          >
-            <MenuItem value="">
-              <em>{text.nebPreview.addPlaceholder}</em>
-            </MenuItem>
-            {availableCountryOptions.map((option) => (
-              <MenuItem key={option.code} value={option.code}>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2">{option.flag}</Typography>
-                  <Typography variant="body2">{option.label}</Typography>
-                </Stack>
-              </MenuItem>
-            ))}
-          </Select>
-        )}
-
-        {activeCountry ? (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {activeCountry.title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {activeCountry.note}
-            </Typography>
-            <TableContainer component={Paper} variant="outlined">
-              <Stack direction="row" spacing={2} sx={{ p: 2, flexWrap: "wrap" }}>
-                <Button startIcon={<DownloadIcon />} variant="contained" disabled>
-                  {text.nebPreview.export}
-                </Button>
-                <Button startIcon={<UploadIcon />} variant="outlined" disabled>
-                  {text.nebPreview.import}
-                </Button>
-              </Stack>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>{text.nebPreview.columns.cost}</TableCell>
-                    <TableCell>{text.nebPreview.columns.description}</TableCell>
-                    <TableCell>{text.nebPreview.columns.unit}</TableCell>
-                    <TableCell>{text.nebPreview.columns.value}</TableCell>
-                    <TableCell>{text.nebPreview.columns.updated}</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {activeCountry.rows.map((row, index) => (
-                    <TableRow key={`${activeCountry.code}-${index}`}>
-                      <TableCell>{row.cost}</TableCell>
-                      <TableCell>{row.description}</TableCell>
-                      <TableCell>{row.unit}</TableCell>
-                      <TableCell>{row.value}</TableCell>
-                      <TableCell>{row.updatedAt}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-        ) : (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            {text.nebPreview.noCountries}
-          </Typography>
-        )}
-      </Paper>
-
-      <Typography variant="caption" color="text.secondary">
-        {text.nebPreview.info}
-      </Typography>
-    </Stack>
-  );
-};
-
-const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }) => (
-  <Stack spacing={2}>
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 2,
-        borderRadius: 2,
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 2,
-      }}
-    >
-      {summaryItems.map((item) => (
-        <Box
-          key={item.label}
-          sx={{
-            minWidth: 200,
-            flex: "1 1 200px",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 1,
-            p: 1.5,
-          }}
-        >
-          <Typography variant="caption" color="text.secondary">
-            {item.label}
-          </Typography>
-          <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            {item.value}
-          </Typography>
-        </Box>
-      ))}
-    </Paper>
-
-    <Stack direction={{ xs: "column", md: "row" }} spacing={1} flexWrap="wrap">
-      <Button startIcon={<AddCircleIcon />} variant="contained" disabled>
-        {text.shipments.buttons.add}
-      </Button>
-      <Button startIcon={<UploadIcon />} variant="outlined" disabled>
-        {text.shipments.buttons.import}
-      </Button>
-      <Button startIcon={<DownloadIcon />} variant="outlined" disabled>
-        {text.shipments.buttons.export}
-      </Button>
-      <Button startIcon={<DeleteForeverIcon />} variant="outlined" color="error" disabled>
-        {text.shipments.buttons.clear}
-      </Button>
-    </Stack>
-
-    <TableContainer component={Paper} variant="outlined">
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>{text.shipments.table.shipmentId}</TableCell>
-            <TableCell>{text.shipments.table.shipDate}</TableCell>
-            <TableCell>{text.shipments.table.zipFrom}</TableCell>
-            <TableCell>{text.shipments.table.zipTo}</TableCell>
-            <TableCell>{text.shipments.table.city}</TableCell>
-            <TableCell>{text.shipments.table.country}</TableCell>
-            <TableCell>{text.shipments.table.packaging}</TableCell>
-            <TableCell>{text.shipments.table.weight}</TableCell>
-            <TableCell>{text.shipments.table.loadingMeters}</TableCell>
-            <TableCell>{text.shipments.table.express}</TableCell>
-            <TableCell>{text.shipments.table.b2c}</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {shipmentRows.map((row, index) => (
-            <TableRow key={`${row.shipmentId}-${index}`}>
-              <TableCell>{row.shipmentId}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.zipFrom}</TableCell>
-              <TableCell>{row.zipTo}</TableCell>
-              <TableCell>{row.city}</TableCell>
-              <TableCell>{text.countries[row.country] || row.country}</TableCell>
-              <TableCell>{row.packaging}</TableCell>
-              <TableCell>{row.weight}</TableCell>
-              <TableCell>{row.loadingMeters}</TableCell>
-              <TableCell>
-                {row.expressNextDay ? (
-                  <Chip size="small" color="primary" label={text.common.booleanYes} />
-                ) : (
-                  <Chip size="small" label={text.common.booleanNo} />
-                )}
-              </TableCell>
-              <TableCell>
-                {row.b2cNational ? (
-                  <Chip size="small" color="primary" label={text.common.booleanYes} />
-                ) : (
-                  <Chip size="small" label={text.common.booleanNo} />
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
-      <Typography variant="body2" color="text.secondary">
-        {text.shipments.note}
-      </Typography>
-    </Paper>
-
-    <Typography variant="body2" color="text.secondary">
-      {text.shipments.info}
-    </Typography>
-  </Stack>
-);
-
-const PriceCheckPreview = ({
-  text,
-  shipmentRows,
-  carriers,
-  overrides,
-  onFixIssue,
-}) => {
-  const renderRows = shipmentRows.slice(0, 8);
-
-  const parseWeight = (weightText) => {
-    if (!weightText) return null;
-    const numeric = Number(String(weightText).replace(/[^0-9.,]/g, "").replace(",", "."));
-    return Number.isFinite(numeric) ? numeric : null;
-  };
-
-  const pickCarrierTariff = (zip, weight) => {
-    const zipPrefix = zip ? String(zip).slice(0, 2) : "";
-    const carrier = carriers[0];
-    if (!carrier) return { price: null, carrierName: null, error: "Keine Spedition ausgewählt" };
-    const tariffCountry = carrier.tariffs?.byCountry?.DE || carrier.tariffs?.byCountry?.INT;
-    if (!tariffCountry) return { price: null, carrierName: carrier.name, error: "Kein Tarif hinterlegt" };
-    const zones = tariffCountry.zones || [];
-    const matchedZone = zones.find((zone) => zone.zips && zone.zips.includes(zipPrefix));
-    if (!matchedZone) {
-      return {
-        price: null,
-        carrierName: carrier.name,
-        error: `Keine Zone für PLZ gefunden`,
-        details: { zip },
-      };
-    }
-    const rows = tariffCountry.rows || [];
-    const weightNumber = parseWeight(weight);
-    const matchedRow =
-      rows.find((row) => {
-        const w = parseFloat(row.weight);
-        return Number.isFinite(w) && weightNumber !== null && weightNumber <= w + 0.0001;
-      }) || rows[rows.length - 1];
-    const priceValue = matchedRow?.values?.[matchedZone.id];
-    if (!priceValue) {
-      return {
-        price: null,
-        carrierName: carrier.name,
-        error: "Keine Preiszeile gefunden",
-        details: { zip, weight },
-      };
-    }
-    return { price: priceValue, carrierName: carrier.name, error: null };
-  };
-
-  return (
-    <Stack spacing={2}>
-      <Typography variant="subtitle1">{text.configSections.reconciliation.title}</Typography>
-      <Typography variant="body2" color="text.secondary">
-        {text.configSections.reconciliation.description}
-      </Typography>
-      <TableContainer component={Paper} variant="outlined">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{text.shipments.table.shipmentId}</TableCell>
-              <TableCell>{text.shipments.table.zipFrom}</TableCell>
-              <TableCell>{text.shipments.table.zipTo}</TableCell>
-              <TableCell>{text.shipments.table.weight}</TableCell>
-              <TableCell>Tarifpreis</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {renderRows.map((row) => {
-              const overridePrice = overrides?.[row.shipmentId];
-              const result = overridePrice
-                ? { price: overridePrice, carrierName: carriers[0]?.name || null, error: null }
-                : pickCarrierTariff(row.zipTo, row.weight);
-              return (
-                <TableRow key={row.shipmentId}>
-                  <TableCell>{row.shipmentId}</TableCell>
-                  <TableCell>{row.zipFrom}</TableCell>
-                  <TableCell>{row.zipTo}</TableCell>
-                  <TableCell>{row.weight}</TableCell>
-                  <TableCell>{result.price || "—"}</TableCell>
-                  <TableCell
-                    sx={{ color: result.error ? "error.main" : "success.main", cursor: result.error ? "pointer" : "default" }}
-                  onClick={() => {
-                    if (result.error && onFixIssue) {
-                      onFixIssue({
-                        shipment: row,
-                        carrier: carriers[0] || null,
-                        error: result.error,
-                        details: result.details || { zip: row.zipTo, weight: row.weight },
-                      });
-                    }
-                  }}
-                  >
-                    {result.error ? result.error : "Preis gefunden"}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Typography variant="caption" color="text.secondary">
-        Hinweis: Preisberechnung ist Demo-Logik. Zonenmatching per PLZ-Präfix, Gewicht nach nächster Zeile.
-      </Typography>
-    </Stack>
-  );
-};
-
-
-
 const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
 
   useFilteredOVerview();
    const dispatch = useAppDispatch();
+   
   const { localeText,language } =useLanguage();
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
     [localeText]
   );
-  const initialCarrierConfigs = useMemo(
-    () => buildDefaultCarrierConfigs(localeText),
-    [localeText]
-  );
-  const [carrierConfigs, setCarrierConfigs] = useState(initialCarrierConfigs);
+   
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");
  
@@ -915,28 +224,6 @@ const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
       setActiveConfigTab(placeholderSections[0]?.key || "pricing");
     }
   }, [placeholderSections, activeConfigTab]);
-
-  useEffect(() => {
-    console.log('activeCarrierId: useEffect: ',activeCarrierId);
-    
-    if (!carrierConfigs.length) {
-      dispatch(setActiveCarrierId( null))
-      return;
-    }
-    console.log('carrierConfigs.some((carrier) => carrier.id === activeCarrierId):',carrierConfigs.some((carrier) => carrier.id === activeCarrierId));
-    
-    if (!activeCarrierId || !carrierConfigs.some((carrier) => carrier.id === activeCarrierId)) {
-       console.log('activeCarrierId: useEffect inside: ',activeCarrierId);
-       console.log('carrierConfigs: useEffect inside:',carrierConfigs);
-       
-      dispatch(setActiveCarrierId(carrierConfigs[0].id));
-    }
-  }, [carrierConfigs, activeCarrierId]);
-
-
-  useEffect(() => {
-    setCarrierConfigs((prev) => (prev.length ? prev : buildDefaultCarrierConfigs(localeText)));
-  }, [localeText]);
 
     useEffect(() => {
      dispatch(setUserInfo({"userId": "692af2fe34df801237c8fdd1" }));

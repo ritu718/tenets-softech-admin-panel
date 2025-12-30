@@ -2,22 +2,6 @@ import React, { use, useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Typography,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  CircularProgress,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Collapse,
-  IconButton,
-  Chip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -26,10 +10,8 @@ import {
   Paper,
   Tabs,
   Tab,
-  Checkbox,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
+  Button,
+
 } from "@mui/material";
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -38,13 +20,14 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 } from "@/store/features/invoice_data/invoiceDataSlice";
 import CarrierPricingConfigurator from '@/components/organisms/carrier_pricing_configurator';
 
-import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, buildShipmentSummaryItems, createCarrierConfig } from '@/utils/helper';
+import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, buildShipmentSummaryItems, createCarrierConfig, isEmpty } from '@/utils/helper';
 
 import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview/AuftragsdatenPreview';
 import InvoiceSpedition from '../invoice_spedition';
-import { getCarriersDataFromServer } from './services';
+import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier } from './services';
+import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 
 
 
@@ -57,13 +40,7 @@ const buildPlaceholderConfigSections = (text:any) => {
   ];
 };
 
-const buildDefaultCarrierConfigs = (text:any) => {
-  const presetCarriers = text.config.pricing?.presets?.carriers || [];
-  if (!presetCarriers.length) {
-    return [createCarrierConfig(text, text.config.pricing.defaults.newCarrierName)];
-  }
-  return presetCarriers.map((carrier:any) => createCarrierConfig(text, carrier.name, carrier));
-};
+
 
 export default function InvoiceConfig() {
 
@@ -72,7 +49,8 @@ export default function InvoiceConfig() {
      const dispatch = useAppDispatch();
          const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
       const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
-  
+      const carrierConfigs = useAppSelector((state) => state.invoiceData.carrierConfigs);
+    const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
@@ -107,12 +85,37 @@ export default function InvoiceConfig() {
     [localeText]
   );
   useEffect(()=>{
-   configDialogOpen&& getCarriersDataFromServer({userId},dispatch)
+    if (configDialogOpen) {
+       getCarrierConfFomServer({userId},dispatch)
+      
+    }  
   },[configDialogOpen])
 
- 
-   
-   
+  useEffect(()=>{
+    console.log("activeCarrierId: useEffect: ",activeCarrierId);
+    
+    if (configDialogOpen&&!isEmpty(activeCarrierId)) {
+ console.log("activeCarrierId: useEffect:1: ",activeCarrierId);
+       getConfigDataAccoToSelCarrier({projectId:activeCarrierId},dispatch)
+      
+    }  
+  },[configDialogOpen,activeCarrierId]);
+
+
+
+    useEffect(() => {
+     if(configDialogOpen)
+     {
+      if (!carrierConfigs.length) {
+        dispatch(setActiveCarrierId( null))
+        return;
+      }
+     if (!activeCarrierId || !carrierConfigs.some((carrier:any) => carrier.id === activeCarrierId)) {       
+        dispatch(setActiveCarrierId(carrierConfigs[0]?.id));
+      }
+    }
+    }, [configDialogOpen,carrierConfigs, activeCarrierId]);
+
   return (
     
       <Dialog
@@ -224,7 +227,6 @@ export default function InvoiceConfig() {
               ) : (
                 <Typography>{localeText.common.noContent}</Typography>
               )}
-              {/* <InvoiceSpedition/> */}
             </DialogContent>
             <DialogActions>
               <Button onClick={() => dispatch(setConfigDialogOpen(false))}>{localeText.dialogs.close}</Button>
