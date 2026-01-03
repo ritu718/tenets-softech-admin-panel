@@ -1,4 +1,4 @@
-import { URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES } from "@/constants/apis";
+import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
 
@@ -154,6 +154,17 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
 
     } catch (error) {
        
+    } 
+}
+
+export const getShipmentData = async (params:any,dispatch?:any)=>{
+    try {
+      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT}/${params.projectId}`,"get")
+       console.log("getShipmentData:  resp: ",resp);
+     return getValidDataFromResp(resp);
+     
+      }catch (error) {
+       return error;
     } 
 }
 

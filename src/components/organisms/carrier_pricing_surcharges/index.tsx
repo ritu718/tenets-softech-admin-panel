@@ -37,6 +37,8 @@ import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { BASE_COUNTRY_OPTIONS } from '@/constants/data';
 import { createSurchargeBase, createSurchargeRow } from '@/utils/helper';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
+import { SHIPPER_EXTRA_COSTS } from '@/data/dummy';
+import { sendShipperExtraCost } from '@/dialogs/invoice_config/services';
 
 
 export default function CarrierPricingSurcharges({countryOptions,}:any) {
@@ -201,7 +203,7 @@ export default function CarrierPricingSurcharges({countryOptions,}:any) {
           });
         };
           const handleSurchargeImport = (file:any) => {
-         if (!activeCarrier || !activeSurchargeCountryCode || !file) return;
+        //  if (!activeCarrier || !activeSurchargeCountryCode || !file) return;
          Papa.parse(file, {
            complete: (result) => {
              const rows:any = result.data;
@@ -223,21 +225,26 @@ export default function CarrierPricingSurcharges({countryOptions,}:any) {
                    description: descIdx >= 0 ? cells[descIdx] : "",
                  })
                );
-             updateCarrier(activeCarrier.id, (carrier:any) => {
-               const codes = carrier.surcharges?.countryCodes || [activeSurchargeCountryCode];
-               const current =
-                 carrier.surcharges?.byCountry?.[activeSurchargeCountryCode] || createSurchargeBase(text);
-               return {
-                 ...carrier,
-                 surcharges: {
-                   countryCodes: codes,
-                   byCountry: {
-                     ...(carrier.surcharges?.byCountry || {}),
-                     [activeSurchargeCountryCode]: { ...current, rows: rowsParsed },
-                   },
-                 },
-               };
-             });
+               const parsed:any = SHIPPER_EXTRA_COSTS;
+                               parsed.projectId = activeCarrierId;
+                               
+                                       sendShipperExtraCost(parsed,dispatch);
+
+            //  updateCarrier(activeCarrier.id, (carrier:any) => {
+            //    const codes = carrier.surcharges?.countryCodes || [activeSurchargeCountryCode];
+            //    const current =
+            //      carrier.surcharges?.byCountry?.[activeSurchargeCountryCode] || createSurchargeBase(text);
+            //    return {
+            //      ...carrier,
+            //      surcharges: {
+            //        countryCodes: codes,
+            //        byCountry: {
+            //          ...(carrier.surcharges?.byCountry || {}),
+            //          [activeSurchargeCountryCode]: { ...current, rows: rowsParsed },
+            //        },
+            //      },
+            //    };
+            //  });
            },
          });
        };

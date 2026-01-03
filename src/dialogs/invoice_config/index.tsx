@@ -26,7 +26,7 @@ import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview/AuftragsdatenPreview';
 import InvoiceSpedition from '../invoice_spedition';
-import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier } from './services';
+import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 
 
@@ -97,7 +97,6 @@ export default function InvoiceConfig() {
     if (configDialogOpen&&!isEmpty(activeCarrierId)) {
  console.log("activeCarrierId: useEffect:1: ",activeCarrierId);
        getConfigDataAccoToSelCarrier({projectId:activeCarrierId},dispatch)
-      
     }  
   },[configDialogOpen,activeCarrierId]);
 
@@ -116,6 +115,13 @@ export default function InvoiceConfig() {
     }
     }, [configDialogOpen,carrierConfigs, activeCarrierId]);
 
+
+    const  onTabChange = (_:any, value:any) =>{
+      setActiveConfigTab(value)
+    value=="auftragsdaten" && getShipmentData({projectId:activeCarrierId},dispatch);
+    }
+
+
   return (
     
       <Dialog
@@ -128,7 +134,7 @@ export default function InvoiceConfig() {
             <DialogContent dividers>
               <Tabs
                 value={activeConfigTab}
-                onChange={(_:any, value:any) => setActiveConfigTab(value)}
+                onChange={onTabChange}
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{ borderBottom: 1, borderColor: "divider", mb: 2 }}

@@ -30,6 +30,8 @@ import { BASE_COUNTRY_OPTIONS } from '@/constants/data';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
 import { createTariffBase, createTariffRow, createTariffZone } from '@/utils/helper';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { SHIPPER_RATES } from '@/data/dummy';
+import { sendShipperRates } from '@/dialogs/invoice_config/services';
 
 export default function CarrierPricingTariffs({countryOptions}:any) {
     const { localeText: text } =useLanguage();
@@ -275,48 +277,58 @@ export default function CarrierPricingTariffs({countryOptions}:any) {
               };
 
      const handleTariffImport = (file:any) => {
-            if (!activeCarrier || !activeTariffCountryCode || !file) return;
+      console.log("file: ", file);
+      
+            // if (!activeCarrier || !activeTariffCountryCode || !file) return;
             Papa.parse(file, {
               complete: (result) => {
                 const rows:any = result.data;
                 if (!rows || !rows.length) return;
                 const [header, ...dataRows] = rows;
-                if (!header || header.length < 2) return;
-                const zoneHeaders = header.slice(1).map((h:any) => (h || "").toString().trim());
-                updateCarrier(activeCarrier.id, (carrier:any) => {
-                  const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-                  const current =
-                    carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(text);
-                  const existingZones = current.zones;
-                  const zones = [...existingZones];
-                  zoneHeaders.forEach((name:any) => {
-                    if (!name) return;
-                    if (!zones.some((z) => z.name === name)) {
-                      zones.push(createTariffZone({ name }, name));
-                    }
-                  });
-                  const rowsParsed = dataRows
-                    .filter((cells:any) => cells.some((c:any) => c !== null && c !== undefined && `${c}`.trim() !== ""))
-                    .map((cells:any) => {
-                      const weight = cells[0] ? String(cells[0]).trim() : "";
-                      const values:any = {};
-                      zones.forEach((zone, idx) => {
-                        const cellValue = cells[idx + 1] ?? "";
-                        values[zone.id] = cellValue;
-                      });
-                      return createTariffRow(zones, { weight, values });
-                    });
-                  return {
-                    ...carrier,
-                    tariffs: {
-                      countryCodes: codes,
-                      byCountry: {
-                        ...(carrier.tariffs?.byCountry || {}),
-                        [activeTariffCountryCode]: { ...current, zones, rows: rowsParsed },
-                      },
-                    },
-                  };
-                });
+
+                console.log("rows: ",rows);
+                
+                // if (!header || header.length < 2) return;
+                // const zoneHeaders = header.slice(1).map((h:any) => (h || "").toString().trim());
+
+  const parsed:any = SHIPPER_RATES;
+                parsed.projectId = activeCarrierId;
+                
+                        sendShipperRates(parsed,dispatch);
+                // updateCarrier(activeCarrier.id, (carrier:any) => {
+                //   const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
+                //   const current =
+                //     carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(text);
+                //   const existingZones = current.zones;
+                //   const zones = [...existingZones];
+                //   zoneHeaders.forEach((name:any) => {
+                //     if (!name) return;
+                //     if (!zones.some((z) => z.name === name)) {
+                //       zones.push(createTariffZone({ name }, name));
+                //     }
+                //   });
+                //   const rowsParsed = dataRows
+                //     .filter((cells:any) => cells.some((c:any) => c !== null && c !== undefined && `${c}`.trim() !== ""))
+                //     .map((cells:any) => {
+                //       const weight = cells[0] ? String(cells[0]).trim() : "";
+                //       const values:any = {};
+                //       zones.forEach((zone, idx) => {
+                //         const cellValue = cells[idx + 1] ?? "";
+                //         values[zone.id] = cellValue;
+                //       });
+                //       return createTariffRow(zones, { weight, values });
+                //     });
+                //   return {
+                //     ...carrier,
+                //     tariffs: {
+                //       countryCodes: codes,
+                //       byCountry: {
+                //         ...(carrier.tariffs?.byCountry || {}),
+                //         [activeTariffCountryCode]: { ...current, zones, rows: rowsParsed },
+                //       },
+                //     },
+                //   };
+                // });
               },
             });
           };
