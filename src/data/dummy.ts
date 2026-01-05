@@ -4,7 +4,7 @@ export const SHIPPER_PROJECT_FREIGHT_BASIC={
 },
 "projectId": "6950f616bf3002ccf46664ef",
 "carrierProjectId": 1,
-"Countries": {
+"countries": {
 "DE": {
 "CalculationType": 1,
 "Bulkiness": {
