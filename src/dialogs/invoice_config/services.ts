@@ -9,7 +9,6 @@ export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSucces
        onSuccess&&onSuccess(resp?.data)
 }
 }
-
 export const getCarriersDataFromServer = async (params:any,dispatch?:any)=>{
     try {
        
