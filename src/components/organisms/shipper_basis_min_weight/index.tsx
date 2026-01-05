@@ -13,57 +13,33 @@ import {
   Paper,
 
 } from "@mui/material";
-import { useLanguage } from '@/hooks/useLanguage';
-import { BASE_COUNTRY_OPTIONS } from '@/constants/data';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { buildDefaultMinWeights, createFreightBase } from '@/utils/helper';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useHandleFreightChanges } from '@/hooks/useHandleFreightChanges';
 
-export default function CarrierPricingMinimumWeight({
-  text,
-  countryOptions,
-}:any){
+export default function ShipperBasisMinWeight(){
+  const { localeText } =useLanguage();
+   const {handleFreightChange}=useHandleFreightChanges();
+   const pricingText = localeText.config.pricing;
+    const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelector((state) => state.freightBasis);
+   const {MinimumWeight} = freightBasisData?.countries?.[freightCountryCodes[freightCountryIndex]] || {}; 
+  
 
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
    const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
              const dispatch = useAppDispatch();
-             
-  const pricingText = text.config.pricing; 
-  
-   const [newCarrierForm, setNewCarrierForm,] = useState({
-      name: "",
-      street: "",
-      houseNumber: "",
-      zip: "",
-      city: "",
-      country: "",
-      contact: "",
-      phone: "",
-      email: "",
-      customerNumber: "",
-    });
+    
    
-    const resolvedCountryOptions =
-      countryOptions && countryOptions.length
-        ? countryOptions
-        : BASE_COUNTRY_OPTIONS.map((option:any) => ({
-            ...option,
-            label: option.code,
-          }));
     const activeCarrier =
       carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-    const freightCountryCodes =
-      (activeCarrier && activeCarrier.freight?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-    const [freightCountryIndex, setFreightCountryIndex] = useState(0);
     const activeCountryCode =
       freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
     const activeFreight =
       (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-    const availableCountryOptions =
-      resolvedCountryOptions.filter((option:any) => !freightCountryCodes.includes(option.code)) || [];
-    const getFlag = (code:any) =>
-      resolvedCountryOptions.find((option:any) => option.code === code)?.flag || "🌐";
+   
 
        const updateCarrier = (carrierId:any, updater:any) => {
     dispatch(setCarrierConfigs(  carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
@@ -83,7 +59,7 @@ export default function CarrierPricingMinimumWeight({
               ...(carrier.freight?.byCountry || {}),
               [activeCountryCode]: {
                 ...(carrier.freight?.byCountry?.[activeCountryCode] ||
-                  createFreightBase(text)),
+                  createFreightBase(localeText)),
                 [table]: (
                   Array.isArray(carrier.freight?.byCountry?.[activeCountryCode]?.[table])
                     ? carrier.freight.byCountry[activeCountryCode][table]
@@ -100,8 +76,12 @@ export default function CarrierPricingMinimumWeight({
 
   
    
+console.log("MinimumWeight: ",MinimumWeight);
 
-  return (<><h1></h1>
+const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
+
+
+  return (<>
       <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
                   <Typography variant="subtitle2" gutterBottom>
                     {pricingText.freight.minWeightTitle}
@@ -117,47 +97,47 @@ export default function CarrierPricingMinimumWeight({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {(activeFreight?.minWeights || []).map((row:any) => (
-                        <TableRow key={row.id}>
+                      {(minWeightCode || []).map((code:any) => (
+                        <TableRow key={code}>
                           <TableCell>
                             <TextField
                               size="small"
-                              value={row.code}
-                              onChange={(e) => handleMinWeightChange(row.id, "code", e.target.value)}
+                              value={code}
+                              onChange={(e) => handleMinWeightChange(code, "code", e.target.value)}
                             />
                           </TableCell>
                           <TableCell>
                             <TextField
                               size="small"
-                              value={row.internalCode}
+                              value={MinimumWeight?.Base[code]?.InternalShorthand||""}
                               onChange={(e) =>
-                                handleMinWeightChange(row.id, "internalCode", e.target.value)
+                                handleMinWeightChange(code, "internalCode", e.target.value)
                               }
                             />
                           </TableCell>
                           <TableCell>
                             <TextField
                               size="small"
-                              value={row.description}
+                              value={MinimumWeight?.Base[code]?.Description}
                               onChange={(e) =>
-                                handleMinWeightChange(row.id, "description", e.target.value)
+                                handleMinWeightChange(code, "description", e.target.value)
                               }
                             />
                           </TableCell>
                           <TableCell>
                             <TextField
                               size="small"
-                              value={row.internalDescription}
+                              value={MinimumWeight?.Base[code]?.InternalDescription||""}
                               onChange={(e) =>
-                                handleMinWeightChange(row.id, "internalDescription", e.target.value)
+                                handleMinWeightChange(code, "internalDescription", e.target.value)
                               }
                             />
                           </TableCell>
                           <TableCell>
                             <TextField
                               size="small"
-                              value={row.weight}
-                              onChange={(e) => handleMinWeightChange(row.id, "weight", e.target.value)}
+                              value={MinimumWeight?.Base[code]?.Weight||""}
+                              onChange={(e) => handleMinWeightChange(code, "weight", e.target.value)}
                             />
                           </TableCell>
                         </TableRow>

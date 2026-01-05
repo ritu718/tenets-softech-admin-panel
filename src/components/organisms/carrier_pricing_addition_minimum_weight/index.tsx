@@ -20,7 +20,6 @@ import {
  
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { BASE_COUNTRY_OPTIONS } from '@/constants/data';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { buildDefaultMinWeights, createFreightBase, createMinWeightRow } from '@/utils/helper';
@@ -29,22 +28,14 @@ import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlic
 
 
 export default function CarrierPricingAdditionMinimumWeight({
-  text,
- 
-  countryOptions,
+  text
 }:any) {
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
    const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
                const dispatch = useAppDispatch();
 
       const pricingText = text.config.pricing;
-        const resolvedCountryOptions =
-        countryOptions && countryOptions.length
-          ? countryOptions
-          : BASE_COUNTRY_OPTIONS.map((option:any) => ({
-              ...option,
-              label: option.code,
-            }));
+       
       const activeCarrier =
         carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
       const freightCountryCodes =
@@ -54,18 +45,10 @@ export default function CarrierPricingAdditionMinimumWeight({
         freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
       const activeFreight =
         (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-      const availableCountryOptions =
-        resolvedCountryOptions.filter((option:any) => !freightCountryCodes.includes(option.code)) || [];
-      const getFlag = (code:any) =>
-        resolvedCountryOptions.find((option:any) => option.code === code)?.flag || "🌐";
-    
-  
         const updateCarrier = (carrierId:any, updater:any) => {
          dispatch(setCarrierConfigs( carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
-))
-      
+))   
     };
-  
       
         const handleMinWeightChange = (rowId:any, field:any, value:any, table = "minWeights") => {
           if (!activeCarrier || !activeCountryCode) return;
@@ -137,9 +120,6 @@ export default function CarrierPricingAdditionMinimumWeight({
                 },
               }));
             };
-    
-  
-  
   
     return (   <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
                     <Stack

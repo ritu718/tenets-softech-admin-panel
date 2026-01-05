@@ -92,10 +92,7 @@ export default function InvoiceConfig() {
   },[configDialogOpen])
 
   useEffect(()=>{
-    console.log("activeCarrierId: useEffect: ",activeCarrierId);
-    
     if (configDialogOpen&&!isEmpty(activeCarrierId)) {
- console.log("activeCarrierId: useEffect:1: ",activeCarrierId);
        getConfigDataAccoToSelCarrier({projectId:activeCarrierId},dispatch)
     }  
   },[configDialogOpen,activeCarrierId]);

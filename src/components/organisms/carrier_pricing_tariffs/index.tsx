@@ -389,13 +389,13 @@ export default function CarrierPricingTariffs({countryOptions}:any) {
                 <Stack spacing={1.5}>
                   <Typography variant="subtitle2">{pricingText.tariffs.countryTitle}</Typography>
                   <Tabs
-                    value={Math.min(tariffCountryIndex, tariffCountryCodes.length - 1)}
+                    value={Math.min(tariffCountryIndex, tariffCountryCodes?.length - 1)}
                     onChange={(_, value) => setTariffCountryIndex(value)}
                     variant="scrollable"
                     scrollButtons="auto"
                     sx={{ borderBottom: 1, borderColor: "divider" }}
                   >
-                    {tariffCountryCodes.map((code:any, index:any) => (
+                    {tariffCountryCodes?.map((code:any, index:any) => (
                       <Tab
                         key={`${code}-${index}`}
                         value={index}
@@ -404,7 +404,7 @@ export default function CarrierPricingTariffs({countryOptions}:any) {
                             <Typography variant="body2">
                               {getFlag(code)} {code}
                             </Typography>
-                            {tariffCountryCodes.length > 1 && (
+                            {tariffCountryCodes?.length||0 > 1 && (
                               <IconButton
                                 size="small"
                                 onClick={(event) => {

@@ -19,10 +19,6 @@ export default function AddCarrier({resolvedCountryOptions,handleAddCarrier}:any
 const pricingText = text.config.pricing;
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 
-console.log('activeCarrierId: ',activeCarrierId);
-
-
-
   const activeCarrier =
     carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
   const freightCountryCodes =
@@ -59,8 +55,6 @@ console.log('activeCarrierId: ',activeCarrierId);
     (activeCarrier && activeCarrier.surcharges?.byCountry?.[activeSurchargeCountryCode]) || null;
   const availableSurchargeCountryOptions =
     resolvedCountryOptions.filter((option:any) => !surchargeCountryCodes.includes(option.code)) || [];
-console.log('activeCarrier: ',activeCarrier);
-
 
   return (<>
        <TextField

@@ -78,7 +78,7 @@ export default function InvoiceTable({}:any) {
             );
 
 
-            console.log("overview: Invoice table",filteredOverview);
+            
   return (
      <Table>
                <TableHead>

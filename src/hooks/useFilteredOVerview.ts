@@ -25,12 +25,10 @@ export function useFilteredOVerview() {
         const dateB = b.datum ? new Date(b.datum).getTime() : 0;
         return dateB - dateA;
       });
-       console.log("filteredOverviewTmp: ",filteredOverviewTmp);
- 
-
+       
 dispatch( setFilteredOverview(filteredOverviewTmp));
   },[overview])
-  console.log("overview: ",overview);
+
 
   return {};
 }

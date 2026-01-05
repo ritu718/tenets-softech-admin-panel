@@ -3,6 +3,8 @@ import invoiceDataReducer from "./features/invoice_data/invoiceDataSlice";
 import languagesReducer from "./features/languages/languagesSlice";
 import carriersReducer from "./features/carrier/carriersSlice";
 import userDetailsReducer from "./features/user_details/userDetailsSlice";
+import freightBasisReducer from "./features/freight_basis/FreightBasisSlice";
+import tolerancesReducer from "./features/tolerances/TolerancesSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -11,6 +13,8 @@ export const makeStore = () =>
       languages:languagesReducer,
       carriers:carriersReducer,
       userDetails:userDetailsReducer,
+      freightBasis:freightBasisReducer,
+      tolerances:tolerancesReducer,
     },
   });
 
