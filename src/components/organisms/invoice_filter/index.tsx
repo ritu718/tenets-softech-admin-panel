@@ -17,6 +17,7 @@ import {
 } from "@/store/features/invoice_data/invoiceDataSlice";
 import { useLanguage } from "@/hooks/useLanguage";
 import { setLanguage } from "@/store/features/languages/languagesSlice";
+import { setToleranceDialogOpen } from "@/store/features/tolerances/tolerancesDataSlice";
 
 const LANGUAGE_FLAGS : any = {
   de: "🇩🇪",
@@ -28,7 +29,7 @@ export default function InvoiceFilter () {
     
        const dispatch = useAppDispatch();
     
-        const [toleranceDialogOpen, setToleranceDialogOpen] = useState(false);
+        // const [toleranceDialogOpen, setToleranceDialogOpen] = useState(false);
         const [selectedInvoice, setSelectedInvoice] = useState(null);
         const [details, setDetails] = useState([]);
           
@@ -100,7 +101,7 @@ export default function InvoiceFilter () {
                   <Button variant="contained" onClick={() =>dispatch( setConfigDialogOpen(true))}>
                     {localeText.header.config}
                   </Button>
-                  <Button variant="outlined" onClick={() => setToleranceDialogOpen(true)}>
+                  <Button variant="outlined" onClick={() => dispatch(setToleranceDialogOpen(true))}>
                     {localeText.header.tolerance}
                   </Button>
                   {!selectedInvoice && (
