@@ -15,3 +15,6 @@ export const URL_SHIPPER_EXTRA_COSTS = `${BASE_URL}/shipper-extra-costs`;
 
 // Shipment
 export const URL_SHIPMENT = `${BASE_URL}/shipment`;
+
+//tolerence
+export const URL_TOLERANCE = `${BASE_URL}/tolerance-limits`;

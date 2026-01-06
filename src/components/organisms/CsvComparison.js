@@ -42,7 +42,7 @@ import {
 import { useFilteredOVerview } from "@/hooks/useFilteredOVerview";
 import InvoiceConfig from "@/dialogs/invoice_config";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
-import { setToleranceDialogOpen } from "@/store/features/tolerances/TolerancesSlice";
+import Tolerance from "./tolerance";
 
 
 
@@ -1536,7 +1536,9 @@ dispatch(setOverview(result));
         </DialogActions>
       </Dialog>
 
-      <Dialog
+      <Tolerance/>
+
+      {/* <Dialog
         open={toleranceDialogOpen}
         onClose={() => dispatch(setToleranceDialogOpen(false))}
         fullWidth
@@ -1626,7 +1628,7 @@ dispatch(setOverview(result));
             {localeText.dialogs.close}
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Box>
   );
 };
