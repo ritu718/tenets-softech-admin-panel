@@ -42,6 +42,7 @@ import {
 import { useFilteredOVerview } from "@/hooks/useFilteredOVerview";
 import InvoiceConfig from "@/dialogs/invoice_config";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
+import { setToleranceDialogOpen } from "@/store/features/tolerances/TolerancesSlice";
 
 
 
@@ -252,13 +253,13 @@ const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
   const overview = useAppSelector((state) => state.invoiceData.overview);
    const filteredOverview = useAppSelector((state) => state.invoiceData.filteredOverview);
     
- 
+   const toleranceDialogOpen = useAppSelector((state) => state.tolerances.toleranceDialogOpen);
   const [details, setDetails] = useState([]);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [expandedRows, setExpandedRows] = useState({});
-  const [toleranceDialogOpen, setToleranceDialogOpen] = useState(false);
+ 
   const [toleranceSettings, setToleranceSettings] = useState({
     freightPercent: 0,
     defaultSurchargePercent: 0,
@@ -497,8 +498,6 @@ const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
   // Initial: aus Mock-Daten laden
   useEffect(() => {
     setLoading(true);
-console.log("useEffect  called: ",mockEntries);
-
     const grouped = mockEntries.reduce((acc, row) => {
       if (!matchesProjekt(row)) return acc;
       const entryDate = resolveEntryDate(row);
@@ -937,7 +936,7 @@ dispatch(setOverview(result));
           )}
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
             <Button onClick={exportCsv}>{localeText.buttons.exportPlain}</Button>
-            <Button variant="outlined" onClick={() => setToleranceDialogOpen(true)}>
+            <Button variant="outlined" onClick={() => dispatch(setToleranceDialogOpen(true))}>
               {localeText.buttons.tolerance}
             </Button>
           </Box>
@@ -1539,7 +1538,7 @@ dispatch(setOverview(result));
 
       <Dialog
         open={toleranceDialogOpen}
-        onClose={() => setToleranceDialogOpen(false)}
+        onClose={() => dispatch(setToleranceDialogOpen(false))}
         fullWidth
         maxWidth="sm"
       >
@@ -1623,7 +1622,7 @@ dispatch(setOverview(result));
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setToleranceDialogOpen(false)}>
+          <Button onClick={() => dispatch(setToleranceDialogOpen(false))}>
             {localeText.dialogs.close}
           </Button>
         </DialogActions>

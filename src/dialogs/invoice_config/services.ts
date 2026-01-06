@@ -1,5 +1,6 @@
 import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
+import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
@@ -60,7 +61,7 @@ export const deleteCarrierDataToServer = async (
 
 export const getShipperFreightCalc = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/${params.projectId}`,"get")
+      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/projectid?projectId=${params.projectId}`,"get")
        console.log("getShipperFreightCalc:  resp: ",resp);
       return getValidDataFromResp(resp);
       }catch (error) {
@@ -85,7 +86,7 @@ export const sendShipperFreightCalc = async (params:any,dispatch?:any)=>{
 
 export const getShipperRates = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_RATES}/${params.projectId}`,"get")
+      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_RATES}/projectid?projectId=${params.projectId}`,"get")
        console.log("getShipperRates:  resp: ",resp);
       return getValidDataFromResp(resp);
     
@@ -107,7 +108,7 @@ export const sendShipperRates = async (params:any,dispatch?:any)=>{
 
 export const getShipperExtraCost = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_EXTRA_COSTS}/${params.projectId}`,"get")
+      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_EXTRA_COSTS}/projectid?projectId=${params.projectId}`,"get")
        console.log("getShipperFreightCalc:  resp: ",resp);
      return getValidDataFromResp(resp);
      
@@ -145,6 +146,7 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
        getShipperExtraCost(params)
          ]
        Promise.all(promisesRequests).then(([freightCalc, rates, extraCost])=>{
+        dispatch&&dispatch(setFreightBasisData(freightCalc));
           console.log("getConfigDataAccoToSelCarrier: freightCalc: ",freightCalc  );
           console.log("getConfigDataAccoToSelCarrier: rates: ",rates  );
           console.log("getConfigDataAccoToSelCarrier: extraCost: ",extraCost  );
@@ -158,7 +160,7 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
 
 export const getShipmentData = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT}/${params.projectId}`,"get")
+      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT}?projectId=${params.projectId}`,"get")
        console.log("getShipmentData:  resp: ",resp);
      return getValidDataFromResp(resp);
      

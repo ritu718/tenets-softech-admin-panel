@@ -14,4 +14,4 @@ export const URL_SHIPPER_RATES = `${BASE_URL}/shipper-rates`;
 export const URL_SHIPPER_EXTRA_COSTS = `${BASE_URL}/shipper-extra-costs`;
 
 // Shipment
-export const URL_SHIPMENT = `${BASE_URL}/shipment?projectId=`;
+export const URL_SHIPMENT = `${BASE_URL}/shipment`;
