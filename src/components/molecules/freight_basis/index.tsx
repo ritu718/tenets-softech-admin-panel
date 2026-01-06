@@ -17,7 +17,7 @@ import ShipperBasisMinWeight from "@/components/organisms/shipper_basis_min_weig
 export default function FreightBasis() {
      
  const { localeText: text } =useLanguage();
-    const pricingText = text.config.pricing;
+
     const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
      const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 

@@ -27,12 +27,13 @@ export function useLanguage() {
       },
       [language]
     );
-
+     const pricingText = useMemo(() =>  localeText.config.pricing, [localeText]);
+ 
     const formatCurrency = useCallback(
         (value:any) => (typeof value === "number" ? currencyFormatter.format(value) : "—"),
         [currencyFormatter]
       );
 
 
-  return { localeText,language,formatDate,formatCurrency };
+  return {pricingText, localeText,language,formatDate,formatCurrency };
 }

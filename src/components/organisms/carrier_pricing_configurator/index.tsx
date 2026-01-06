@@ -12,11 +12,11 @@ import InvoiceSpedition from "@/dialogs/invoice_spedition";
 import { useLanguage } from "@/hooks/useLanguage";
 import AddCarrier from "@/components/molecules/add_carrier";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import CarrierPricingTariffs from "../carrier_pricing_tariffs";
 import CarrierPricingSurcharges from "../carrier_pricing_surcharges";
 import { setActiveCarrierId } from "@/store/features/carrier/carriersSlice";
 import { deleteCarrierDataToServer, sendShipperFreightCalc } from "@/dialogs/invoice_config/services";
 import FreightBasis from "@/components/molecules/freight_basis";
+import Tariffs from "../tariffs";
 
  const CarrierPricingConfigurator = ({
   countryOptions,
@@ -113,12 +113,7 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
      setAddCarrierDialogOpen={setAddCarrierDialogOpen}
     
     />
-        
-      
       </Stack>
-
-      
-     
 
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
         {carriers.map((carrier:any) => {
@@ -144,10 +139,7 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
         <Stack spacing={2}>
           <FreightBasis/>
           
-             <CarrierPricingTariffs
-               activeCarrierId={activeCarrierId}
-                  countryOptions ={countryOptions}
-              />
+             <Tariffs/>
       
         <CarrierPricingSurcharges
                activeCarrierId ={activeCarrierId}
