@@ -5,6 +5,7 @@ import carriersReducer from "./features/carrier/carriersSlice";
 import userDetailsReducer from "./features/user_details/userDetailsSlice";
 import freightBasisReducer from "./features/freight_basis/FreightBasisSlice";
 import tolerancesReducer from "./features/tolerances/TolerancesSlice";
+import shipmentDataReducer from "./features/shipment_data/shipmentDataSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -15,6 +16,7 @@ export const makeStore = () =>
       userDetails:userDetailsReducer,
       freightBasis:freightBasisReducer,
       tolerances:tolerancesReducer,
+      shipmentData:shipmentDataReducer,
     },
   });
 

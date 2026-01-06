@@ -2,6 +2,7 @@ import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
@@ -163,10 +164,20 @@ export const getShipmentData = async (params:any,dispatch?:any)=>{
     try {
       const resp:any =await fetchApi(undefined,`${URL_SHIPMENT}?projectId=${params.projectId}`,"get")
        console.log("getShipmentData:  resp: ",resp);
-     return getValidDataFromResp(resp);
-     
+     const respData= getValidDataFromResp(resp);
+      console.log("respData:",respData);
+     dispatch&&dispatch(setShipmentData(respData))
       }catch (error) {
        return error;
     } 
 }
+
+export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)=>{
+       const resp:any = await fetchApi(params,URL_SHIPMENT,"post");
+      if(resp.success)
+{
+       onSuccess&&onSuccess(resp?.data)
+}
+}
+
 
