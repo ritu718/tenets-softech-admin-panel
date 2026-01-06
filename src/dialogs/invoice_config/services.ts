@@ -2,6 +2,7 @@ import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
@@ -151,6 +152,7 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
        Promise.all(promisesRequests).then(([freightCalc, rates, extraCost])=>{
         dispatch&&dispatch(setFreightBasisData(freightCalc));
          dispatch&&dispatch(setTariffsData(rates));
+          dispatch&&dispatch(setSurchargesData(extraCost));
           
           console.log("getConfigDataAccoToSelCarrier: rates: ",rates  );
           console.log("getConfigDataAccoToSelCarrier: extraCost: ",extraCost  );

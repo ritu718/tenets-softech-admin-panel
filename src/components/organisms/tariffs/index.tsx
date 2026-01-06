@@ -35,9 +35,7 @@ export default function Tariffs() {
           tariffCountryCodes[tariffCountryIndex] ||
           tariffCountryCodes[0] ||
           NEBENKOSTEN_INITIAL_COUNTRIES[0];
-        const activeTariff =
-          (activeCarrier && activeCarrier.tariffs?.byCountry?.[activeTariffCountryCode]) || null;
-       
+        
     const updateCarrier = (carrierId:any, updater:any) => {
               dispatch(setCarrierConfigs( carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
             ))

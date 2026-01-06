@@ -6,6 +6,7 @@ import userDetailsReducer from "./features/user_details/userDetailsSlice";
 import freightBasisReducer from "./features/freight_basis/FreightBasisSlice";
 import tolerancesReducer from "./features/tolerances/TolerancesSlice";
 import tariffsSliceReducer from "./features/tariffs/TariffsSlice";
+import surchargesReducer from "./features/surcharges/SurchargesSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -17,6 +18,7 @@ export const makeStore = () =>
       freightBasis:freightBasisReducer,
       tolerances:tolerancesReducer,
       tariffs:tariffsSliceReducer,
+      surcharges: surchargesReducer,
     },
   });
 

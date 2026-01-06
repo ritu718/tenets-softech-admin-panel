@@ -12,11 +12,11 @@ import InvoiceSpedition from "@/dialogs/invoice_spedition";
 import { useLanguage } from "@/hooks/useLanguage";
 import AddCarrier from "@/components/molecules/add_carrier";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import CarrierPricingSurcharges from "../carrier_pricing_surcharges";
 import { setActiveCarrierId } from "@/store/features/carrier/carriersSlice";
-import { deleteCarrierDataToServer, sendShipperFreightCalc } from "@/dialogs/invoice_config/services";
+import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
 import FreightBasis from "@/components/molecules/freight_basis";
 import Tariffs from "../tariffs";
+import Surcharges from "../surcharges";
 
  const CarrierPricingConfigurator = ({
   countryOptions,
@@ -141,7 +141,7 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
           
              <Tariffs/>
       
-        <CarrierPricingSurcharges
+        <Surcharges
                activeCarrierId ={activeCarrierId}
                countryOptions = {countryOptions}
             
