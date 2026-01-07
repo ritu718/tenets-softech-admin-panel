@@ -41,6 +41,13 @@ const PriceCheckPreview = ({
   overrides,
   onFixIssue,
 }:any) => {
+
+ const {shipmentData} = useAppSelector((state) => state.shipmentData);
+  console.log("shipmentData value in price : ",shipmentData);
+  const shipmentDataForDisplay =shipmentData?.shipmentData||[];
+
+ 
+
   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
   const renderRows = shipmentRows.slice(0, 8);
 
@@ -104,17 +111,17 @@ const PriceCheckPreview = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {renderRows.map((row:any) => {
+              {shipmentDataForDisplay.map((row:any, index:any) => {
               const overridePrice = overrides?.[row.shipmentId];
               const result = overridePrice
                 ? { price: overridePrice, carrierName: carriers[0]?.name || null, error: null }
                 : pickCarrierTariff(row.zipTo, row.weight);
               return (
-                <TableRow key={row.shipmentId}>
-                  <TableCell>{row.shipmentId}</TableCell>
-                  <TableCell>{row.zipFrom}</TableCell>
-                  <TableCell>{row.zipTo}</TableCell>
-                  <TableCell>{row.weight}</TableCell>
+                <TableRow key={`${row.shipmentId}-${index}`}>
+                  <TableCell>{row.ShipmentId}</TableCell>
+                  <TableCell>{row.ZipCodeConsignee}</TableCell>
+                  <TableCell>{row.ZipCodeShipper}</TableCell>
+                  <TableCell>{row.EffectiveWeight}</TableCell>
                   <TableCell>{result.price || "—"}</TableCell>
                   <TableCell
                     sx={{ color: result.error ? "error.main" : "success.main", cursor: result.error ? "pointer" : "default" }}

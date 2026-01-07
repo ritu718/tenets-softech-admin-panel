@@ -178,9 +178,9 @@ const reqObj = {
     const  onTabChange = (_:any, value:any) =>{
       dispatch(setActiveConfigTab(value))
       if(value=="auftragsdaten" ){
-       sendShipmentData(reqObj, dispatch, (respData?:any) => {
-  console.log("shipment resp:", respData);
-});
+//        sendShipmentData(reqObj, dispatch, (respData?:any) => {
+//   console.log("shipment resp:", respData);
+// });
       
      getShipmentData({projectId:activeCarrierId},dispatch);
     }}

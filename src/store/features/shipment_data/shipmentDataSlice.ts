@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: any = {
   activeConfigTab:"pricing",
-  ShipmentData:null
+  shipmentData:null
 
 };
 
@@ -18,7 +18,7 @@ const shipmentDataSlice = createSlice({
    
     setShipmentData: (state, action: PayloadAction<any>) => {
       console.log("shipmentData:", action.payload);
-      state.ShipmentData = action.payload;
+      state.shipmentData = action.payload;
       
     },
     

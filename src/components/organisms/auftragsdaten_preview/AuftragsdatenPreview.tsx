@@ -35,7 +35,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
-const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => (
+import { useAppSelector } from "@/store/hooks";
+const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
+  
+  const {shipmentData} = useAppSelector((state) => state.shipmentData);
+  console.log("shipmentData value is: ",shipmentData);
+  const shipmentDataForDisplay =shipmentData?.shipmentData||[];
+  return(
   <Stack spacing={2}>
     <Paper
       variant="outlined"
@@ -102,26 +108,26 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => (
           </TableRow>
         </TableHead>
         <TableBody>
-          {shipmentRows.map((row:any, index:any) => (
-            <TableRow key={`${row.shipmentId}-${index}`}>
-              <TableCell>{row.shipmentId}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.zipFrom}</TableCell>
-              <TableCell>{row.zipTo}</TableCell>
-              <TableCell>{row.city}</TableCell>
-              <TableCell>{text.countries[row.country] || row.country}</TableCell>
-              <TableCell>{row.packaging}</TableCell>
-              <TableCell>{row.weight}</TableCell>
-              <TableCell>{row.loadingMeters}</TableCell>
+          {shipmentDataForDisplay.map((row:any, index:any) => (
+            <TableRow key={`${row.ShipmentId}-${index}`}>
+              <TableCell>{row.ShipmentId}</TableCell>
+              <TableCell>{row.ShipmentDate}</TableCell>
+              <TableCell>{row.ZipCodeShipper }</TableCell>
+              <TableCell>{row.ZipCodeConsignee}</TableCell>
+              <TableCell>{row.City}</TableCell>
+              <TableCell>{text.countries[row.Country] || row.country}</TableCell>
+              <TableCell>{row.PackagingType}</TableCell>
+              <TableCell>{row.EffectiveWeight}</TableCell>
+              <TableCell>{row.LoadingMeters}</TableCell>
               <TableCell>
-                {row.expressNextDay ? (
+                {row.ExpressNextDay ? (
                   <Chip size="small" color="primary" label={text.common.booleanYes} />
                 ) : (
                   <Chip size="small" label={text.common.booleanNo} />
                 )}
               </TableCell>
               <TableCell>
-                {row.b2cNational ? (
+                {row.B2CNationalSurcharge ? (
                   <Chip size="small" color="primary" label={text.common.booleanYes} />
                 ) : (
                   <Chip size="small" label={text.common.booleanNo} />
@@ -143,7 +149,7 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => (
       {text.shipments.info}
     </Typography>
   </Stack>
-);
+)};
 
 
 export default AuftragsdatenPreview;
