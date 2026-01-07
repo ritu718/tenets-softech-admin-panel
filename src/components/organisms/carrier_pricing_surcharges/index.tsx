@@ -321,7 +321,7 @@ export default function CarrierPricingSurcharges({countryOptions,}:any) {
                             <Typography variant="body2">
                               {getFlag(code)} {code}
                             </Typography>
-                            {surchargeCountryCodes.length > 1 && (
+                            {surchargeCountryCodes?.length > 1 && (
                               <IconButton
                                 size="small"
                                 onClick={(event) => {

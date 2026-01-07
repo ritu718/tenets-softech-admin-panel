@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState: any = {
 toleranceDialogOpen:false,
 toleranecData:null,
+ancillaryTolerances: [],
 };
 
 const tolerancesSlice = createSlice({
@@ -14,10 +15,11 @@ const tolerancesSlice = createSlice({
       state.toleranceDialogOpen = action.payload;
     },
      setToleranecData: (state, action: PayloadAction<any>) => {
-      console.log("toleranecData action.payload: ",action.payload);
-      
       state.toleranecData = action.payload;
     },
+    
+     
+
     
   },
 });

@@ -15,6 +15,7 @@ export const makeStore = () =>
       userDetails:userDetailsReducer,
       freightBasis:freightBasisReducer,
       tolerances:tolerancesReducer,
+      
     },
   });
 

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Box,
-  Typography,
   Button,
   TextField,
-  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -14,12 +11,11 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
 import { setToleranceDialogOpen } from '@/store/features/tolerances/tolerancesSlice';
-import AddIcon from "@mui/icons-material/Add";
 import { getToleranceData } from '@/dialogs/invoice_config/services';
+import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
 
 
 function Tolerance() {
@@ -28,6 +24,8 @@ function Tolerance() {
      const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
           
     const {toleranceDialogOpen,toleranecData} = useAppSelector((state:any) => state?.tolerances);
+
+    
 
       console.log("toleranecData: " ,toleranecData);
       
@@ -126,51 +124,9 @@ const handleAddOverride = () => {
                />
              </Stack>
    
-             <Box mt={3}>
-               <Typography variant="subtitle2" gutterBottom>
-                 {localeText.dialogs.specificSurcharges}
-               </Typography>
-               {toleranceSettings.surchargeOverrides.length === 0 && (
-                 <Typography variant="body2" color="text.secondary">
-                   {localeText.dialogs.noOverrides}
-                 </Typography>
-               )}
-               {toleranceSettings.surchargeOverrides.map((override:any) => (
-                 <Stack
-                   direction={{ xs: "column", sm: "row" }}
-                   spacing={1}
-                   alignItems="center"
-                   key={override.id}
-                   sx={{ mt: 1 }}
-                 >
-                   <TextField
-                     label={localeText.dialogs.overrideLabel}
-                     value={override.label}
-                     onChange={(e) => handleOverrideChange(override.id, "label", e.target.value)}
-                     fullWidth
-                   />
-                   <TextField
-                     label={localeText.dialogs.overridePercent}
-                     type="number"
-                     value={override.percent}
-                     onChange={(e) => handleOverrideChange(override.id, "percent", e.target.value)}
-                     sx={{ minWidth: 160 }}
-                     inputProps={{ min: 0 }}
-                   />
-                   <IconButton color="error" onClick={() => handleRemoveOverride(override.id)}>
-                     <DeleteOutlineIcon />
-                   </IconButton>
-                 </Stack>
-               ))}
-               <Button
-                 startIcon={<AddIcon />}
-                 onClick={handleAddOverride}
-                 sx={{ mt: 2 }}
-                 variant="text"
-               >
-                 {localeText.dialogs.addOverride}
-               </Button>
-             </Box>
+             <ToleranceSurcharge/>
+
+
            </DialogContent>
            <DialogActions>
              <Button onClick={() => dispatch(setToleranceDialogOpen(false))}>
