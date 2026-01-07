@@ -1,29 +1,5 @@
 import React, { useState } from 'react'
-import {
- 
-  Typography,
-  Table,
-  
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
- 
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-
-  IconButton,
- 
-  Stack,
-  Paper,
-  Tabs,
-  Tab,
-
-} from "@mui/material";
+import { Stack, Paper} from "@mui/material";
 
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -38,19 +14,14 @@ import CountrySurcharges from '@/components/molecules/country_surcharges';
 import SurchargesTable from '@/components/molecules/surcharges_table';
 
 
-export default function Surcharges({countryOptions,}:any) {
+export default function Surcharges() {
 
    const { localeText: text } =useLanguage();
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
      const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
           const dispatch = useAppDispatch();
-    const pricingText = text.config.pricing;
-    const surchargeFileInputRef = React.useRef<any>(null);
-
-    const resolvedCountryOptions =
-        countryOptions && countryOptions.length
-          ? countryOptions
-          : BASE_COUNTRY_OPTIONS.map((option:any) => ({
+   
+    const resolvedCountryOptions = BASE_COUNTRY_OPTIONS.map((option:any) => ({
               ...option,
               label: option.code,
             }));
