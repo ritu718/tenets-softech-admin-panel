@@ -26,8 +26,9 @@ import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview/AuftragsdatenPreview';
 import InvoiceSpedition from '../invoice_spedition';
-import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData } from './services';
+import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, sendShipmentData } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
+import { setActiveConfigTab } from '@/store/features/shipment_data/shipmentDataSlice';
 
 
 
@@ -51,7 +52,8 @@ export default function InvoiceConfig() {
       const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
       const carrierConfigs = useAppSelector((state) => state.invoiceData.carrierConfigs);
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
-  const [activeConfigTab, setActiveConfigTab] = useState("pricing");
+  // const [activeConfigTab, setActiveConfigTab] = useState("pricing");
+  const activeConfigTab = useAppSelector((state) => state.shipmentData.activeConfigTab);
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
     [localeText]
@@ -84,6 +86,66 @@ export default function InvoiceConfig() {
     () => buildShipmentSummaryItems(localeText),
     [localeText]
   );
+
+
+const reqObj = {
+  projectId: activeCarrierId,
+  shipmentData: [
+    {
+      Id: "71bc8e51-45dd-432d-934b-babc0b664deb",
+      id: "71bc8e51-45dd-432d-934b-babc0b664deb",
+      ShipmentId: "39134034331",
+      ShipmentDate: "2025-1-1",
+      ZipCodeShipper: "DE-21079",
+      ZipCodeConsignee: "1897",
+      City: "",
+      Country: "DE",
+      Length: 0.0,
+      Wide: 60.0,
+      Height: 0.0,
+      LoadingMeters: 0.0,
+      CubicMeters: 0.0,
+      PalletCount: 12,
+      PackagingType: "CC",
+      EffectiveWeight: 20.0,
+      Stackable: false,
+      StackFactor: 1,
+      Message: "",
+      Price: 0.0,
+      TotalPrice: 0.0,
+      projectType: 0
+    },
+    {
+      Id: "5cf975a0-807c-4679-b4f6-62b9d03dc99b",
+      id: "5cf975a0-807c-4679-b4f6-62b9d03dc99b",
+      ShipmentId: "39134034331",
+      ShipmentDate: "2025-1-1",
+      ZipCodeShipper: "DE-21079",
+      ZipCodeConsignee: "1897",
+      City: "",
+      Country: "DE",
+      Length: 0.0,
+      Wide: 80.0,
+      Height: 0.0,
+      PalletCount: 0,
+      PackagingType: "FP",
+      EffectiveWeight: 240.0,
+      Stackable: false,
+      StackFactor: 1,
+      Message: "",
+      Price: 0.0,
+      TotalPrice: 0.0,
+      projectType: 0
+    }
+  ],
+  append: true
+};
+
+
+
+
+
+
   useEffect(()=>{
     if (configDialogOpen) {
        getCarrierConfFomServer({userId},dispatch)
@@ -114,9 +176,16 @@ export default function InvoiceConfig() {
 
 
     const  onTabChange = (_:any, value:any) =>{
-      setActiveConfigTab(value)
-    value=="auftragsdaten" && getShipmentData({projectId:activeCarrierId},dispatch);
-    }
+      dispatch(setActiveConfigTab(value))
+      if(value=="auftragsdaten" ){
+//        sendShipmentData(reqObj, dispatch, (respData?:any) => {
+//   console.log("shipment resp:", respData);
+// });
+      
+     getShipmentData({projectId:activeCarrierId},dispatch);
+    }}
+
+   
 
 
   return (
