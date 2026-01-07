@@ -13,7 +13,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
-import { setToleranceDialogOpen } from '@/store/features/tolerances/tolerancesSlice';
+import { setToleranceDialogOpen } from '@/store/features/tolerances/TolerancesSlice';
 import { getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
 

@@ -1,10 +1,11 @@
-import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES } from "@/constants/apis";
+import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
 import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
+import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
@@ -186,3 +187,14 @@ export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)
 }
 
 
+export const getToleranceData = async (params:any,dispatch?:any)=>{
+    try {
+      const resp:any =await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get")
+       console.log("getToleranceData:  resp: ",resp);
+     const data =  getValidDataFromResp(resp);
+     console.log("data:  resp: ",data);
+     dispatch&&dispatch(setToleranecData(data))
+      }catch (error) {
+       return error;
+    }
+}
