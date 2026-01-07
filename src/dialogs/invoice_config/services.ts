@@ -9,17 +9,12 @@ import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
-      if(resp.success)
-{
-       onSuccess&&onSuccess(resp?.data)
-}
+     resp.success&&  onSuccess&&onSuccess(resp?.data)
 }
 
 export const getCarriersDataFromServer = async (params:any,dispatch?:any)=>{
     try {
-       
        return getValidDataFromResp(await fetchApi(undefined,`${URL_SHIPPER_PROJECTS}?userId=${params.userId}`,"get"));
-
     } catch (error) {
        dispatch&& dispatch(setCarrierConfigs([]))
     } 
@@ -197,4 +192,11 @@ export const getToleranceData = async (params:any,dispatch?:any)=>{
       }catch (error) {
        return error;
     }
+}
+
+export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any)=>{
+  console.log("params for edit ToleranceData: ",params);
+  
+    //    const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
+    //  resp.success&&  onSuccess&&onSuccess(resp?.data)
 }

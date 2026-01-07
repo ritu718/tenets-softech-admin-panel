@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Button,
   TextField,
@@ -13,13 +13,13 @@ import {
 
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
-import { setToleranceDialogOpen } from '@/store/features/tolerances/TolerancesSlice';
-import { getToleranceData } from '@/dialogs/invoice_config/services';
+import { setToleranceDialogOpen, setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
+import { editToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
 
 
 function Tolerance() {
-
+  const isFirstRender = useRef(true);
     const dispatch = useAppDispatch();
      const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
           
@@ -38,17 +38,29 @@ function Tolerance() {
   });
   useEffect(()=>{
   toleranceDialogOpen&&getToleranceData({userId},dispatch)
+  if(!toleranceDialogOpen)
+  {
+    isFirstRender.current = true;
+  }
   },[toleranceDialogOpen])
 
 
-       const handleToleranceFieldChange = (field:any) => (event:any) => {
-    const parsed = Number(event.target.value);
-    setToleranceSettings((prev:any) => ({
-      ...prev,
-      [field]: Number.isFinite(parsed) ? Math.max(parsed, 0) : prev[field],
-    }));
-  };
-const createOverrideEntry = () => ({
+   useEffect(()=>{
+    if(toleranceDialogOpen)
+    {
+ if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    editToleranceData(toleranecData,dispatch)
+    }
+  },[toleranecData])
+
+
+
+       const handleToleranceFieldChange = (field:any) => (event:any) => dispatch(setToleranecData({...toleranecData,[field]:Number(event.target.value)}));
+
+       const createOverrideEntry = () => ({
     id: `${Date.now()}-${Math.random()}`,
     label: "",
     percent: 0,
@@ -98,14 +110,14 @@ const handleAddOverride = () => {
                  label={localeText.dialogs.toleranceFreight}
                  type="number"
                  value={toleranecData?.freightCostsPercent||0}
-                 onChange={handleToleranceFieldChange("freightPercent")}
+                 onChange={handleToleranceFieldChange("freightCostsPercent")}
                  inputProps={{ min: 0 }}
                />
                <TextField
                  label={localeText.dialogs.toleranceDefaultSurcharge}
                  type="number"
                  value={toleranecData?.standardAdditionalCostsPercent||0}
-                 onChange={handleToleranceFieldChange("defaultSurchargePercent")}
+                 onChange={handleToleranceFieldChange("standardAdditionalCostsPercent")}
                  inputProps={{ min: 0 }}
                />
                <FormControlLabel
@@ -113,10 +125,7 @@ const handleAddOverride = () => {
                    <Checkbox
                      checked={toleranecData?.onlyPositiveDeviation||false}
                      onChange={(event) =>
-                       setToleranceSettings((prev) => ({
-                         ...prev,
-                         onlyNegativeMismatch: event.target.checked,
-                       }))
+                        dispatch(setToleranecData({...toleranecData,onlyPositiveDeviation:event.target.checked}))
                      }
                    />
                  }
