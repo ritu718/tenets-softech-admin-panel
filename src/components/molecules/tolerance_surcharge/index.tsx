@@ -13,7 +13,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useLanguage } from '@/hooks/useLanguage';
 import AddIcon from "@mui/icons-material/Add";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setToleranecData } from '@/store/features/tolerances/tolerancesSlice';
+import { setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
 
 
 export default function ToleranceSurcharge() {
