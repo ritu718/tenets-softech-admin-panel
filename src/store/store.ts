@@ -21,6 +21,7 @@ export const makeStore = () =>
       tariffs:tariffsSliceReducer,
       surcharges: surchargesReducer,
       shipmentData:shipmentDataReducer,
+      
     },
   });
 

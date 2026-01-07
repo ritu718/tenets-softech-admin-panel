@@ -2,20 +2,27 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: any = {
- toleranceDialogOpen:false,
+toleranceDialogOpen:false,
+toleranecData:null,
+ancillaryTolerances: [],
 };
- 
-
 
 const tolerancesSlice = createSlice({
-  name: "Tolerances",
+  name: "tolerances",
   initialState,
   reducers: {
       setToleranceDialogOpen: (state, action: PayloadAction<any>) => {
       state.toleranceDialogOpen = action.payload;
     },
+     setToleranecData: (state, action: PayloadAction<any>) => {
+      state.toleranecData = action.payload;
+    },
+    
+     
+
+    
   },
 });
 
-export const {  setToleranceDialogOpen } = tolerancesSlice.actions;
+export const { setToleranceDialogOpen,setToleranecData } = tolerancesSlice.actions;
 export default tolerancesSlice.reducer;

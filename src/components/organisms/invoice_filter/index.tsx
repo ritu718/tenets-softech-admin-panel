@@ -17,7 +17,7 @@ import {
 } from "@/store/features/invoice_data/invoiceDataSlice";
 import { useLanguage } from "@/hooks/useLanguage";
 import { setLanguage } from "@/store/features/languages/languagesSlice";
-import { setToleranceDialogOpen } from "@/store/features/tolerances/TolerancesSlice";
+import { setToleranceDialogOpen } from "@/store/features/tolerances/tolerancesSlice";
 
 const LANGUAGE_FLAGS : any = {
   de: "🇩🇪",
