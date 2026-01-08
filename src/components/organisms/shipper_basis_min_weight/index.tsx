@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useHandleFreightChanges } from '@/hooks/useHandleFreightChanges';
+import { setFreightBasisData } from '@/store/features/freight_basis/FreightBasisSlice';
 
 export default function ShipperBasisMinWeight(){
   const { localeText } =useLanguage();
@@ -48,38 +49,30 @@ export default function ShipperBasisMinWeight(){
   };
 
     
-      const handleMinWeightChange = (rowId:any, field:any, value:any, table = "minWeights") => {
-        if (!activeCarrier || !activeCountryCode) return;
-        updateCarrier(activeCarrier.id, (carrier:any) => ({
-          ...carrier,
-          freight: {
-            ...(carrier.freight || {}),
-            countryCodes: carrier.freight?.countryCodes || [activeCountryCode],
-            byCountry: {
-              ...(carrier.freight?.byCountry || {}),
-              [activeCountryCode]: {
-                ...(carrier.freight?.byCountry?.[activeCountryCode] ||
-                  createFreightBase(localeText)),
-                [table]: (
-                  Array.isArray(carrier.freight?.byCountry?.[activeCountryCode]?.[table])
-                    ? carrier.freight.byCountry[activeCountryCode][table]
-                    : table === "minWeights"
-                    ? buildDefaultMinWeights()
-                    : []
-                ).map((row:any) => (row.id === rowId ? { ...row, [field]: value } : row)),
-              },
-            },
-          },
-        }));
+      const handleMinWeightChange = (rowId:any, field:any, value:any) => {
+const updatedFreightBasisData = {
+  ...freightBasisData,
+  countries: {
+    ...freightBasisData.countries,
+    [freightCountryCodes[freightCountryIndex]]: {
+      ...freightBasisData.countries[freightCountryCodes[freightCountryIndex]],
+      MinimumWeight: {
+        ...freightBasisData.countries[freightCountryCodes[freightCountryIndex]].MinimumWeight,
+        Base: {
+          ...freightBasisData.countries[freightCountryCodes[freightCountryIndex]].MinimumWeight.Base,
+          [rowId]: {
+            ...freightBasisData.countries[freightCountryCodes[freightCountryIndex]].MinimumWeight.Base[rowId],
+            [field]: value
+          }
+        }
+      }
+    }
+  }
+};                  dispatch(setFreightBasisData(updatedFreightBasisData));
       };
   
 
-  
-   
-console.log("MinimumWeight: ",MinimumWeight);
-
 const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
-
 
   return (<>
       <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
@@ -111,7 +104,7 @@ const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
                               size="small"
                               value={MinimumWeight?.Base[code]?.InternalShorthand||""}
                               onChange={(e) =>
-                                handleMinWeightChange(code, "internalCode", e.target.value)
+                                handleMinWeightChange(code, "InternalShorthand", e.target.value)
                               }
                             />
                           </TableCell>
@@ -120,7 +113,7 @@ const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
                               size="small"
                               value={MinimumWeight?.Base[code]?.Description}
                               onChange={(e) =>
-                                handleMinWeightChange(code, "description", e.target.value)
+                                handleMinWeightChange(code, "Description", e.target.value)
                               }
                             />
                           </TableCell>
@@ -129,7 +122,7 @@ const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
                               size="small"
                               value={MinimumWeight?.Base[code]?.InternalDescription||""}
                               onChange={(e) =>
-                                handleMinWeightChange(code, "internalDescription", e.target.value)
+                                handleMinWeightChange(code, "InternalDescription", e.target.value)
                               }
                             />
                           </TableCell>
@@ -137,7 +130,7 @@ const minWeightCode =MinimumWeight?.Base? Object.keys(MinimumWeight?.Base):[];
                             <TextField
                               size="small"
                               value={MinimumWeight?.Base[code]?.Weight||""}
-                              onChange={(e) => handleMinWeightChange(code, "weight", e.target.value)}
+                              onChange={(e) => handleMinWeightChange(code, "Weight", e.target.value)}
                             />
                           </TableCell>
                         </TableRow>

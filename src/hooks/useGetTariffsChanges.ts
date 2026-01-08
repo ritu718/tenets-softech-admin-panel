@@ -16,5 +16,5 @@ const { TariffType = "",ZipCodes=[],Weights={} } =
   [Weights]
 );
 
-  return { TariffType,ZipCodes,Weights,weightsKeys };
+  return { TariffType,ZipCodes,Weights,weightsKeys,tariffsData,countryCode };
 }

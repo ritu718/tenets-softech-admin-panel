@@ -6,6 +6,7 @@ import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
+import { setIsApisCalledForSelectedCarier } from "@/store/features/all_apis_calling_status/AllApisCallingStatusSlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
@@ -70,13 +71,25 @@ export const getShipperFreightCalc = async (params:any,dispatch?:any)=>{
 }
 
 
-
 export const sendShipperFreightCalc = async (params:any,dispatch?:any)=>{
     try {
       console.log("sendShipperFreightCalc: ",params);
       
       const resp:any =await fetchApi(params,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}`,"post")
        console.log("sendShipperFreightCalc:  resp: ",resp);
+      return getValidDataFromResp(resp);
+      }catch (error) {
+       return error;
+    } 
+}
+
+export const editShipperFreightCalc = async (params:any,dispatch?:any)=>{
+    try {
+      console.log("editShipperFreightCalc: ",params);
+      const {message,extra,firebaseId,updatedAt,createdAt,...restParamas}=params;
+      
+      const resp:any =await fetchApi(restParamas,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/${params.projectId}`,"put")
+       console.log("editShipperFreightCalc:  resp: ",resp);
       return getValidDataFromResp(resp);
       }catch (error) {
        return error;
@@ -140,6 +153,7 @@ console.log("getValidDataFromResp: ",resp);
 export const getConfigDataAccoToSelCarrier = async (params: { projectId: string },dispatch?:any)=>{
     try {
        
+      dispatch(setIsApisCalledForSelectedCarier(true))
        const promisesRequests = [
        getShipperFreightCalc(params),
        getShipperRates(params),
@@ -150,7 +164,7 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
         dispatch&&dispatch(setFreightBasisData(freightCalc));
          dispatch&&dispatch(setTariffsData(rates));
           dispatch&&dispatch(setSurchargesData(extraCost));
-          
+            dispatch(setIsApisCalledForSelectedCarier(false))
           console.log("getConfigDataAccoToSelCarrier: rates: ",rates  );
           console.log("getConfigDataAccoToSelCarrier: extraCost: ",extraCost  );
 

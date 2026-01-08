@@ -28,6 +28,7 @@ import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview/A
 import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, sendShipmentData } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 import { setActiveConfigTab } from '@/store/features/shipment_data/shipmentDataSlice';
+import { useUpdateFreightDataToServer } from '@/hooks/useUpdateFreightDataToServer';
 
 
 
@@ -42,8 +43,8 @@ const buildPlaceholderConfigSections = (text:any) => {
 
 
 
-export default function InvoiceConfig() {
-
+export default function  InvoiceConfig() {
+useUpdateFreightDataToServer()
 
  const { localeText,language } =useLanguage();
      const dispatch = useAppDispatch();

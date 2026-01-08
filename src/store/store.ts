@@ -8,7 +8,8 @@ import tolerancesReducer from "./features/tolerances/TolerancesSlice";
 import tariffsSliceReducer from "./features/tariffs/TariffsSlice";
 import surchargesReducer from "./features/surcharges/SurchargesSlice";
 import shipmentDataReducer from "./features/shipment_data/shipmentDataSlice";
-
+import AllApisCallingStatusReducer from "./features/all_apis_calling_status/AllApisCallingStatusSlice";
+ 
 export const makeStore = () =>
   configureStore({
     reducer: {
@@ -21,6 +22,7 @@ export const makeStore = () =>
       tariffs:tariffsSliceReducer,
       surcharges: surchargesReducer,
       shipmentData:shipmentDataReducer,
+      allApisCallingStatus:AllApisCallingStatusReducer,
     },
   });
 

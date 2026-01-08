@@ -1,20 +1,17 @@
 export const SHIPPER_PROJECT_FREIGHT_BASIC={
-"_id": {
-"$oid": "6950f616bf3002ccf46664ef"
-},
-"projectId": "6950f616bf3002ccf46664ef",
-"carrierProjectId": 1,
+
+"projectId": "6951453aca1464ba20c68942",
 "countries": {
 "DE": {
 "CalculationType": 1,
 "Bulkiness": {
-"CubicMeters": 140,
-"LoadingMeters": 1000
+ "CubicMeters": 15,
+        "LoadingMeters": 1000
 },
-"AdvancedOptions": {
-"LoadingMetersKg": 0,
-"LoadingMetersLdm": 0
-},
+ "AdvancedOptions": {
+            "LoadingMetersKg": 11,
+                    "LoadingMetersLdm": 13
+      },
 "MinimumWeight": {
 "Base": {
 "VP": {
@@ -131,12 +128,26 @@ export const SHIPPER_PROJECT_FREIGHT_BASIC={
 "InternalDescription": "",
 "Weight": ""
 }
-}
-}
+},"Additional": [
+                        {
+                            "Id": "272147b6-7315-4452-b6b8-ef2ba2ecd093",
+                            "id": "3c081b22-f761-44ab-8b92-cd48122790fa",
+                            "Shorthand": "1",
+                            "Description": "test",
+                            "Weight": 3
+                        },
+                        {
+                            "Id": "0386c902-286b-4fbc-9a2f-f5ef2260038e",
+                            "id": "35e28b02-0c55-410b-9acd-c16683468c2a",
+                            "Shorthand": "2",
+                            "Description": "testram nivas",
+                            "Weight": 2
+                        }
+                    ]
 }
 },
-"firebaseId": "xvs9G02BI7guOdTK7OeX9IC7pzj1",
-"__v": 0
+
+},
 }
 
 export const  SHIPPER_RATES={
@@ -493,7 +504,7 @@ export const  SHIPPER_RATES={
 
 
 export const SHIPPER_EXTRA_COSTS={
-  "projectId": "692af31934df801237c8fdda",
+  "projectId": "6951453aca1464ba20c68942",
     "extraCosts": {
       "DE": {
         "Base": [
