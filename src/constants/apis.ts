@@ -18,3 +18,7 @@ export const URL_SHIPMENT = `${BASE_URL}/shipment`;
 
 //tolerence
 export const URL_TOLERANCE = `${BASE_URL}/tolerance-limits`;
+
+//invoice table
+export const URL_COMPANIES = `${BASE_URL}/companies`;
+

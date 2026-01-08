@@ -39,7 +39,6 @@ import InvoiceTable from "./invoice_table";
 import {
   setOverview
 } from "@/store/features/invoice_data/invoiceDataSlice";
-import { useFilteredOVerview } from "@/hooks/useFilteredOVerview";
 import InvoiceConfig from "@/dialogs/invoice_config";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
 import Tolerance from "./tolerance";
@@ -208,7 +207,7 @@ const buildDefaultMinWeights = () => MIN_WEIGHT_DEFAULTS.map((row) => createMinW
 
 const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
 
-  useFilteredOVerview();
+  
    const dispatch = useAppDispatch();
    
   const { localeText,language } =useLanguage();

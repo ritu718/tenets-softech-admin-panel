@@ -24,7 +24,7 @@ const invoiceDataSlice = createSlice({
       state.configDialogOpen = action.payload;
     },
     setAddCarrierDialogOpen: (state, action: PayloadAction<any>) => {
-      state.filteredOverview = action.payload;
+      state.addCarrierDialogOpen = action.payload;
     } ,
      setCarrierConfigs: (state, action: PayloadAction<any>) => {
       state.carrierConfigs = action.payload;

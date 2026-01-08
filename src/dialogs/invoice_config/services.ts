@@ -1,7 +1,7 @@
-import { URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
+import { BASE_URL, URL_COMPANIES, URL_SHIPMENT, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
-import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setCarrierConfigs, setFilteredOverview } from "@/store/features/invoice_data/invoiceDataSlice";
 import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
@@ -197,6 +197,27 @@ export const getToleranceData = async (params:any,dispatch?:any)=>{
 export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any)=>{
   console.log("params for edit ToleranceData: ",params);
   
-    //    const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
+       const resp:any = await fetchApi(params,`${URL_TOLERANCE}/${params.companyId}`,"put");
+
+       console.log("editToleranceData resp: ",resp);
+       
     //  resp.success&&  onSuccess&&onSuccess(resp?.data)
 }
+export const getCompaniesData = async (params:any,dispatch?:any)=>{
+    try {
+      //  return getValidDataFromResp(await fetchApi(undefined,`${URL_COMPANIES}/${params.userId}/invoices/8255256842`,"get"));
+     
+     
+      const resp= getValidDataFromResp(await fetchApi(undefined,`${BASE_URL}/companies/692af2fe34df801237c8fdd1/invoices/8255256842`,"get"));
+ console.log("resp: getCompaniesData: ",resp);
+
+ const respData = Array.isArray(resp)?resp:[resp];
+  dispatch&& dispatch(setFilteredOverview(respData))
+      return resp;
+   
+    } catch (error) {
+       dispatch&& dispatch(setFilteredOverview(null))
+    } 
+}
+
+ 

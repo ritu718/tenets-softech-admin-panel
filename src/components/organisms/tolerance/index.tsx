@@ -30,12 +30,7 @@ function Tolerance() {
       console.log("toleranecData: " ,toleranecData);
       
     const { localeText } =useLanguage();
-     const [toleranceSettings, setToleranceSettings] = useState({
-    freightPercent: 0,
-    defaultSurchargePercent: 0,
-    surchargeOverrides: [],
-    onlyNegativeMismatch: false,
-  });
+   
   useEffect(()=>{
   toleranceDialogOpen&&getToleranceData({userId},dispatch)
   if(!toleranceDialogOpen)
@@ -55,46 +50,7 @@ function Tolerance() {
     editToleranceData(toleranecData,dispatch)
     }
   },[toleranecData])
-
-
-
-       const handleToleranceFieldChange = (field:any) => (event:any) => dispatch(setToleranecData({...toleranecData,[field]:Number(event.target.value)}));
-
-       const createOverrideEntry = () => ({
-    id: `${Date.now()}-${Math.random()}`,
-    label: "",
-    percent: 0,
-  });
-const handleAddOverride = () => {
-    setToleranceSettings((prev:any) => ({
-      ...prev,
-      surchargeOverrides: [...prev.surchargeOverrides, createOverrideEntry()],
-    }));
-  };
-
-  const handleRemoveOverride = (id:any) => {
-    setToleranceSettings((prev) => ({
-      ...prev,
-      surchargeOverrides: prev.surchargeOverrides.filter((item :any) => item.id !== id),
-    }));
-  };
-  const handleOverrideChange = (id:any, field:any, value:any) => {
-    setToleranceSettings((prev:any) => ({
-      ...prev,
-      surchargeOverrides: prev.surchargeOverrides.map((item:any) =>
-        item.id === id
-          ? {
-              ...item,
-              [field]:
-                field === "percent"
-                  ? Math.max(Number(value) || 0, 0)
-                  : value,
-            }
-          : item
-      ),
-    }));
-  };
-
+       const handleToleranceFieldChange = (field:any) => (event:any) => dispatch(setToleranecData({...toleranecData,[field]:event.target.value}));
 
   return (
    <Dialog
@@ -109,14 +65,14 @@ const handleAddOverride = () => {
                <TextField
                  label={localeText.dialogs.toleranceFreight}
                  type="number"
-                 value={toleranecData?.freightCostsPercent||0}
+                 value={toleranecData?.freightCostsPercent||""}
                  onChange={handleToleranceFieldChange("freightCostsPercent")}
                  inputProps={{ min: 0 }}
                />
                <TextField
                  label={localeText.dialogs.toleranceDefaultSurcharge}
                  type="number"
-                 value={toleranecData?.standardAdditionalCostsPercent||0}
+                 value={toleranecData?.standardAdditionalCostsPercent||""}
                  onChange={handleToleranceFieldChange("standardAdditionalCostsPercent")}
                  inputProps={{ min: 0 }}
                />
