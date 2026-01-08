@@ -18,3 +18,9 @@ export const URL_SHIPMENT = `${BASE_URL}/shipment`;
 
 //tolerence
 export const URL_TOLERANCE = `${BASE_URL}/tolerance-limits`;
+
+// Shipment Summary
+export const URL_SHIPMENT_SUMMARY = `${BASE_URL}/summary`;
+
+
+// http://localhost:8085/api/v1/summary/692af31934df801237c8fdda

@@ -8,6 +8,8 @@ import tolerancesReducer from "./features/tolerances/TolerancesSlice";
 import tariffsSliceReducer from "./features/tariffs/TariffsSlice";
 import surchargesReducer from "./features/surcharges/SurchargesSlice";
 import shipmentDataReducer from "./features/shipment_data/shipmentDataSlice";
+import shipmentSummaryReducer from "./features/shipment_summary/shipmentSummarySlice";
+
 
 export const makeStore = () =>
   configureStore({
@@ -21,6 +23,7 @@ export const makeStore = () =>
       tariffs:tariffsSliceReducer,
       surcharges: surchargesReducer,
       shipmentData:shipmentDataReducer,
+      shipmentSummary:shipmentSummaryReducer,
       
     },
   });

@@ -46,6 +46,10 @@ const PriceCheckPreview = ({
   console.log("shipmentData value in price : ",shipmentData);
   const shipmentDataForDisplay =shipmentData?.shipmentData||[];
 
+  const {shipmentSummary} = useAppSelector((state) => state.shipmentSummary);
+  console.log("shipmentSummary value in price : ",shipmentSummary);
+  const shipmentSummaryForDisplay =shipmentSummary?.shipmentSummary||[];
+
  
 
   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
