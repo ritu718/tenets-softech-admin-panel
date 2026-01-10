@@ -298,3 +298,14 @@ export const norm = (s: string) => (s ?? "").trim();
   if (!val) return "";
   return String(val).replace(/\n/g, "");
 };
+
+export const removeInvalidKeys = (obj:any) =>
+  Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, value]) =>
+        value !== null &&
+        value !== undefined &&
+        value !== "" &&
+        value !== "all"
+    )
+  );

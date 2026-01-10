@@ -42,6 +42,7 @@ import {
 import InvoiceConfig from "@/dialogs/invoice_config";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
 import Tolerance from "./tolerance";
+import { getCarrierConfFomServer } from "@/dialogs/invoice_config/services";
 
 
 
@@ -209,13 +210,16 @@ const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
 
   
    const dispatch = useAppDispatch();
-   
+     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
   const { localeText,language } =useLanguage();
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
     [localeText]
   );
    
+    useEffect(()=>{
+         getCarrierConfFomServer({userId},dispatch)
+    },[userId])
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");
  

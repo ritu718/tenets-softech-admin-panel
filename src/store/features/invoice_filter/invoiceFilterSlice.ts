@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: any = {
- carrier:null,
+ carrier:"all",
   invoiceNumber:null,
  fromDate:null,
  toDate:null,
@@ -10,7 +10,7 @@ const initialState: any = {
 };
  
 const invoiceFilterSlice = createSlice({
-  name: "Tariffs",
+  name: "invoiceFilter",
   initialState,
   reducers: {
       setCarrier: (state, action: PayloadAction<any>) => {      

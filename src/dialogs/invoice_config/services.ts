@@ -7,6 +7,7 @@ import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
 import { setIsApisCalledForSelectedCarier } from "@/store/features/all_apis_calling_status/AllApisCallingStatusSlice";
+import { removeInvalidKeys } from "@/utils/helper";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
@@ -221,9 +222,17 @@ export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
     
 
-      const {userId,...filteredData}=params;
+      let {userId,...filteredData}=params;
+      filteredData = removeInvalidKeys(filteredData);
         console.log("filteredData: ",filteredData);
-      const url =`${URL_COMPANIES}/${userId}/invoices`;
+      let url =`${URL_COMPANIES}/${userId}/invoices`;
+if(Object.keys(filteredData).length>0){
+  const queryString = new URLSearchParams(filteredData).toString();
+  console.log("queryString: ",queryString);
+  
+url=`${url}?${queryString}`
+}
+console.log("url vbaslue : ",url);
 
        const resp= getValidDataFromResp(await fetchApi(undefined,url,"get"));
      

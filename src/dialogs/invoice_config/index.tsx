@@ -48,7 +48,7 @@ useUpdateFreightDataToServer()
 
  const { localeText,language } =useLanguage();
      const dispatch = useAppDispatch();
-         const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+        
       const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
       const carrierConfigs = useAppSelector((state) => state.invoiceData.carrierConfigs);
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
@@ -145,12 +145,7 @@ const reqObj = {
 
 
 
-  useEffect(()=>{
-    if (configDialogOpen) {
-       getCarrierConfFomServer({userId},dispatch)
-      
-    }  
-  },[configDialogOpen])
+
 
   useEffect(()=>{
     if (configDialogOpen&&!isEmpty(activeCarrierId)) {

@@ -21,20 +21,12 @@ export default function InvoiceTable({}:any) {
     //  const selectedInvoice = useAppSelector((state:any) => state?.invoiceTable.selectedInvoice);
 const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
 const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
-     console.log("filteredOverview: InvoiceTable: " ,filteredOverview);
-
-      useEffect(()=>{
+          useEffect(()=>{
         getCompaniesData({userId,...invoiceFilter},dispatch)
       },[invoiceFilter])
     
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
-  const [invoiceOverrides, setInvoiceOverrides] = useState<any>({});
-  const [toleranceSettings, setToleranceSettings] = useState({
-    freightPercent: 0,
-    defaultSurchargePercent: 0,
-    surchargeOverrides: [],
-    onlyNegativeMismatch: false,
-  });
+  
       const { localeText,formatDate,formatCurrency } =useLanguage();
      
        const renderStatusChip = (status:any) => (
@@ -54,40 +46,8 @@ const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
           />
         );
 
-        const makeInvoiceKey = (rechnungsnummer:any, projektId:any) =>
-  `${rechnungsnummer || "unbekannt"}__${projektId || "all"}`;
-         const acceptedStatus = useMemo(
-            () => ({
-              label: localeText.status.accepted,
-              color: "success.main",
-              tone: "success",
-            }),
-            [localeText]
-          );
 
-            const evaluateStatus = useCallback(
-              (expectedValue:any, actualValue:any, tolerancePercent = 0, onlyNegative = false) => {
-                if (!Number.isFinite(expectedValue) && !Number.isFinite(actualValue)) {
-                  return { label: localeText.status.noData, color: "text.secondary", tone: "neutral" };
-                }
-                const expected = Number.isFinite(expectedValue) ? expectedValue : 0;
-                const actual = Number.isFinite(actualValue) ? actualValue : 0;
-                const rawDifference = expected - actual;
-                if (onlyNegative && rawDifference >= 0) {
-                  return { label: localeText.status.ok, color: "success.main", tone: "success" };
-                }
-                const base = Math.max(Math.abs(expected), 1);
-                const diff = Math.abs(actual - expected);
-                const allowed = (Math.max(tolerancePercent, 0) / 100) * base;
-                const ok = diff <= allowed;
-                return ok
-                  ? { label: localeText.status.ok, color: "success.main", tone: "success" }
-                  : { label: localeText.status.error, color: "error.main", tone: "error" };
-              },
-              [localeText]
-            );
-
-
+           
             
   return (
      <Table>
