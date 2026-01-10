@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   
   Typography,
@@ -13,42 +13,19 @@ import {
   Paper,
 
 } from "@mui/material";
-import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
-import { buildDefaultMinWeights, createFreightBase } from '@/utils/helper';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
+import {  updateFreightCalculationData } from '@/utils/helper';
+import {  useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useHandleFreightChanges } from '@/hooks/useHandleFreightChanges';
-import { setFreightBasisData } from '@/store/features/freight_basis/FreightBasisSlice';
 
 export default function ShipperBasisMinWeight(){
   const { localeText } =useLanguage();
-   const {handleFreightChange}=useHandleFreightChanges();
+  
    const pricingText = localeText.config.pricing;
     const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelector((state) => state.freightBasis);
    const {MinimumWeight} = freightBasisData?.countries?.[freightCountryCodes[freightCountryIndex]] || {}; 
   
 
-    const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
-   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
-             const dispatch = useAppDispatch();
-    
-   
-    const activeCarrier =
-      carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-    const activeCountryCode =
-      freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
-    const activeFreight =
-      (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-   
-
-       const updateCarrier = (carrierId:any, updater:any) => {
-    dispatch(setCarrierConfigs(  carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
- ))
-    
-  };
-
-    
+  
       const handleMinWeightChange = (rowId:any, field:any, value:any) => {
 const updatedFreightBasisData = {
   ...freightBasisData,
@@ -68,7 +45,7 @@ const updatedFreightBasisData = {
       }
     }
   }
-};                  dispatch(setFreightBasisData(updatedFreightBasisData));
+};                 updateFreightCalculationData(updatedFreightBasisData,dispatch)
       };
   
 

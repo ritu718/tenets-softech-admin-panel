@@ -1,14 +1,10 @@
-import { LANGUAGE_TEXT } from "@/constants/data";
-import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
-import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useCallback, useMemo, useState } from "react";
 
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
+    
 export function useHandleSurchargesChanges() {
 
-
-   
   const { surchargesCountryCodes, surchargesCountryIndex, surchargesData } =
     useAppSelector((state) => state.surcharges);
   
@@ -19,12 +15,7 @@ export function useHandleSurchargesChanges() {
     const dispatch = useAppDispatch();
     
       const handleSurchargeRowChange = (index:any,key:any, value:any) => {
-        console.log("handleSurchargeRowChange: index: ",index);
-        console.log("handleSurchargeRowChange: key: ",key);
-        console.log("handleSurchargeRowChange: value: ",value);
-
        const BaseTmp = [...Base];
-
 BaseTmp[index] = {
   ...BaseTmp[index],
   [key]: value

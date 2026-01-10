@@ -12,13 +12,12 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
-import { v4 as uuidv4 } from "uuid";
+
 import Papa from "papaparse";
-import { SHIPPER_RATES } from "@/data/dummy";
 import { sendShipperRates } from "@/dialogs/invoice_config/services";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
 import { createTariffBase, createTariffRow, isEmpty, norm, normCode } from "@/utils/helper";
-import { prepareDataTariffs } from "@/utils/importHelper";
+import { prepareDataTariffs } from "@/utils/csvImportHelper";
 
 
 export default function TariffsImportExport() {
@@ -81,10 +80,7 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
 
 
 console.log("rates: ",rates);
-// console.log("dataRows: ",dataRows);
 
-
-     
         const payload = {
           projectId: activeCarrierId,
           rates

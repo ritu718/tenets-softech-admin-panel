@@ -11,7 +11,7 @@ import {
 import { useLanguage } from '@/hooks/useLanguage';
 import { useGetTariffsChanges } from '@/hooks/useGetTariffsChanges';
 import { useAppDispatch } from '@/store/hooks';
-import { setTariffsData } from '@/store/features/tariffs/TariffsSlice';
+import { updateTariffsnData } from '@/utils/helper';
 
 export default function TariffsWeight() {
  const dispatch = useAppDispatch();
@@ -46,7 +46,7 @@ const tariffsDataTmp = {
 };
          
          
-        dispatch(setTariffsData(tariffsDataTmp));
+       updateTariffsnData(tariffsDataTmp,dispatch)
          };
 const tableCellStyle = { padding: '4px 8px' };
 

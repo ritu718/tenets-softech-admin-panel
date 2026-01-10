@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
 
   Typography,
@@ -20,14 +20,11 @@ import {
  
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { buildDefaultMinWeights, createFreightBase, createMinWeightRow } from '@/utils/helper';
+import { updateFreightCalculationData } from '@/utils/helper';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useHandleFreightChanges } from '@/hooks/useHandleFreightChanges';
-import { setFreightBasisData } from '@/store/features/freight_basis/FreightBasisSlice';
+
 
 
 export default function AdditionMinimumWeight() {
@@ -62,7 +59,8 @@ export default function AdditionMinimumWeight() {
     }
   }
 };
-       dispatch(setFreightBasisData(updatedFreightBasisData));  
+updateFreightCalculationData(updatedFreightBasisData,dispatch)
+       
       };
 
          const handleAddCustomMinWeight = () => {
@@ -86,7 +84,7 @@ export default function AdditionMinimumWeight() {
     }
   }
 };
-       dispatch(setFreightBasisData(updatedFreightBasisData)); 
+     updateFreightCalculationData(updatedFreightBasisData,dispatch)
           };
 
            const handleRemoveCustomMinWeight = (index:any) => {
@@ -106,7 +104,7 @@ export default function AdditionMinimumWeight() {
   }
             };
 
-             dispatch(setFreightBasisData(updatedFreightBasisData));  
+            updateFreightCalculationData(updatedFreightBasisData,dispatch)  
           };
           
   
