@@ -1,9 +1,7 @@
-import { LANGUAGE_TEXT } from "@/constants/data";
-import { editShipperFreightCalc } from "@/dialogs/invoice_config/services";
-import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { isEmpty } from "@/utils/helper";
-import {  useEffect, useRef} from "react";
+import {  updateFreightCalculationData } from "@/utils/helper";
+
 
 export function useHandleFreightChanges() {
 
@@ -22,7 +20,7 @@ export function useHandleFreightChanges() {
       },
     },
   };
-              dispatch(setFreightBasisData(updatedFreightBasisData));
+              updateFreightCalculationData(updatedFreightBasisData,dispatch)
             };
   
            

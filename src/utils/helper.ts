@@ -1,5 +1,8 @@
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 import { BASE_COUNTRY_OPTIONS, MIN_WEIGHT_DEFAULTS, SHIPMENT_SAMPLE_ROWS_BASE } from "@/constants/data";
+import { editShipperFreightCalc, editShipperRates } from "@/dialogs/invoice_config/services";
+import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
+import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 
 /**
  * Function to check the value is numeric or not.
@@ -309,3 +312,14 @@ export const removeInvalidKeys = (obj:any) =>
         value !== "all"
     )
   );
+export const updateFreightCalculationData =(updatedFreightBasisData:any,dispatch:any)=>
+{
+dispatch(setFreightBasisData(updatedFreightBasisData));  
+         editShipperFreightCalc(updatedFreightBasisData,dispatch)
+}
+
+export const updateTariffsnData =(tariffsDataTmp:any,dispatch:any)=>
+{
+dispatch(setTariffsData(tariffsDataTmp));
+         editShipperRates(tariffsDataTmp,dispatch)
+}

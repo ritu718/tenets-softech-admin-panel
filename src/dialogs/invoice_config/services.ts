@@ -113,8 +113,21 @@ export const sendShipperRates = async (params:any,dispatch?:any)=>{
     try {
       const resp:any =await fetchApi(params,`${URL_SHIPPER_RATES}`,"post")
        console.log("sendShipperRates:  resp: ",resp);
-      return getValidDataFromResp(resp);
-    
+      const rates= getValidDataFromResp(resp);
+      console.log("rates data : ",rates);
+      
+     dispatch&&dispatch(setTariffsData(rates));
+     return rates;
+      }catch (error) {
+       return error;
+    } 
+}
+
+export const editShipperRates = async (params:any,dispatch?:any)=>{
+    try {
+      const respObj= getValidDataFromResp(await fetchApi(params,`${URL_SHIPPER_RATES}/${params.id}`,"put"));
+      return respObj;
+      
       }catch (error) {
        return error;
     } 
