@@ -290,3 +290,11 @@ export const buildShipmentSummaryItems = (text:any) => [
   { label: text.shipments.summary.lastUpdate, value: text.shipments.summary.lastUpdateValue },
   { label: text.shipments.summary.importSource, value: text.shipments.summary.importValue },
 ];
+
+export const norm = (s: string) => (s ?? "").trim();
+ export   const normSoft = (s: string) => (s ?? "").trim(); // für Felder, bei denen Innen-Leerzeichen ok sind
+   export const normCode = (s: string) => (s ?? "").replace(/\s+/g, "").trim(); // PLZ/Codes: Leerzeichen entfernen
+  export  const cleanString = (val:any) => {
+  if (!val) return "";
+  return String(val).replace(/\n/g, "");
+};

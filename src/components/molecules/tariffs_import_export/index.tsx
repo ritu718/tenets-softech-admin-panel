@@ -12,11 +12,13 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
+import { v4 as uuidv4 } from "uuid";
 import Papa from "papaparse";
 import { SHIPPER_RATES } from "@/data/dummy";
 import { sendShipperRates } from "@/dialogs/invoice_config/services";
 import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
-import { createTariffBase, createTariffRow } from "@/utils/helper";
+import { createTariffBase, createTariffRow, isEmpty, norm, normCode } from "@/utils/helper";
+import { prepareDataTariffs } from "@/utils/importHelper";
 
 
 export default function TariffsImportExport() {
@@ -63,62 +65,39 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
                       dispatch(setCarrierConfigs( carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
                     ))
                      };
-     const handleTariffImport = (file:any) => {
-      console.log("file: ", file);
-      
-            // if (!activeCarrier || !activeTariffCountryCode || !file) return;
-            Papa.parse(file, {
-              complete: (result) => {
-                const rows:any = result.data;
-                if (!rows || !rows.length) return;
-                const [header, ...dataRows] = rows;
+    const handleTariffImport = (file: any) => {
+  if (!activeCarrierId || !file) return;
 
-                console.log("rows: ",rows);
-                
-                // if (!header || header.length < 2) return;
-                // const zoneHeaders = header.slice(1).map((h:any) => (h || "").toString().trim());
+  Papa.parse(file, {
+    delimiter: ";",
+    skipEmptyLines: true,
 
-  const parsed:any = SHIPPER_RATES;
-                parsed.projectId = activeCarrierId;
-                
-                        sendShipperRates(parsed,dispatch);
-                // updateCarrier(activeCarrier.id, (carrier:any) => {
-                //   const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-                //   const current =
-                //     carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(text);
-                //   const existingZones = current.zones;
-                //   const zones = [...existingZones];
-                //   zoneHeaders.forEach((name:any) => {
-                //     if (!name) return;
-                //     if (!zones.some((z) => z.name === name)) {
-                //       zones.push(createTariffZone({ name }, name));
-                //     }
-                //   });
-                //   const rowsParsed = dataRows
-                //     .filter((cells:any) => cells.some((c:any) => c !== null && c !== undefined && `${c}`.trim() !== ""))
-                //     .map((cells:any) => {
-                //       const weight = cells[0] ? String(cells[0]).trim() : "";
-                //       const values:any = {};
-                //       zones.forEach((zone, idx) => {
-                //         const cellValue = cells[idx + 1] ?? "";
-                //         values[zone.id] = cellValue;
-                //       });
-                //       return createTariffRow(zones, { weight, values });
-                //     });
-                //   return {
-                //     ...carrier,
-                //     tariffs: {
-                //       countryCodes: codes,
-                //       byCountry: {
-                //         ...(carrier.tariffs?.byCountry || {}),
-                //         [activeTariffCountryCode]: { ...current, zones, rows: rowsParsed },
-                //       },
-                //     },
-                //   };
-                // });
-              },
-            });
-          };
+    complete: async (result) => {
+      try {
+       
+        const rows: any[] = result?.data||[];
+        if (!rows.length) return;
+         const rates: any = prepareDataTariffs(rows);
+
+
+console.log("rates: ",rates);
+// console.log("dataRows: ",dataRows);
+
+
+     
+        const payload = {
+          projectId: activeCarrierId,
+          rates
+        };
+        const resp = await sendShipperRates(payload, dispatch);
+        console.log("✅ POST RESPONSE", resp);
+
+      } catch (err) {
+        console.error("❌ CSV Import Error:", err);
+      }
+    },
+  });
+};
 
               const handleTariffRowAdd = () => {
     if (!activeCarrier || !activeTariffCountryCode) return;
