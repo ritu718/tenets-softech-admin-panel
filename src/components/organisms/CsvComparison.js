@@ -218,7 +218,7 @@ const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
   );
    
     useEffect(()=>{
-         getCarrierConfFomServer({userId},dispatch)
+         userId&&getCarrierConfFomServer({userId},dispatch)
     },[userId])
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");

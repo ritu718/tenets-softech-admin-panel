@@ -24,7 +24,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { useLanguage } from '@/hooks/useLanguage';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
-import { createTariffBase } from '@/utils/helper';
+import { createTariffBase, removeZipCode, updateTariffsnData } from '@/utils/helper';
 import { useGetTariffsChanges } from '@/hooks/useGetTariffsChanges';
 
 export default function TariffsZone() {
@@ -77,29 +77,20 @@ const handleZoneChange = (zoneId:any, field:any, value:any) => {
 
 
            
-               const handleZoneRemove = (zoneId:any) => {
+               const handleZoneRemove = (zoneData:any) => {
                   if (!activeCarrier || !activeTariffCountryCode) return;
-                  updateCarrier(activeCarrier.id, (carrier:any) => {
-                    const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-                    const current = carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(localeText);
-                    if (current.zones.length <= 1) return carrier;
-                    const zones = current.zones.filter((zone:any) => zone.id !== zoneId);
-                    const rows = current.rows.map((row:any) => {
-                      const nextValues = { ...row.values };
-                      delete nextValues[zoneId];
-                      return { ...row, values: nextValues };
-                    });
-                    return {
-                      ...carrier,
-                      tariffs: {
-                        countryCodes: codes,
-                        byCountry: {
-                          ...(carrier.tariffs?.byCountry || {}),
-                          [activeTariffCountryCode]: { ...current, zones, rows },
-                        },
-                      },
-                    };
-                  });
+                  console.log("zoneData: ",zoneData);
+                  
+                 const updateDataSelCountry = removeZipCode(tariffsData.rates[activeTariffCountryCode],zoneData.Id);
+const dataTmp = {
+  ...tariffsData,
+  rates: {
+    ...tariffsData.rates,
+    [activeTariffCountryCode]: updateDataSelCountry
+  }
+};
+
+ updateTariffsnData(dataTmp,dispatch)
                 };
 
 
@@ -119,7 +110,7 @@ const handleZoneChange = (zoneId:any, field:any, value:any) => {
                               value={zone.Zone}
                               onChange={(e) => handleZoneChange(zone.Id, "Zone", e.target.value)}
                             />
-                            <IconButton size="small" onClick={() => handleZoneRemove(zone.Id)}>
+                            <IconButton size="small" onClick={() => handleZoneRemove(zone)}>
                               <DeleteOutlineIcon fontSize="inherit" />
                             </IconButton>
                           </Stack>

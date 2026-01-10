@@ -9,10 +9,11 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
-import { createTariffBase, createTariffZone } from '@/utils/helper';
+import { addZipCode, createTariffBase, createTariffZone, updateTariffsnData } from '@/utils/helper';
 
 export default function TariffsAddZone() {
      const { localeText } =useLanguage();
+
              const dispatch = useAppDispatch();
           const pricingText = localeText.config.pricing;
            const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
@@ -33,26 +34,21 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
 
           const handleZoneAdd = () => {
                   
-                     updateCarrier(activeCarrier.id, (carrier:any) => {
-                       const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-                       const current = carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(localeText);
-                       const newZone = createTariffZone({}, `Zone ${current.zones.length + 1}`);
-                       const zones = [...current.zones, newZone];
-                       const rows = current.rows.map((row:any) => ({
-                         ...row,
-                         values: { ...row.values, [newZone.id]: "" },
-                       }));
-                       return {
-                         ...carrier,
-                         tariffs: {
-                           countryCodes: codes,
-                           byCountry: {
-                             ...(carrier.tariffs?.byCountry || {}),
-                             [activeTariffCountryCode]: { ...current, zones, rows },
-                           },
-                         },
-                       };
-                     });
+                    const updateDataSelCountry = addZipCode(tariffsData.rates[activeTariffCountryCode], {
+  Codes: "",
+  Zone: "DE-Zone 10"
+});
+const dataTmp = {
+  ...tariffsData,
+  rates: {
+    ...tariffsData.rates,
+    [activeTariffCountryCode]: updateDataSelCountry
+  }
+};
+
+ updateTariffsnData(dataTmp,dispatch)
+console.log("updatedData value is: ",updateDataSelCountry);
+
                    };
 
   return (
