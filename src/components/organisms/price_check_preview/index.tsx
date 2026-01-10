@@ -42,13 +42,13 @@ const PriceCheckPreview = ({
   onFixIssue,
 }:any) => {
 
- const {shipmentData} = useAppSelector((state) => state.shipmentData);
-  console.log("shipmentData value in price : ",shipmentData);
-  const shipmentDataForDisplay =shipmentData?.shipmentData||[];
+//  const {shipmentData} = useAppSelector((state) => state.shipmentData);
+//   console.log("shipmentData value in price : ",shipmentData);
+//   const shipmentDataForDisplay =shipmentData?.shipmentData||[];
 
   const {shipmentSummary} = useAppSelector((state) => state.shipmentSummary);
   console.log("shipmentSummary value in price : ",shipmentSummary);
-  const shipmentSummaryForDisplay =shipmentSummary?.shipmentSummary||[];
+  const shipmentSummaryForDisplay =shipmentSummary?.consolidatedShipmentData.DE||[];
 
  
 
@@ -115,18 +115,18 @@ const PriceCheckPreview = ({
             </TableRow>
           </TableHead>
           <TableBody>
-              {shipmentDataForDisplay.map((row:any, index:any) => {
+              {shipmentSummaryForDisplay.map((row:any, index:any) => {
               const overridePrice = overrides?.[row.shipmentId];
               const result = overridePrice
                 ? { price: overridePrice, carrierName: carriers[0]?.name || null, error: null }
                 : pickCarrierTariff(row.zipTo, row.weight);
               return (
-                <TableRow key={`${row.shipmentId}-${index}`}>
+                <TableRow key={`${row.ShipmentId}-${index}`}>
                   <TableCell>{row.ShipmentId}</TableCell>
                   <TableCell>{row.ZipCodeConsignee}</TableCell>
                   <TableCell>{row.ZipCodeShipper}</TableCell>
                   <TableCell>{row.EffectiveWeight}</TableCell>
-                  <TableCell>{result.price || "—"}</TableCell>
+                  <TableCell>{row.Price}</TableCell>
                   <TableCell
                     sx={{ color: result.error ? "error.main" : "success.main", cursor: result.error ? "pointer" : "default" }}
                   onClick={() => {
