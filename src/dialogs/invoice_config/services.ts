@@ -88,7 +88,7 @@ export const editShipperFreightCalc = async (params:any,dispatch?:any)=>{
       console.log("editShipperFreightCalc: ",params);
       const {message,extra,firebaseId,updatedAt,createdAt,...restParamas}=params;
       
-      const resp:any =await fetchApi(restParamas,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/${params.projectId}`,"put")
+      const resp:any =await fetchApi(restParamas,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/${params.id}`,"put")
        console.log("editShipperFreightCalc:  resp: ",resp);
       return getValidDataFromResp(resp);
       }catch (error) {
@@ -219,10 +219,10 @@ export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any
 }
 export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
-      //  return getValidDataFromResp(await fetchApi(undefined,`${URL_COMPANIES}/${params.userId}/invoices/8255256842`,"get"));
+       const resp= getValidDataFromResp(await fetchApi(undefined,`${URL_COMPANIES}/${params.userId}/invoices`,"get"));
      
      
-      const resp= getValidDataFromResp(await fetchApi(undefined,`${BASE_URL}/companies/692af2fe34df801237c8fdd1/invoices/8255256842`,"get"));
+      // const resp= getValidDataFromResp(await fetchApi(undefined,`${BASE_URL}/companies/692af2fe34df801237c8fdd1/invoices`,"get"));
  console.log("resp: getCompaniesData: ",resp);
 
  const respData = Array.isArray(resp)?resp:[resp];
