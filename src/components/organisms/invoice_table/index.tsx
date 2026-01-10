@@ -20,11 +20,12 @@ export default function InvoiceTable({}:any) {
      const dispatch = useAppDispatch();
     //  const selectedInvoice = useAppSelector((state:any) => state?.invoiceTable.selectedInvoice);
 const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
      console.log("filteredOverview: InvoiceTable: " ,filteredOverview);
 
       useEffect(()=>{
-        getCompaniesData({userId},dispatch)
-      },[])
+        getCompaniesData({userId,...invoiceFilter},dispatch)
+      },[invoiceFilter])
     
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [invoiceOverrides, setInvoiceOverrides] = useState<any>({});

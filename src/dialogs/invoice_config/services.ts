@@ -219,7 +219,13 @@ export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any
 }
 export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
-       const resp= getValidDataFromResp(await fetchApi(undefined,`${URL_COMPANIES}/${params.userId}/invoices`,"get"));
+    
+
+      const {userId,...filteredData}=params;
+        console.log("filteredData: ",filteredData);
+      const url =`${URL_COMPANIES}/${userId}/invoices`;
+
+       const resp= getValidDataFromResp(await fetchApi(undefined,url,"get"));
      
      
       // const resp= getValidDataFromResp(await fetchApi(undefined,`${BASE_URL}/companies/692af2fe34df801237c8fdd1/invoices`,"get"));
