@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
 import { setToleranceDialogOpen, setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
-import { editToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
+import { addEditToleranceData, editToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
 
 
@@ -47,7 +47,8 @@ function Tolerance() {
       isFirstRender.current = false;
       return;
     }
-    editToleranceData(toleranecData,dispatch)
+
+    addEditToleranceData(toleranecData,dispatch,userId)
     }
   },[toleranecData])
        const handleToleranceFieldChange = (field:any) => (event:any) => dispatch(setToleranecData({...toleranecData,[field]:event.target.value}));

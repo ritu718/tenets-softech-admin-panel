@@ -7,8 +7,8 @@ import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
 import { setIsApisCalledForSelectedCarier } from "@/store/features/all_apis_calling_status/AllApisCallingStatusSlice";
-import { removeInvalidKeys } from "@/utils/helper";
 import { setShipmentSummary } from "@/store/features/shipment_summary/shipmentSummarySlice";
+import { isEmpty, removeInvalidKeys } from "@/utils/helper";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
        const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
@@ -216,16 +216,33 @@ export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)
 
 export const getToleranceData = async (params:any,dispatch?:any)=>{
     try {
-     dispatch&&dispatch(setToleranecData( getValidDataFromResp(await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get"))))
+      const respObj=getValidDataFromResp(await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get"));
+      console.log("getToleranceData: respObj: ",respObj);
+      
+     dispatch&&dispatch(setToleranecData( respObj.status?{
+   
+    "freightCostsPercent": "",
+    "standardAdditionalCostsPercent":"",
+    "onlyPositiveDeviation": false,
+    "ancillaryTolerances": []
+  }:respObj))
       }catch (error) {
        return error;
     }
 }
 
-export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any)=>{
-       const resp:any = await fetchApi(params,`${URL_TOLERANCE}/${params.companyId}`,"put");
+export const addEditToleranceData = async (params:any,dispatch?:any, userId?:any)=>{
+  const isCompanyIdEmpty=isEmpty(params.companyId)
+const url=!isCompanyIdEmpty?`${URL_TOLERANCE}/${params.companyId}`:`${URL_TOLERANCE}`;
+console.log("editToleranceData: url: ",url);
+console.log("editToleranceData: params: ",params);
+if(isCompanyIdEmpty)
+{
+  params={...params,companyId:userId}
+}
+       const resp:any = await fetchApi(params,url,!isCompanyIdEmpty?"put":"post");
 
-       console.log("editToleranceData resp: ",resp);
+       console.log("editToleranceData: resp: ",resp);
        
     //  resp.success&&  onSuccess&&onSuccess(resp?.data)
 }
