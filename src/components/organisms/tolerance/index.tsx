@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Button,
   TextField,
@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useLanguage } from '@/hooks/useLanguage';
 import { setToleranceDialogOpen, setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
-import { addEditToleranceData, editToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
+import { addEditToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
 
 
@@ -22,13 +22,7 @@ function Tolerance() {
   const isFirstRender = useRef(true);
     const dispatch = useAppDispatch();
      const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
-          
-    const {toleranceDialogOpen,toleranecData} = useAppSelector((state:any) => state?.tolerances);
-
-    
-
-      console.log("toleranecData: " ,toleranecData);
-      
+    const {toleranceDialogOpen,toleranecData} = useAppSelector((state:any) => state?.tolerances); 
     const { localeText } =useLanguage();
    
   useEffect(()=>{
@@ -103,4 +97,4 @@ function Tolerance() {
   )
 }
 
-export default Tolerance;
+export default React.memo(Tolerance);

@@ -3,10 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: any = {
   overview: [],
-  filteredOverview:[],
+  invoiceData:[],
   configDialogOpen:false,
   addCarrierDialogOpen:false,
   carrierConfigs:[],
+  isInvoiceDataApiCalled:true,
 };
 
 
@@ -17,8 +18,8 @@ const invoiceDataSlice = createSlice({
     setOverview: (state, action: PayloadAction<any>) => {
       state.overview = action.payload;
     },
-     setFilteredOverview: (state, action: PayloadAction<any>) => {
-      state.filteredOverview = action.payload;
+     setInvoiceData: (state, action: PayloadAction<any>) => {
+      state.invoiceData = action.payload;
     } ,
  setConfigDialogOpen: (state, action: PayloadAction<any>) => {
       state.configDialogOpen = action.payload;
@@ -30,9 +31,11 @@ const invoiceDataSlice = createSlice({
       state.carrierConfigs = action.payload;
     } ,
     
-
+ setIsInvoiceDataApiCalled: (state, action: PayloadAction<any>) => {
+      state.isInvoiceDataApiCalled = action.payload;
+    } ,
   },
 });
 
-export const { setOverview, setFilteredOverview,setConfigDialogOpen,setCarrierConfigs } = invoiceDataSlice.actions;
+export const { setOverview, setInvoiceData,setConfigDialogOpen,setCarrierConfigs,setIsInvoiceDataApiCalled } = invoiceDataSlice.actions;
 export default invoiceDataSlice.reducer;

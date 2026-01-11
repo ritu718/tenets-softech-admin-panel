@@ -1,7 +1,7 @@
 import { BASE_URL, URL_COMPANIES, URL_SHIPMENT, URL_SHIPMENT_SUMMARY, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
-import { setCarrierConfigs, setFilteredOverview } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setCarrierConfigs, setInvoiceData, setIsInvoiceDataApiCalled } from "@/store/features/invoice_data/invoiceDataSlice";
 import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
@@ -259,6 +259,7 @@ export const getShipmentSummary = async (params:any,dispatch?:any)=>{
     }
 export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
+      dispatch(setIsInvoiceDataApiCalled(true))
       let {userId,...filteredData}=params;
       filteredData = removeInvalidKeys(filteredData);
       let url =`${URL_COMPANIES}/${userId}/invoices`;
@@ -268,10 +269,12 @@ url=`${url}?${queryString}`
 }
        const resp= getValidDataFromResp(await fetchApi(undefined,url,"get"));
  const respData = Array.isArray(resp)?resp:[resp];
-  dispatch&& dispatch(setFilteredOverview(respData))
+  dispatch&& dispatch(setInvoiceData(respData))
+    dispatch(setIsInvoiceDataApiCalled(false))
       return resp;
     } catch (error) {
-       dispatch&& dispatch(setFilteredOverview(null))
+        dispatch(setIsInvoiceDataApiCalled(false))
+       dispatch&& dispatch(setInvoiceData(null))
     } 
 }
 

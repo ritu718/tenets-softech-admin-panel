@@ -12,7 +12,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setCarrier, setFromDate, setInvoiceNumber, setToDate } from "@/store/features/invoice_filter/invoiceFilterSlice";
 
-export default function InvoiceFilter2() {
+ const InvoiceFilter2 =()=> {
        const dispatch = useAppDispatch();
        const {invoiceNumber,fromDate,toDate,carrier:selectedCarrierId} = useAppSelector((state:any) => state?.invoiceFilter);
     
@@ -81,3 +81,5 @@ export default function InvoiceFilter2() {
               </Box>
   )
 }
+
+export default React.memo(InvoiceFilter2)

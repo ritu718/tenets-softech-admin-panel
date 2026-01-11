@@ -1,4 +1,4 @@
-import React, { use, useEffect, useMemo, useState } from 'react'
+import React, {  useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Typography,
@@ -25,7 +25,7 @@ import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, 
 import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
 
-import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, getShipmentSummary, sendShipmentData } from './services';
+import {   getConfigDataAccoToSelCarrier, getShipmentData, getShipmentSummary } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 import { setActiveConfigTab } from '@/store/features/shipment_data/shipmentDataSlice';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview';
@@ -43,7 +43,7 @@ const buildPlaceholderConfigSections = (text:any) => {
 
 
 
-export default function  InvoiceConfig() {
+const  InvoiceConfig = () => {
  const { localeText,language } =useLanguage();
      const dispatch = useAppDispatch();
         
@@ -84,67 +84,6 @@ export default function  InvoiceConfig() {
     [localeText]
   );
 
-
-const reqObj = {
-  projectId: activeCarrierId,
-  shipmentData: [
-    {
-      Id: "71bc8e51-45dd-432d-934b-babc0b664deb",
-      id: "71bc8e51-45dd-432d-934b-babc0b664deb",
-      ShipmentId: "39134034331",
-      ShipmentDate: "2025-1-1",
-      ZipCodeShipper: "DE-21079",
-      ZipCodeConsignee: "1897",
-      City: "",
-      Country: "DE",
-      Length: 0.0,
-      Wide: 60.0,
-      Height: 0.0,
-      LoadingMeters: 0.0,
-      CubicMeters: 0.0,
-      PalletCount: 12,
-      PackagingType: "CC",
-      EffectiveWeight: 20.0,
-      Stackable: false,
-      StackFactor: 1,
-      Message: "",
-      Price: 0.0,
-      TotalPrice: 0.0,
-      projectType: 0
-    },
-    {
-      Id: "5cf975a0-807c-4679-b4f6-62b9d03dc99b",
-      id: "5cf975a0-807c-4679-b4f6-62b9d03dc99b",
-      ShipmentId: "39134034331",
-      ShipmentDate: "2025-1-1",
-      ZipCodeShipper: "DE-21079",
-      ZipCodeConsignee: "1897",
-      City: "",
-      Country: "DE",
-      Length: 0.0,
-      Wide: 80.0,
-      Height: 0.0,
-      PalletCount: 0,
-      PackagingType: "FP",
-      EffectiveWeight: 240.0,
-      Stackable: false,
-      StackFactor: 1,
-      Message: "",
-      Price: 0.0,
-      TotalPrice: 0.0,
-      projectType: 0
-    }
-  ],
-  append: true
-};
-
-
-
-
-
-
-
-
   useEffect(()=>{
     if (configDialogOpen&&!isEmpty(activeCarrierId)) {
        getConfigDataAccoToSelCarrier({projectId:activeCarrierId},dispatch)
@@ -177,14 +116,6 @@ const reqObj = {
     getShipmentData({ projectId: activeCarrierId }, dispatch);
   }
 };
-
-//        sendShipmentData(reqObj, dispatch, (respData?:any) => {
-//   console.log("shipment resp:", respData);
-// });
-     
-
-   
-
 
   return (
     
@@ -302,3 +233,5 @@ const reqObj = {
     
   )
 }
+
+export default  React.memo(InvoiceConfig)

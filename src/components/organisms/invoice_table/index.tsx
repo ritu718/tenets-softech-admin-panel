@@ -1,32 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React from 'react'
 import {
-
   Table,
-
   TableHead,
   TableBody,
   TableRow,
   TableCell,
   Chip,
- 
 } from "@mui/material";
 
 import { useLanguage } from '@/hooks/useLanguage';
-import {  useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getCompaniesData } from '@/dialogs/invoice_config/services';
+import {   useAppSelector } from "@/store/hooks";
 
-export default function InvoiceTable({}:any) {
-   const filteredOverview = useAppSelector((state) => state.invoiceData.filteredOverview);
-     const dispatch = useAppDispatch();
-    //  const selectedInvoice = useAppSelector((state:any) => state?.invoiceTable.selectedInvoice);
-const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
-const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
-          useEffect(()=>{
-        getCompaniesData({userId,...invoiceFilter},dispatch)
-      },[invoiceFilter])
-    
-    const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
-  
+ const InvoiceTable =()=> {
+   const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
       const { localeText,formatDate,formatCurrency } =useLanguage();
      
        const renderStatusChip = (status:any) => (
@@ -45,8 +31,6 @@ const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
             }}
           />
         );
-
-
            
             
   return (
@@ -63,15 +47,17 @@ const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
                  </TableRow>
                </TableHead>
                <TableBody>
-                 {filteredOverview?.map((row:any, idx:any) => (
+                 {invoiceData?.map((row:any, idx:any) => {
+                  
+                  console.log("row value is: ",row);
+                  
+                  return (
                    <TableRow
                      key={idx}
                      sx={{ cursor: "pointer", "&:hover": { background: "#f3f3f3" } }}
-                     onClick={() =>
-                    setSelectedInvoice   ({
-                         rechnungsnummer: row.rechnungsnummer,
-                         projektId: row.projekt_id,
-                       })
+                     onClick={() =>{
+
+                     }
                      }
                    >
                      <TableCell>{row.invoice_number}</TableCell>
@@ -86,8 +72,11 @@ const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
                      {renderStatusChip(row.status)}
                    </TableCell>
                    </TableRow>
-                 ))}
+                 )})}
                </TableBody>
              </Table>
   )
 }
+
+
+export default React.memo(InvoiceTable);
