@@ -16,13 +16,16 @@ import {
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
  import {
-  setConfigDialogOpen,setCarrierConfigs
+  setConfigDialogOpen
 } from "@/store/features/invoice_data/invoiceDataSlice";
 import CarrierPricingConfigurator from '@/components/organisms/carrier_pricing_configurator';
-import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, buildShipmentSummaryItems, createCarrierConfig, isEmpty } from '@/utils/helper';
+
+import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, buildShipmentSummaryItems, isEmpty } from '@/utils/helper';
+
 import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
-import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, getShipmentSummary, sendShipmentData } from './services';
+
+import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, sendShipmentData } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 import { setActiveConfigTab } from '@/store/features/shipment_data/shipmentDataSlice';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview';
@@ -40,16 +43,13 @@ const buildPlaceholderConfigSections = (text:any) => {
 
 
 
-export default function InvoiceConfig() {
-
-
+export default function  InvoiceConfig() {
  const { localeText,language } =useLanguage();
      const dispatch = useAppDispatch();
-         const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+        
       const configDialogOpen = useAppSelector((state) => state.invoiceData.configDialogOpen);
       const carrierConfigs = useAppSelector((state) => state.invoiceData.carrierConfigs);
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
-  // const [activeConfigTab, setActiveConfigTab] = useState("pricing");
   const activeConfigTab = useAppSelector((state) => state.shipmentData.activeConfigTab);
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
@@ -143,12 +143,7 @@ const reqObj = {
 
 
 
-  useEffect(()=>{
-    if (configDialogOpen) {
-       getCarrierConfFomServer({userId},dispatch)
-      
-    }  
-  },[configDialogOpen])
+
 
   useEffect(()=>{
     if (configDialogOpen&&!isEmpty(activeCarrierId)) {
@@ -213,10 +208,7 @@ const reqObj = {
                     {activeConfigSection.description}
                   </Typography>
                   {activeConfigSection.key === "pricing" ? (
-                    <CarrierPricingConfigurator
-                      text={localeText}
-                      countryOptions={countryOptions}
-                    />
+                    <CarrierPricingConfigurator />
                   ) : activeConfigSection.key === "price-check" ? (
                     <PriceCheckPreview
                       text={localeText}

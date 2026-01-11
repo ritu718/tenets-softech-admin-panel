@@ -1,5 +1,9 @@
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 import { BASE_COUNTRY_OPTIONS, MIN_WEIGHT_DEFAULTS, SHIPMENT_SAMPLE_ROWS_BASE } from "@/constants/data";
+import { editShipperFreightCalc, editShipperRates } from "@/dialogs/invoice_config/services";
+import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
+import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Function to check the value is numeric or not.
@@ -290,3 +294,111 @@ export const buildShipmentSummaryItems = (text:any) => [
   { label: text.shipments.summary.lastUpdate, value: text.shipments.summary.lastUpdateValue },
   { label: text.shipments.summary.importSource, value: text.shipments.summary.importValue },
 ];
+
+export const norm = (s: string) => (s ?? "").trim();
+ export   const normSoft = (s: string) => (s ?? "").trim(); // für Felder, bei denen Innen-Leerzeichen ok sind
+   export const normCode = (s: string) => (s ?? "").replace(/\s+/g, "").trim(); // PLZ/Codes: Leerzeichen entfernen
+  export  const cleanString = (val:any) => {
+  if (!val) return "";
+  return String(val).replace(/\n/g, "");
+};
+
+export const removeInvalidKeys = (obj:any) =>
+  Object.fromEntries(
+    Object.entries(obj).filter(
+      ([_, value]) =>
+        value !== null &&
+        value !== undefined &&
+        value !== "" &&
+        value !== "all"
+    )
+  );
+export const updateFreightCalculationData =(updatedFreightBasisData:any,dispatch:any)=>
+{
+dispatch(setFreightBasisData(updatedFreightBasisData));  
+         editShipperFreightCalc(updatedFreightBasisData,dispatch)
+}
+
+export const updateTariffsnData =(tariffsDataTmp:any,dispatch:any)=>
+{
+dispatch(setTariffsData(tariffsDataTmp));
+         editShipperRates(tariffsDataTmp,dispatch)
+}
+
+
+
+export const insertNewWeight = (data:any) => {
+  const keys = Object.keys(data).map(Number).sort((a,b)=>a-b);
+  const lastKey = keys[keys.length - 1];   // 2500
+  const newKey = lastKey + 100;            // 2600 (or any step you want)
+
+  // Get last structure
+  const lastObj = data[lastKey];
+
+  // Create empty Prices
+  const clearedPrices:any = {};
+  Object.keys(lastObj.Prices).forEach(id => {
+    clearedPrices[id] = "";
+  });
+
+  return {
+    ...data,
+    [newKey]: {
+      Id: uuidv4(),  // new id
+      Prices: clearedPrices    // cleared values
+    }
+  };
+};
+
+export const removeZipCode = (data:any, zipId:string) => {
+
+  return {
+    ...data,
+    ZipCodes: data.ZipCodes.filter((z:any) => z.Id !== zipId),
+    Weights: Object.keys(data.Weights).reduce((acc:any, weightKey) => {
+      const weightObj = data.Weights[weightKey];
+
+      const updatedPrices = { ...weightObj.Prices };
+      delete updatedPrices[zipId];
+
+      acc[weightKey] = {
+        ...weightObj,
+        Prices: updatedPrices
+      };
+
+      return acc;
+    }, {})
+  };
+};
+
+export const addZipCode = (data:any, newZip:any) => {
+
+  const newZipId = uuidv4();
+
+  const zipObj = {
+    Id: newZipId,
+    Codes: newZip.Codes,
+    Zone: newZip.Zone
+  };
+
+  return {
+    ...data,
+
+    // 1. Add zipcode
+    ZipCodes: [...data.ZipCodes, zipObj],
+
+    // 2. Add empty price for every weight
+    Weights: Object.keys(data.Weights).reduce((acc:any, key) => {
+
+      acc[key] = {
+        ...data.Weights[key],
+        Prices: {
+          ...data.Weights[key].Prices,
+          [newZipId]: ""   // empty value
+        }
+      };
+
+      return acc;
+    }, {})
+  };
+};

@@ -24,3 +24,6 @@ export const URL_SHIPMENT_SUMMARY = `${BASE_URL}/summary`;
 
 
 // http://localhost:8085/api/v1/summary/692af31934df801237c8fdda
+//invoice table
+export const URL_COMPANIES = `${BASE_URL}/companies`;
+

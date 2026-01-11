@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, {  useMemo } from "react";
 import {
   Box,
   Button,
@@ -6,58 +6,55 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel,
-  
+  InputLabel
 } from "@mui/material";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-
-
-const ALL_SPEDITIONS_VALUE = "__all__";
+import { setCarrier, setFromDate, setInvoiceNumber, setToDate } from "@/store/features/invoice_filter/invoiceFilterSlice";
 
 export default function InvoiceFilter2() {
-    const [dateTo, setDateTo] = useState("");
-    const [dateFrom, setDateFrom] = useState("");
-    const [search, setSearch] = useState("");
-     
-     const [speditionFilter, setSpeditionFilter] = useState(ALL_SPEDITIONS_VALUE );
-   
-      const overview = useAppSelector((state) => state.invoiceData.overview);
+       const dispatch = useAppDispatch();
+       const {invoiceNumber,fromDate,toDate,carrier:selectedCarrierId} = useAppSelector((state:any) => state?.invoiceFilter);
+    
+   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
+      
      const { localeText } =useLanguage();
-      const speditions = useMemo(() => {
-    const all = overview.map((o :any  ) => o.spedition || "");
-    return [ALL_SPEDITIONS_VALUE, ...Array.from(new Set(all))];
-  }, [overview]);
+
+ const carriersForDisplay = useMemo(() => {
+    return [{name:localeText.overview.filters.all,id:"all"}, ...carriers];
+  }, [carriers,localeText]);
+  
   return (
     
      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
                 <FormControl sx={{ minWidth: 200 }}>
                   <InputLabel>{localeText.overview.filters.carrier}</InputLabel>
                   <Select
-                    value={speditionFilter}
+                    value={selectedCarrierId}
                     label={localeText.overview.filters.carrier}
-                    onChange={(e) => setSpeditionFilter(e.target.value)}
+                    onChange={(e) => dispatch(setCarrier(e.target.value))}
                   >
-                    {speditions.map((sp : any, i) => (
-                      <MenuItem key={i} value={sp}>
-                        {sp === ALL_SPEDITIONS_VALUE ? localeText.overview.filters.all : sp || "—"}
+                    {carriersForDisplay.map((carrierItem : any ) => (
+                      <MenuItem key={carrierItem?.id} value={carrierItem.id}>
+                        {carrierItem.name }
                       </MenuItem>
                     ))}
                   </Select>
+                  
                 </FormControl>
     
                 <TextField
                   label={localeText.overview.filters.invoiceNumber}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={invoiceNumber}
+                  onChange={(e) => dispatch(setInvoiceNumber(e.target.value))}
                 />
     
                 <TextField
                   label={localeText.overview.filters.fromDate}
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
+                  value={fromDate}
+                  onChange={(e) => dispatch(setFromDate(e.target.value))}
                   sx={{ minWidth: 170 }}
                 />
     
@@ -65,18 +62,18 @@ export default function InvoiceFilter2() {
                   label={localeText.overview.filters.toDate}
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
+                  value={toDate}
+                  onChange={(e) => dispatch(setToDate(e.target.value))}
                   sx={{ minWidth: 170 }}
                 />
     
                 <Button
                   variant="text"
                   onClick={() => {
-                    setDateFrom("");
-                    setDateTo("");
+                    setFromDate("");
+                    setToDate("");
                   }}
-                  disabled={!dateFrom && !dateTo}
+                  disabled={!fromDate && !toDate}
                   sx={{ alignSelf: "center" }}
                 >
                   {localeText.overview.filters.clear}

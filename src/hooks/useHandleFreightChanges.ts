@@ -1,19 +1,15 @@
-import { LANGUAGE_TEXT } from "@/constants/data";
-import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
+
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useCallback, useMemo, useState } from "react";
+import {  updateFreightCalculationData } from "@/utils/helper";
+
 
 export function useHandleFreightChanges() {
-
 
    const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelector((state) => state.freightBasis);
     const dispatch = useAppDispatch();
     
       const handleFreightChange = (key:any, value:any) => {
-        console.log("key is: ",key);
-        console.log("value is: ",value);
-        
-        
+                
             const updatedFreightBasisData = {
     ...freightBasisData,
     countries: {
@@ -24,9 +20,10 @@ export function useHandleFreightChanges() {
       },
     },
   };
-              dispatch(setFreightBasisData(updatedFreightBasisData));
+              updateFreightCalculationData(updatedFreightBasisData,dispatch)
             };
   
+           
 
 
   return { handleFreightChange };

@@ -133,8 +133,6 @@ export const fetchApi = async (data={}, apiUrl, methodType, extraHeades={}, abor
       ) {
 
         formData = JSON.stringify(data);
-        console.log("formData: ",formData);
-        
       } else {
         formData = getFormDataFromObject(data);
       }

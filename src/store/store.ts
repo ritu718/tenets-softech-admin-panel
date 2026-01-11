@@ -10,6 +10,8 @@ import surchargesReducer from "./features/surcharges/SurchargesSlice";
 import shipmentDataReducer from "./features/shipment_data/shipmentDataSlice";
 import shipmentSummaryReducer from "./features/shipment_summary/shipmentSummarySlice";
 
+import AllApisCallingStatusReducer from "./features/all_apis_calling_status/AllApisCallingStatusSlice";
+ import invoiceFilterReducer from "./features/invoice_filter/invoiceFilterSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -24,7 +26,8 @@ export const makeStore = () =>
       surcharges: surchargesReducer,
       shipmentData:shipmentDataReducer,
       shipmentSummary:shipmentSummaryReducer,
-      
+      allApisCallingStatus:AllApisCallingStatusReducer,
+      invoiceFilter:invoiceFilterReducer
     },
   });
 

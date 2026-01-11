@@ -1,11 +1,13 @@
-import { URL_SHIPMENT, URL_SHIPMENT_SUMMARY, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
+import { BASE_URL, URL_COMPANIES, URL_SHIPMENT, URL_SHIPMENT_SUMMARY, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
-import { setCarrierConfigs } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setCarrierConfigs, setFilteredOverview } from "@/store/features/invoice_data/invoiceDataSlice";
 import { setSurchargesData } from "@/store/features/surcharges/SurchargesSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
+import { setIsApisCalledForSelectedCarier } from "@/store/features/all_apis_calling_status/AllApisCallingStatusSlice";
+import { removeInvalidKeys } from "@/utils/helper";
 import { setShipmentSummary } from "@/store/features/shipment_summary/shipmentSummarySlice";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
@@ -71,13 +73,25 @@ export const getShipperFreightCalc = async (params:any,dispatch?:any)=>{
 }
 
 
-
 export const sendShipperFreightCalc = async (params:any,dispatch?:any)=>{
     try {
       console.log("sendShipperFreightCalc: ",params);
       
       const resp:any =await fetchApi(params,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}`,"post")
        console.log("sendShipperFreightCalc:  resp: ",resp);
+      return getValidDataFromResp(resp);
+      }catch (error) {
+       return error;
+    } 
+}
+
+export const editShipperFreightCalc = async (params:any,dispatch?:any)=>{
+    try {
+      console.log("editShipperFreightCalc: ",params);
+      const {message,extra,firebaseId,updatedAt,createdAt,...restParamas}=params;
+      
+      const resp:any =await fetchApi(restParamas,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/${params.id}`,"put")
+       console.log("editShipperFreightCalc:  resp: ",resp);
       return getValidDataFromResp(resp);
       }catch (error) {
        return error;
@@ -100,8 +114,21 @@ export const sendShipperRates = async (params:any,dispatch?:any)=>{
     try {
       const resp:any =await fetchApi(params,`${URL_SHIPPER_RATES}`,"post")
        console.log("sendShipperRates:  resp: ",resp);
-      return getValidDataFromResp(resp);
-    
+      const rates= getValidDataFromResp(resp);
+      console.log("rates data : ",rates);
+      
+     dispatch&&dispatch(setTariffsData(rates));
+     return rates;
+      }catch (error) {
+       return error;
+    } 
+}
+
+export const editShipperRates = async (params:any,dispatch?:any)=>{
+    try {
+      const respObj= getValidDataFromResp(await fetchApi(params,`${URL_SHIPPER_RATES}/${params.id}`,"put"));
+      return respObj;
+      
       }catch (error) {
        return error;
     } 
@@ -123,7 +150,10 @@ export const sendShipperExtraCost = async (params:any,dispatch?:any)=>{
       const resp:any =await fetchApi(params,`${URL_SHIPPER_EXTRA_COSTS}`,"post")
        console.log("sendShipperExtraCost:  resp: ",resp);
        
-     return getValidDataFromResp(resp);
+     const dataValue= getValidDataFromResp(resp);
+     console.log("dataValue: ",dataValue);
+     
+      dispatch(setSurchargesData(dataValue));
      
       }catch (error) {
        return error;
@@ -141,6 +171,7 @@ console.log("getValidDataFromResp: ",resp);
 export const getConfigDataAccoToSelCarrier = async (params: { projectId: string },dispatch?:any)=>{
     try {
        
+      dispatch(setIsApisCalledForSelectedCarier(true))
        const promisesRequests = [
        getShipperFreightCalc(params),
        getShipperRates(params),
@@ -151,7 +182,7 @@ export const getConfigDataAccoToSelCarrier = async (params: { projectId: string 
         dispatch&&dispatch(setFreightBasisData(freightCalc));
          dispatch&&dispatch(setTariffsData(rates));
           dispatch&&dispatch(setSurchargesData(extraCost));
-          
+            dispatch(setIsApisCalledForSelectedCarier(false))
           console.log("getConfigDataAccoToSelCarrier: rates: ",rates  );
           console.log("getConfigDataAccoToSelCarrier: extraCost: ",extraCost  );
 
@@ -185,20 +216,17 @@ export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)
 
 export const getToleranceData = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get")
-       console.log("getToleranceData:  resp: ",resp);
-     const data =  getValidDataFromResp(resp);
-     console.log("data:  resp: ",data);
-     dispatch&&dispatch(setToleranecData(data))
+     dispatch&&dispatch(setToleranecData( getValidDataFromResp(await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get"))))
       }catch (error) {
        return error;
     }
 }
 
 export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any)=>{
-  console.log("params for edit ToleranceData: ",params);
-  
-    //    const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
+       const resp:any = await fetchApi(params,`${URL_TOLERANCE}/${params.companyId}`,"put");
+
+       console.log("editToleranceData resp: ",resp);
+       
     //  resp.success&&  onSuccess&&onSuccess(resp?.data)
 }
 
@@ -213,3 +241,22 @@ export const getShipmentSummary = async (params:any,dispatch?:any)=>{
         return error;
       }
     }
+export const getCompaniesData = async (params:any,dispatch?:any)=>{
+    try {
+      let {userId,...filteredData}=params;
+      filteredData = removeInvalidKeys(filteredData);
+      let url =`${URL_COMPANIES}/${userId}/invoices`;
+if(Object.keys(filteredData).length>0){
+  const queryString = new URLSearchParams(filteredData).toString();
+url=`${url}?${queryString}`
+}
+       const resp= getValidDataFromResp(await fetchApi(undefined,url,"get"));
+ const respData = Array.isArray(resp)?resp:[resp];
+  dispatch&& dispatch(setFilteredOverview(respData))
+      return resp;
+    } catch (error) {
+       dispatch&& dispatch(setFilteredOverview(null))
+    } 
+}
+
+ 

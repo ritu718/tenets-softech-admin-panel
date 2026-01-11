@@ -18,38 +18,18 @@ import { setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
 
 export default function ToleranceSurcharge() {
     const dispatch = useAppDispatch();
-   
-     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
-              
-        const {toleranceDialogOpen,toleranecData} = useAppSelector((state:any) => state?.tolerances);
+        const {toleranecData} = useAppSelector((state:any) => state?.tolerances);
     console.log("toleranecData: ",toleranecData);
-    
-    
         const {ancillaryTolerances} = toleranecData||{};
-
     const { localeText } =useLanguage();
-     const [toleranceSettings, setToleranceSettings] = useState({
-        freightPercent: 0,
-        defaultSurchargePercent: 0,
-        surchargeOverrides: [],
-        onlyNegativeMismatch: false,
-      });
-
       const handleRemoveOverride = (itemObj:any) => {
         const ancillaryTolerancesTmp =[...ancillaryTolerances,].filter(
   (item: any) => item !== itemObj
 );
 dispatch(setToleranecData({...toleranecData,ancillaryTolerances:ancillaryTolerancesTmp}))
-   console.log("item value is: ",itemObj);
-   console.log("ancillaryTolerancesTmp: ",ancillaryTolerancesTmp);
-   
    
   };
-  const createOverrideEntry = () => ({
-    id: `${Date.now()}-${Math.random()}`,
-    label: "",
-    percent: 0,
-  });
+  
 
   const handleAddOverride = () => {
    dispatch(setToleranecData({...toleranecData,ancillaryTolerances:[...ancillaryTolerances,{designation: '', tolerancePercent:"" }]}))

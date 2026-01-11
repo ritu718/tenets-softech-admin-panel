@@ -27,15 +27,14 @@ import {
 import { useLanguage } from '@/hooks/useLanguage';
 import { useGetSurchargesChange } from '@/hooks/useGetSurchargesChange';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useHandleSurchargesChanges } from '@/hooks/useHandleSurchargesChanges';
 
 export default function SurchargesTable() {
+ const {handleSurchargeRowChange}= useHandleSurchargesChanges();
      const { pricingText } =useLanguage();
      const {Base}= useGetSurchargesChange();
 
-      const handleSurchargeRowChange = (rowId:any, field:any, value:any) => {
-                 
-               };
-
+      
                  
                      const handleSurchargeRemove = (rowId:any) => {
                        
@@ -54,20 +53,20 @@ export default function SurchargesTable() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {(Base || []).map((row:any) => (
+                      {(Base || []).map((row:any,index:any) => (
                         <TableRow key={row?.id}>
                           <TableCell>
                             <TextField
                               size="small"
                               value={row.Term}
-                              onChange={(e) => handleSurchargeRowChange(row?.id, "label", e.target.value)}
+                              onChange={(e) => handleSurchargeRowChange(index, "Term", e.target.value)}
                             />
                           </TableCell>
                           <TableCell>
                             <TextField
                               size="small"
                               value={row.Value}
-                              onChange={(e) => handleSurchargeRowChange(row.id, "amount", e.target.value)}
+                              onChange={(e) => handleSurchargeRowChange(index, "Value", e.target.value)}
                               placeholder={pricingText.surcharges.valuePlaceholder}
                             />
                           </TableCell>
@@ -75,7 +74,7 @@ export default function SurchargesTable() {
                             <Select
                               size="small"
                               value={row.Unit || "€"}
-                              onChange={(e) => handleSurchargeRowChange(row.id, "unit", e.target.value)}
+                              onChange={(e) => handleSurchargeRowChange(index, "Unit", e.target.value)}
                             >
                               <MenuItem value="€">€</MenuItem>
                               <MenuItem value="%">%</MenuItem>
@@ -85,7 +84,7 @@ export default function SurchargesTable() {
                             <Select
                               size="small"
                               value={row?.Type || "flat"}
-                              onChange={(e) => handleSurchargeRowChange(row.id, "type", e.target.value)}
+                              onChange={(e) => handleSurchargeRowChange(index, "Type", e.target.value)}
                             >
                               <MenuItem value="flat">{pricingText.surcharges.types.flat}</MenuItem>
                               <MenuItem value="percent">{pricingText.surcharges.types.percent}</MenuItem>
@@ -96,7 +95,7 @@ export default function SurchargesTable() {
                               size="small"
                               value={row.Description || ""}
                               onChange={(e) =>
-                                handleSurchargeRowChange(row.id, "Description", e.target.value)
+                                handleSurchargeRowChange(index, "Description", e.target.value)
                               }
                               fullWidth
                             />

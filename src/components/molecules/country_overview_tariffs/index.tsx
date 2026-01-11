@@ -73,7 +73,6 @@ const code= freightCountryCodesTmp.length>0?freightCountryCodesTmp[indexTmp]:"";
    dispatch( setTariffsCountryIndex(tariffsCountryCodes.length+1));
    dispatch(setTariffsCountryCodes([...tariffsCountryCodes, code]));
     setSelectedCountryOption(code);
-   
   };
 
   return (

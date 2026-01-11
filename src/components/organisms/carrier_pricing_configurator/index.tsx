@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { BASE_COUNTRY_OPTIONS } from "@/constants/data";
-import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 import InvoiceSpedition from "@/dialogs/invoice_spedition";
 import { useLanguage } from "@/hooks/useLanguage";
 import AddCarrier from "@/components/molecules/add_carrier";
@@ -18,9 +17,7 @@ import FreightBasis from "@/components/molecules/freight_basis";
 import Tariffs from "../tariffs";
 import Surcharges from "../surcharges";
 
- const CarrierPricingConfigurator = ({
-  countryOptions,
-}:any) => {
+ const CarrierPricingConfigurator = () => {
  const { localeText: text } =useLanguage();
   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
        const dispatch = useAppDispatch();
@@ -30,54 +27,12 @@ import Surcharges from "../surcharges";
   const [addCarrierDialogOpen, setAddCarrierDialogOpen] = useState(false);
  
 
-  const resolvedCountryOptions =
-    countryOptions && countryOptions.length
-      ? countryOptions
-      : BASE_COUNTRY_OPTIONS.map((option:any) => ({
+  const resolvedCountryOptions =BASE_COUNTRY_OPTIONS.map((option:any) => ({
           ...option,
           label: option.code,
         }));
   const activeCarrier =
     carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-  const freightCountryCodes =
-    (activeCarrier && activeCarrier.freight?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const [freightCountryIndex, setFreightCountryIndex] = useState(0);
-
-  const tariffCountryCodes =
-    (activeCarrier && activeCarrier.tariffs?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const [tariffCountryIndex, setTariffCountryIndex] = useState(0);
-
-
-  const surchargeCountryCodes =
-    (activeCarrier && activeCarrier.surcharges?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-  const [surchargeCountryIndex, setSurchargeCountryIndex] = useState(0);
-
-  
-  useEffect(() => {
-    setFreightCountryIndex(0);
-  }, [activeCarrierId]);
-  useEffect(() => {
-    if (freightCountryIndex > freightCountryCodes.length - 1) {
-      setFreightCountryIndex(Math.max(freightCountryCodes.length - 1, 0));
-    }
-  }, [freightCountryCodes.length, freightCountryIndex]);
-  useEffect(() => {
-    setTariffCountryIndex(0);
-  }, [activeCarrierId]);
-  useEffect(() => {
-    if (tariffCountryIndex > tariffCountryCodes.length - 1) {
-      setTariffCountryIndex(Math.max(tariffCountryCodes.length - 1, 0));
-    }
-  }, [tariffCountryCodes.length, tariffCountryIndex]);
-  useEffect(() => {
-    setSurchargeCountryIndex(0);
-  }, [activeCarrierId]);
-  useEffect(() => {
-    if (surchargeCountryIndex > surchargeCountryCodes.length - 1) {
-      setSurchargeCountryIndex(Math.max(surchargeCountryCodes.length - 1, 0));
-    }
-  }, [surchargeCountryCodes.length, surchargeCountryIndex]);
-
 
 
   const handleAddCarrier = () => {
@@ -87,7 +42,6 @@ import Surcharges from "../surcharges";
   const handleRemoveCarrier = (carrierId:any) => {
 deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
   };
-  
   
 
   return (
@@ -108,10 +62,8 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
 
          <InvoiceSpedition 
   activeCarrierId={activeCarrierId}
-  countryOptions={countryOptions}
     addCarrierDialogOpen={addCarrierDialogOpen}
      setAddCarrierDialogOpen={setAddCarrierDialogOpen}
-    
     />
       </Stack>
 
@@ -138,15 +90,8 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
       {activeCarrier ? (
         <Stack spacing={2}>
           <FreightBasis/>
-          
-             <Tariffs/>
-      
-        <Surcharges
-               activeCarrierId ={activeCarrierId}
-               countryOptions = {countryOptions}
-            
-            />
-
+          <Tariffs/>
+        <Surcharges />
         </Stack>
       ) : (
         <Typography variant="body2">{pricingText.empty}</Typography>

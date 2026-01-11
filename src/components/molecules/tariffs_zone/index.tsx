@@ -24,82 +24,60 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { useLanguage } from '@/hooks/useLanguage';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
-import { createTariffBase } from '@/utils/helper';
+import { createTariffBase, removeZipCode, updateTariffsnData } from '@/utils/helper';
 import { useGetTariffsChanges } from '@/hooks/useGetTariffsChanges';
 
 export default function TariffsZone() {
      const { pricingText,localeText } =useLanguage();
-     const { ZipCodes }= useGetTariffsChanges();
+     const { ZipCodes,countryCode }= useGetTariffsChanges();
   const dispatch = useAppDispatch();
     const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
          const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 const {tariffsCountryCodes, tariffsCountryIndex,tariffsData} = useAppSelector((state) => state.tariffs);
  const activeCarrier =
     carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-     const activeTariffCountryCode =
-               tariffsCountryCodes[tariffsCountryIndex] ||
-               tariffsCountryCodes[0] ||
-               NEBENKOSTEN_INITIAL_COUNTRIES[0];
-        const activeTariff =
-          (activeCarrier && activeCarrier.tariffs?.byCountry?.[activeTariffCountryCode]) || null;
    
-         const updateCarrier = (carrierId:any, updater:any) => {
-                     dispatch(setCarrierConfigs( carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
-                   ))
-                    };
+        
+       
 const handleZoneChange = (zoneId:any, field:any, value:any) => {
-           if (!activeCarrier || !activeTariffCountryCode) return;
-           updateCarrier(activeCarrier.id, (carrier:any) => {
-             const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-             const current = carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(localeText);
-             const zones = current.zones.map((zone:any) =>
-               zone.id === zoneId ? { ...zone, [field]: value } : zone
-             );
-             const rows = current.rows.map((row:any) => ({
-               ...row,
-               values: zones.reduce((acc:any, zone:any) => {
-                 acc[zone.id] = row.values[zone.id] || "";
-                 return acc;
-               }, {}),
-             }));
-             return {
-               ...carrier,
-               tariffs: {
-                 countryCodes: codes,
-                 byCountry: {
-                   ...(carrier.tariffs?.byCountry || {}),
-                   [activeTariffCountryCode]: { ...current, zones, rows },
-                 },
-               },
-             };
-           });
+           if (!activeCarrier || !countryCode) return;
+
+const tariffsDataTmp: any = {
+  ...tariffsData,
+  rates: {
+    ...tariffsData.rates,
+    [countryCode]: {
+      ...tariffsData.rates[countryCode],
+      ZipCodes: tariffsData.rates[countryCode].ZipCodes.map(
+        (zoneItem: any) =>
+          zoneItem.Id === zoneId
+            ? { ...zoneItem, [field]: value }
+            : zoneItem
+      ),
+    },
+  },
+};    
+
+ updateTariffsnData(tariffsDataTmp,dispatch)
+           
          };
 
 
            
-               const handleZoneRemove = (zoneId:any) => {
-                  if (!activeCarrier || !activeTariffCountryCode) return;
-                  updateCarrier(activeCarrier.id, (carrier:any) => {
-                    const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-                    const current = carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(localeText);
-                    if (current.zones.length <= 1) return carrier;
-                    const zones = current.zones.filter((zone:any) => zone.id !== zoneId);
-                    const rows = current.rows.map((row:any) => {
-                      const nextValues = { ...row.values };
-                      delete nextValues[zoneId];
-                      return { ...row, values: nextValues };
-                    });
-                    return {
-                      ...carrier,
-                      tariffs: {
-                        countryCodes: codes,
-                        byCountry: {
-                          ...(carrier.tariffs?.byCountry || {}),
-                          [activeTariffCountryCode]: { ...current, zones, rows },
-                        },
-                      },
-                    };
-                  });
+               const handleZoneRemove = (zoneData:any) => {
+                  if (!activeCarrier || !countryCode) return;
+                  console.log("zoneData: ",zoneData);
+                  
+                 const updateDataSelCountry = removeZipCode(tariffsData.rates[countryCode],zoneData.Id);
+const dataTmp = {
+  ...tariffsData,
+  rates: {
+    ...tariffsData.rates,
+    [countryCode]: updateDataSelCountry
+  }
+};
+
+ updateTariffsnData(dataTmp,dispatch)
                 };
 
 
@@ -119,7 +97,7 @@ const handleZoneChange = (zoneId:any, field:any, value:any) => {
                               value={zone.Zone}
                               onChange={(e) => handleZoneChange(zone.Id, "Zone", e.target.value)}
                             />
-                            <IconButton size="small" onClick={() => handleZoneRemove(zone.Id)}>
+                            <IconButton size="small" onClick={() => handleZoneRemove(zone)}>
                               <DeleteOutlineIcon fontSize="inherit" />
                             </IconButton>
                           </Stack>

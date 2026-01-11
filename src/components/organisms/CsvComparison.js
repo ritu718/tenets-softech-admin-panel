@@ -39,10 +39,10 @@ import InvoiceTable from "./invoice_table";
 import {
   setOverview
 } from "@/store/features/invoice_data/invoiceDataSlice";
-import { useFilteredOVerview } from "@/hooks/useFilteredOVerview";
 import InvoiceConfig from "@/dialogs/invoice_config";
 import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
 import Tolerance from "./tolerance";
+import { getCarrierConfFomServer } from "@/dialogs/invoice_config/services";
 
 
 
@@ -208,15 +208,18 @@ const buildDefaultMinWeights = () => MIN_WEIGHT_DEFAULTS.map((row) => createMinW
 
 const CsvComparison = ({ projektId, onBack, mockEntries = [] }) => {
 
-  useFilteredOVerview();
+  
    const dispatch = useAppDispatch();
-   
+     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
   const { localeText,language } =useLanguage();
   const placeholderSections = useMemo(
     () => buildPlaceholderConfigSections(localeText),
     [localeText]
   );
    
+    useEffect(()=>{
+         userId&&getCarrierConfFomServer({userId},dispatch)
+    },[userId])
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
   const [activeConfigTab, setActiveConfigTab] = useState("pricing");
  

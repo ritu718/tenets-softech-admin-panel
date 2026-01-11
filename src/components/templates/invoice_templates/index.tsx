@@ -8,13 +8,9 @@ import {
   Button,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  setProducts,
-  addProduct,
-} from "@/store/features/product/productSlice";
 
 
-import type { Product } from "@/store/features/product/productSlice";
+
 
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
