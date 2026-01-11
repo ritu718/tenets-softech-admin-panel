@@ -149,7 +149,10 @@ export const sendShipperExtraCost = async (params:any,dispatch?:any)=>{
       const resp:any =await fetchApi(params,`${URL_SHIPPER_EXTRA_COSTS}`,"post")
        console.log("sendShipperExtraCost:  resp: ",resp);
        
-     return getValidDataFromResp(resp);
+     const dataValue= getValidDataFromResp(resp);
+     console.log("dataValue: ",dataValue);
+     
+      dispatch(setSurchargesData(dataValue));
      
       }catch (error) {
        return error;
@@ -212,19 +215,13 @@ export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)
 
 export const getToleranceData = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get")
-       console.log("getToleranceData:  resp: ",resp);
-     const data =  getValidDataFromResp(resp);
-     console.log("data:  resp: ",data);
-     dispatch&&dispatch(setToleranecData(data))
+     dispatch&&dispatch(setToleranecData( getValidDataFromResp(await fetchApi(undefined,`${URL_TOLERANCE}/${params.userId}`,"get"))))
       }catch (error) {
        return error;
     }
 }
 
 export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any)=>{
-  console.log("params for edit ToleranceData: ",params);
-  
        const resp:any = await fetchApi(params,`${URL_TOLERANCE}/${params.companyId}`,"put");
 
        console.log("editToleranceData resp: ",resp);
@@ -233,30 +230,17 @@ export const editToleranceData = async (params:any,dispatch?:any, onSuccess?:any
 }
 export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
-    
-
       let {userId,...filteredData}=params;
       filteredData = removeInvalidKeys(filteredData);
-        console.log("filteredData: ",filteredData);
       let url =`${URL_COMPANIES}/${userId}/invoices`;
 if(Object.keys(filteredData).length>0){
   const queryString = new URLSearchParams(filteredData).toString();
-  console.log("queryString: ",queryString);
-  
 url=`${url}?${queryString}`
 }
-console.log("url vbaslue : ",url);
-
        const resp= getValidDataFromResp(await fetchApi(undefined,url,"get"));
-     
-     
-      // const resp= getValidDataFromResp(await fetchApi(undefined,`${BASE_URL}/companies/692af2fe34df801237c8fdd1/invoices`,"get"));
- console.log("resp: getCompaniesData: ",resp);
-
  const respData = Array.isArray(resp)?resp:[resp];
   dispatch&& dispatch(setFilteredOverview(respData))
       return resp;
-   
     } catch (error) {
        dispatch&& dispatch(setFilteredOverview(null))
     } 

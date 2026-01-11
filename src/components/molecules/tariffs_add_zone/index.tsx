@@ -33,10 +33,9 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
                        };
 
           const handleZoneAdd = () => {
-                  
                     const updateDataSelCountry = addZipCode(tariffsData.rates[activeTariffCountryCode], {
   Codes: "",
-  Zone: "DE-Zone 10"
+  Zone: ""
 });
 const dataTmp = {
   ...tariffsData,
@@ -47,7 +46,6 @@ const dataTmp = {
 };
 
  updateTariffsnData(dataTmp,dispatch)
-console.log("updatedData value is: ",updateDataSelCountry);
 
                    };
 

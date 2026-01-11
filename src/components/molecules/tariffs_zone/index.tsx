@@ -29,64 +29,51 @@ import { useGetTariffsChanges } from '@/hooks/useGetTariffsChanges';
 
 export default function TariffsZone() {
      const { pricingText,localeText } =useLanguage();
-     const { ZipCodes }= useGetTariffsChanges();
+     const { ZipCodes,countryCode }= useGetTariffsChanges();
   const dispatch = useAppDispatch();
     const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
          const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 const {tariffsCountryCodes, tariffsCountryIndex,tariffsData} = useAppSelector((state) => state.tariffs);
  const activeCarrier =
     carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-     const activeTariffCountryCode =
-               tariffsCountryCodes[tariffsCountryIndex] ||
-               tariffsCountryCodes[0] ||
-               NEBENKOSTEN_INITIAL_COUNTRIES[0];
-        const activeTariff =
-          (activeCarrier && activeCarrier.tariffs?.byCountry?.[activeTariffCountryCode]) || null;
    
-         const updateCarrier = (carrierId:any, updater:any) => {
-                     dispatch(setCarrierConfigs( carriers.map((carrier:any) => (carrier.id === carrierId ? updater(carrier) : carrier))
-                   ))
-                    };
+        
+       
 const handleZoneChange = (zoneId:any, field:any, value:any) => {
-           if (!activeCarrier || !activeTariffCountryCode) return;
-           updateCarrier(activeCarrier.id, (carrier:any) => {
-             const codes = carrier.tariffs?.countryCodes || [activeTariffCountryCode];
-             const current = carrier.tariffs?.byCountry?.[activeTariffCountryCode] || createTariffBase(localeText);
-             const zones = current.zones.map((zone:any) =>
-               zone.id === zoneId ? { ...zone, [field]: value } : zone
-             );
-             const rows = current.rows.map((row:any) => ({
-               ...row,
-               values: zones.reduce((acc:any, zone:any) => {
-                 acc[zone.id] = row.values[zone.id] || "";
-                 return acc;
-               }, {}),
-             }));
-             return {
-               ...carrier,
-               tariffs: {
-                 countryCodes: codes,
-                 byCountry: {
-                   ...(carrier.tariffs?.byCountry || {}),
-                   [activeTariffCountryCode]: { ...current, zones, rows },
-                 },
-               },
-             };
-           });
+           if (!activeCarrier || !countryCode) return;
+
+const tariffsDataTmp: any = {
+  ...tariffsData,
+  rates: {
+    ...tariffsData.rates,
+    [countryCode]: {
+      ...tariffsData.rates[countryCode],
+      ZipCodes: tariffsData.rates[countryCode].ZipCodes.map(
+        (zoneItem: any) =>
+          zoneItem.Id === zoneId
+            ? { ...zoneItem, [field]: value }
+            : zoneItem
+      ),
+    },
+  },
+};    
+
+ updateTariffsnData(tariffsDataTmp,dispatch)
+           
          };
 
 
            
                const handleZoneRemove = (zoneData:any) => {
-                  if (!activeCarrier || !activeTariffCountryCode) return;
+                  if (!activeCarrier || !countryCode) return;
                   console.log("zoneData: ",zoneData);
                   
-                 const updateDataSelCountry = removeZipCode(tariffsData.rates[activeTariffCountryCode],zoneData.Id);
+                 const updateDataSelCountry = removeZipCode(tariffsData.rates[countryCode],zoneData.Id);
 const dataTmp = {
   ...tariffsData,
   rates: {
     ...tariffsData.rates,
-    [activeTariffCountryCode]: updateDataSelCountry
+    [countryCode]: updateDataSelCountry
   }
 };
 
