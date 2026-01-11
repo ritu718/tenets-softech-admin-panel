@@ -15,6 +15,7 @@ export default function TariffsTypeSelector() {
      const { handleTariffChange }=useHandleTariffsChanges();
           
   const { TariffType } = useGetTariffsChanges();
+    console.log();
     
   return (
      <FormControl size="small" sx={{ minWidth: 220 }}>
@@ -25,8 +26,8 @@ export default function TariffsTypeSelector() {
                   onChange={(e) => handleTariffChange("TariffType", e.target.value)}
                 >
                   {(pricingText.tariffs.tariffTypes || []).map((option:any) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
+                    <MenuItem key={option.key} value={option.key}>
+                      {option.label}
                     </MenuItem>
                   ))}
                 </Select>

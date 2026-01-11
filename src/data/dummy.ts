@@ -154,7 +154,7 @@ export const  SHIPPER_RATES={
   "projectId": "6951453aca1464ba20c68942",
     "rates": {
       "DE": {
-        "TariffType": "Gewicht",
+        "TariffType": "weight",
         "Weights": {
           "100": {
             "Id": "80152eb5-7035-4ae1-8bbb-b0cb2ca7d7a7",

@@ -35,6 +35,7 @@ import { SHIPPER_EXTRA_COSTS } from '@/data/dummy';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
+import { prepareDataSurcharge } from '@/utils/csvImportHelper';
 
 export default function SurchargesImportExport() {
 
@@ -59,8 +60,11 @@ export default function SurchargesImportExport() {
                complete: (result) => {
                  const rows:any = result.data;
                  if (!rows || !rows.length) return;
+
                  const [header, ...dataRows] = rows;
                  if (!header) return;
+const extraCosts =prepareDataSurcharge(rows);
+
                  const columns = header.map((h:any) => (h || "").toString().trim().toLowerCase());
                  const labelIdx = columns.findIndex((c:any) => c.includes("label") || c.includes("bezeichnung"));
                  const amountIdx = columns.findIndex((c:any) => c.includes("amount") || c.includes("wert") || c === "");
@@ -79,7 +83,7 @@ export default function SurchargesImportExport() {
                    const parsed:any = SHIPPER_EXTRA_COSTS;
                                    parsed.projectId = activeCarrierId;
                                    
-                                           sendShipperExtraCost(parsed,dispatch);
+                                          //  sendShipperExtraCost(parsed,dispatch);
     
                 //  updateCarrier(activeCarrier.id, (carrier:any) => {
                 //    const codes = carrier.surcharges?.countryCodes || [activeSurchargeCountryCode];

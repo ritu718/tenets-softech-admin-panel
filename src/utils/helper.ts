@@ -3,6 +3,7 @@ import { BASE_COUNTRY_OPTIONS, MIN_WEIGHT_DEFAULTS, SHIPMENT_SAMPLE_ROWS_BASE } 
 import { editShipperFreightCalc, editShipperRates } from "@/dialogs/invoice_config/services";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Function to check the value is numeric or not.
@@ -323,3 +324,81 @@ export const updateTariffsnData =(tariffsDataTmp:any,dispatch:any)=>
 dispatch(setTariffsData(tariffsDataTmp));
          editShipperRates(tariffsDataTmp,dispatch)
 }
+
+
+
+export const insertNewWeight = (data:any) => {
+  const keys = Object.keys(data).map(Number).sort((a,b)=>a-b);
+  const lastKey = keys[keys.length - 1];   // 2500
+  const newKey = lastKey + 100;            // 2600 (or any step you want)
+
+  // Get last structure
+  const lastObj = data[lastKey];
+
+  // Create empty Prices
+  const clearedPrices:any = {};
+  Object.keys(lastObj.Prices).forEach(id => {
+    clearedPrices[id] = "";
+  });
+
+  return {
+    ...data,
+    [newKey]: {
+      Id: uuidv4(),  // new id
+      Prices: clearedPrices    // cleared values
+    }
+  };
+};
+
+export const removeZipCode = (data:any, zipId:string) => {
+
+  return {
+    ...data,
+    ZipCodes: data.ZipCodes.filter((z:any) => z.Id !== zipId),
+    Weights: Object.keys(data.Weights).reduce((acc:any, weightKey) => {
+      const weightObj = data.Weights[weightKey];
+
+      const updatedPrices = { ...weightObj.Prices };
+      delete updatedPrices[zipId];
+
+      acc[weightKey] = {
+        ...weightObj,
+        Prices: updatedPrices
+      };
+
+      return acc;
+    }, {})
+  };
+};
+
+export const addZipCode = (data:any, newZip:any) => {
+
+  const newZipId = uuidv4();
+
+  const zipObj = {
+    Id: newZipId,
+    Codes: newZip.Codes,
+    Zone: newZip.Zone
+  };
+
+  return {
+    ...data,
+
+    // 1. Add zipcode
+    ZipCodes: [...data.ZipCodes, zipObj],
+
+    // 2. Add empty price for every weight
+    Weights: Object.keys(data.Weights).reduce((acc:any, key) => {
+
+      acc[key] = {
+        ...data.Weights[key],
+        Prices: {
+          ...data.Weights[key].Prices,
+          [newZipId]: ""   // empty value
+        }
+      };
+
+      return acc;
+    }, {})
+  };
+};

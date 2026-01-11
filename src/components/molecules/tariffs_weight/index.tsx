@@ -16,7 +16,7 @@ import { updateTariffsnData } from '@/utils/helper';
 export default function TariffsWeight() {
  const dispatch = useAppDispatch();
     const { pricingText } =useLanguage();
-const { ZipCodes,weightsKeys,Weights,tariffsData,countryCode } = useGetTariffsChanges();
+const { ZipCodes,weightsKeys,Weights,tariffsData,countryCode,TariffType } = useGetTariffsChanges();
 
  const handleTariffRowChange = (rowId:any,  zoneId:any, value:any) => {
          console.log("rowId: 1: ",rowId);
@@ -45,16 +45,18 @@ const tariffsDataTmp = {
   }
 };
          
-         
        updateTariffsnData(tariffsDataTmp,dispatch)
          };
+
 const tableCellStyle = { padding: '4px 8px' };
+
+const selectedItem = pricingText.tariffs.tariffTypes.find((item:any) => item.key === TariffType)||{};
 
   return (
    <Table size="small">
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={tableCellStyle}>{pricingText.tariffs.weightHeader}</TableCell>
+                        <TableCell sx={tableCellStyle}>{selectedItem.label}</TableCell>
                         {(ZipCodes || []).map((zone:any) => (
                           <TableCell key={zone.Id}>{zone.Zone || pricingText.tariffs.zoneName}</TableCell>
                         ))}
