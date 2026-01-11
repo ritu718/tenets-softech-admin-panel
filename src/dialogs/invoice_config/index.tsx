@@ -25,7 +25,7 @@ import { buildCountryOptions, buildNebenkostenPresets, buildShipmentSampleRows, 
 import PriceCheckPreview from '@/components/organisms/price_check_preview';
 import NebenkostenPreview from '@/components/organisms/nebenkosten_preview/NebenkostenPreview';
 
-import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, sendShipmentData } from './services';
+import { getCarrierConfFomServer,  getConfigDataAccoToSelCarrier, getShipmentData, getShipmentSummary, sendShipmentData } from './services';
 import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
 import { setActiveConfigTab } from '@/store/features/shipment_data/shipmentDataSlice';
 import AuftragsdatenPreview from '@/components/organisms/auftragsdaten_preview';
@@ -167,15 +167,22 @@ const reqObj = {
     }, [configDialogOpen,carrierConfigs, activeCarrierId]);
 
 
-    const  onTabChange = (_:any, value:any) =>{
-      dispatch(setActiveConfigTab(value))
-      if(value=="auftragsdaten" ){
+   const onTabChange = (_: any, value: any) => {
+  dispatch(setActiveConfigTab(value));
+  console.log("value:", value);
+
+  if (value === "price-check") {
+    getShipmentSummary({ projectId: activeCarrierId }, dispatch);
+  } 
+  else if (value === "auftragsdaten") {
+    getShipmentData({ projectId: activeCarrierId }, dispatch);
+  }
+};
+
 //        sendShipmentData(reqObj, dispatch, (respData?:any) => {
 //   console.log("shipment resp:", respData);
 // });
-     getShipmentData({projectId:activeCarrierId},dispatch);
-     getShipmentSummary({projectId:activeCarrierId},dispatch);
-    }}
+     
 
    
 

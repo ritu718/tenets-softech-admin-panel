@@ -31,7 +31,7 @@ export default function CalculationTypes(){
                       <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                         <FormControl component="fieldset">
                           <RadioGroup
-                            value={CalculationType}
+                            value={CalculationType||""}
                             onChange={(e) => handleFreightChange("CalculationType", e.target.value)}
                           >
                             <FormControlLabel

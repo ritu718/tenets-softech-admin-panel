@@ -48,7 +48,7 @@ const PriceCheckPreview = ({
 
   const {shipmentSummary} = useAppSelector((state) => state.shipmentSummary);
   console.log("shipmentSummary value in price : ",shipmentSummary);
-  const shipmentSummaryForDisplay =shipmentSummary?.consolidatedShipmentData.DE||[];
+  const shipmentSummaryForDisplay =shipmentSummary?.consolidatedShipmentData?.DE||[];
 
  
 
