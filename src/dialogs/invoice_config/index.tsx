@@ -169,8 +169,7 @@ const reqObj = {
 
    const onTabChange = (_: any, value: any) => {
   dispatch(setActiveConfigTab(value));
-  console.log("value:", value);
-
+ 
   if (value === "price-check") {
     getShipmentSummary({ projectId: activeCarrierId }, dispatch);
   } 

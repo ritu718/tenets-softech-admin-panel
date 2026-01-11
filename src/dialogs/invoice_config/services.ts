@@ -224,7 +224,7 @@ export const getToleranceData = async (params:any,dispatch?:any)=>{
     "freightCostsPercent": "",
     "standardAdditionalCostsPercent":"",
     "onlyPositiveDeviation": false,
-    "ancillaryTolerances": []
+    
   }:respObj))
       }catch (error) {
        return error;
@@ -241,10 +241,9 @@ if(isCompanyIdEmpty)
   params={...params,companyId:userId}
 }
        const resp:any = await fetchApi(params,url,!isCompanyIdEmpty?"put":"post");
-
-       console.log("editToleranceData: resp: ",resp);
-       
-    //  resp.success&&  onSuccess&&onSuccess(resp?.data)
+const respData= getValidDataFromResp(resp);
+       console.log("editToleranceData: resp: ",respData);
+        dispatch&&dispatch(setToleranecData(respData ))
 }
 
 export const getShipmentSummary = async (params:any,dispatch?:any)=>{

@@ -44,7 +44,7 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
 
   return(
   <Stack spacing={2}>
-    <Paper
+    {/* <Paper
       variant="outlined"
       sx={{
         p: 2,
@@ -74,7 +74,7 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
           </Typography>
         </Box>
       ))}
-    </Paper>
+    </Paper> */}
 
     <Stack direction={{ xs: "column", md: "row" }} spacing={1} flexWrap="wrap">
       <Button startIcon={<AddCircleIcon />} variant="contained" disabled>
