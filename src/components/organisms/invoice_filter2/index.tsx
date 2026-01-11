@@ -30,7 +30,7 @@ export default function InvoiceFilter2() {
                 <FormControl sx={{ minWidth: 200 }}>
                   <InputLabel>{localeText.overview.filters.carrier}</InputLabel>
                   <Select
-                    value={selectedCarrierId}
+                    value={selectedCarrierId||""}
                     label={localeText.overview.filters.carrier}
                     onChange={(e) => dispatch(setCarrier(e.target.value))}
                   >
@@ -45,7 +45,7 @@ export default function InvoiceFilter2() {
     
                 <TextField
                   label={localeText.overview.filters.invoiceNumber}
-                  value={invoiceNumber}
+                  value={invoiceNumber||""}
                   onChange={(e) => dispatch(setInvoiceNumber(e.target.value))}
                 />
     
@@ -53,7 +53,7 @@ export default function InvoiceFilter2() {
                   label={localeText.overview.filters.fromDate}
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={fromDate}
+                  value={fromDate||""}
                   onChange={(e) => dispatch(setFromDate(e.target.value))}
                   sx={{ minWidth: 170 }}
                 />
@@ -62,7 +62,7 @@ export default function InvoiceFilter2() {
                   label={localeText.overview.filters.toDate}
                   type="date"
                   InputLabelProps={{ shrink: true }}
-                  value={toDate}
+                  value={toDate||""}
                   onChange={(e) => dispatch(setToDate(e.target.value))}
                   sx={{ minWidth: 170 }}
                 />
