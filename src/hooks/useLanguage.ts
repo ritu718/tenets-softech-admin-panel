@@ -1,12 +1,9 @@
 import { LANGUAGE_TEXT } from "@/constants/data";
 import { useAppSelector } from "@/store/hooks";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 export function useLanguage() {
-
-
     const language = useAppSelector((state) => state.languages.language);
-    
     
    const currencyFormatter = useMemo(
       () =>

@@ -1,13 +1,11 @@
 
 
-import InvoiceHub from '@/components/templates/invoice_templates'
+import Invoice_details from '@/features/invoice_details'
 import React from 'react'
-// import type { Product } from "@/store/features/product/productSlice";
 async function Invoice() {
-
   
   return (
-    <InvoiceHub />
+    <Invoice_details />
   )
 }
 

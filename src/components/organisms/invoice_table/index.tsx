@@ -10,11 +10,12 @@ import {
 
 import { useLanguage } from '@/hooks/useLanguage';
 import {   useAppSelector } from "@/store/hooks";
+import { useRouter } from 'next/navigation';
 
  const InvoiceTable =()=> {
    const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
       const { localeText,formatDate,formatCurrency } =useLanguage();
-     
+         const router = useRouter();
        const renderStatusChip = (status:any) => (
           <Chip
             size="small"
@@ -56,7 +57,7 @@ import {   useAppSelector } from "@/store/hooks";
                      key={idx}
                      sx={{ cursor: "pointer", "&:hover": { background: "#f3f3f3" } }}
                      onClick={() =>{
-
+router.push("/invoice-details")
                      }
                      }
                    >

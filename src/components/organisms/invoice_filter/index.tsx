@@ -17,14 +17,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { setLanguage } from "@/store/features/languages/languagesSlice";
 import { setToleranceDialogOpen } from "@/store/features/tolerances/TolerancesSlice";
 import { LANGUAGE_FLAGS } from "@/constants/common";
-import { useRouter, usePathname } from 'next/navigation';
 
 
 
 const  InvoiceFilter= ()=> {
-    const router = useRouter();
-  const path = usePathname();
-
        const dispatch = useAppDispatch();
           const { localeText,language } =useLanguage();
     return(
@@ -35,7 +31,7 @@ const  InvoiceFilter= ()=> {
                       value={language}
                       label={localeText.languageLabel}
                       onChange={(event : any) => {
-                        router.push(`/${(event.target.value)}${path}` )
+                      
                         dispatch( setLanguage(event.target.value)) }}
                       renderValue={(value : any) =>
                         value ? `${LANGUAGE_FLAGS[value]} ${localeText.languageOptions[value]}` : localeText.languageLabel
