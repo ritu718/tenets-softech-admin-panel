@@ -1,6 +1,8 @@
 "use client";
 
-import LoginForm from "@/components/organisms/LoginForm";
+import LoginForm from "@/features/login_form/LoginForm";
+
+
 
 
  function    Page() {
