@@ -16,7 +16,10 @@ import { useRouter } from 'next/navigation';
    const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
       const { localeText,formatDate,formatCurrency } =useLanguage();
          const router = useRouter();
-       const renderStatusChip = (status:any) => (
+       const renderStatusChip = (status:any) => 
+        {
+          
+          return (
           <Chip
             size="small"
             label={status}
@@ -31,7 +34,7 @@ import { useRouter } from 'next/navigation';
               fontWeight: "bold",
             }}
           />
-        );
+        )};
            
             
   return (

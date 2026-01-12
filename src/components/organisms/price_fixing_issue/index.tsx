@@ -50,8 +50,14 @@ export default function PriceFixingIssue() {
   const { localeText } =useLanguage();
   const dispatch = useAppDispatch(); 
         const {priceFixingDialogData} = useAppSelector((state) => state.shipmentSummary);
-   
+    const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
+    const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
+       
+    const activeCarrier =
+    carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
+  
         console.log("priceFixingDialogData: ",priceFixingDialogData);
+        console.log("activeCarrier: value is: ",activeCarrier);
         
   return (
     <Dialog
@@ -84,22 +90,22 @@ export default function PriceFixingIssue() {
             const errorLabel = priceFixDialog.error || "Preisfehler";
             return (
             <Stack spacing={2}>
-              <Typography variant="subtitle2">{carrier.name}</Typography>
+              <Typography variant="subtitle2">{activeCarrier.name}</Typography>
               <Stack spacing={0.5}>
                 <Typography variant="body2">
-                  {carrier.street || fallbackCarrier.street} {carrier.houseNumber || fallbackCarrier.houseNumber}
+                  {activeCarrier.street } {activeCarrier.houseNumber}
                 </Typography>
                 <Typography variant="body2">
-                  {carrier.zip || fallbackCarrier.zip} {carrier.city || fallbackCarrier.city}
+                  {activeCarrier.zip} {activeCarrier.city }
                 </Typography>
-                <Typography variant="body2">{carrier.country || fallbackCarrier.country}</Typography>
+                <Typography variant="body2">{activeCarrier.country }</Typography>
                 <Typography variant="body2">
-                  {carrier.contact || fallbackCarrier.contact} {carrier.phone || fallbackCarrier.phone}
+                  {activeCarrier.contact } {activeCarrier.phone }
                 </Typography>
-                <Typography variant="body2">{carrier.email || fallbackCarrier.email}</Typography>
+                <Typography variant="body2">{activeCarrier.email}</Typography>
                 <Typography variant="body2">
                   {localeText.addCarrierDialog?.customerNumber || "Kundennummer"}:{" "}
-                  {carrier.customerNumber || fallbackCarrier.customerNumber}
+                  {activeCarrier.customerNumber}
                 </Typography>
               </Stack>
               <TextField

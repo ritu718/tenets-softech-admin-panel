@@ -138,7 +138,7 @@ dispatch(setpriceFixingDialogData(row))
                
                   }}
                   >
-                    {result.error ? result.error : "Preis gefunden"}
+                    {row.Message}
                   </TableCell>
                   
                 </TableRow>

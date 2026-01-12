@@ -62,15 +62,23 @@ export const deleteCarrierDataToServer = async (
 };
 
 
-export const getShipperFreightCalc = async (params:any,dispatch?:any)=>{
-    try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/projectid?projectId=${params.projectId}`,"get")
-       console.log("getShipperFreightCalc:  resp: ",resp);
-      return getValidDataFromResp(resp);
-      }catch (error) {
-       return error;
-    } 
-}
+export const getShipperFreightCalc = async (params: any) => {
+  try {
+    const resp: any = await fetchApi(
+      undefined,
+      `${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}/projectid?projectId=${params.projectId}`,
+      "get"
+    );
+
+    console.log("getShipperFreightCalc resp:", resp);
+
+    return getValidDataFromResp(resp);
+
+  } catch (error) {
+    console.error("getShipperFreightCalc error:", error);
+    throw error; // 🔥 do NOT return error
+  }
+};
 
 
 export const sendShipperFreightCalc = async (params:any,dispatch?:any)=>{
@@ -168,30 +176,32 @@ console.log("getValidDataFromResp: ",resp);
   };
 
 
-export const getConfigDataAccoToSelCarrier = async (params: { projectId: string },dispatch?:any)=>{
-    try {
-       
-      dispatch(setIsApisCalledForSelectedCarier(true))
-       const promisesRequests = [
-       getShipperFreightCalc(params),
-       getShipperRates(params),
-       getShipperExtraCost(params)
-         ]
+export const getConfigDataAccoToSelCarrier = async (
+  params: { projectId: string },
+  dispatch?: any
+) => {
+  try {
+    dispatch?.(setIsApisCalledForSelectedCarier(true));
 
-       Promise.all(promisesRequests).then(([freightCalc, rates, extraCost])=>{
-        dispatch&&dispatch(setFreightBasisData(freightCalc));
-         dispatch&&dispatch(setTariffsData(rates));
-          dispatch&&dispatch(setSurchargesData(extraCost));
-            dispatch(setIsApisCalledForSelectedCarier(false))
-          console.log("getConfigDataAccoToSelCarrier: rates: ",rates  );
-          console.log("getConfigDataAccoToSelCarrier: extraCost: ",extraCost  );
+    const [freightCalc, rates, extraCost] = await Promise.all([
+      getShipperFreightCalc(params),
+      getShipperRates(params),
+      getShipperExtraCost(params)
+    ]);
 
-       })
+    dispatch?.(setFreightBasisData(freightCalc));
+    dispatch?.(setTariffsData(rates));
+    dispatch?.(setSurchargesData(extraCost));
 
-    } catch (error) {
-       
-    } 
-}
+    console.log("rates:", rates);
+    console.log("extraCost:", extraCost);
+
+  } catch (error) {
+    console.error("API error:", error);
+  } finally {
+    dispatch?.(setIsApisCalledForSelectedCarier(false));
+  }
+};
 
 export const getShipmentData = async (params:any,dispatch?:any)=>{
     try {
