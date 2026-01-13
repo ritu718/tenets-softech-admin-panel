@@ -11,8 +11,11 @@ import { setShipmentSummary } from "@/store/features/shipment_summary/shipmentSu
 import { isEmpty, removeInvalidKeys } from "@/utils/helper";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
-       const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,"post");
+ 
+     const resp:any = await fetchApi(params,URL_SHIPPER_PROJECTS,params?.id?"put":"post");
      resp.success&&  onSuccess&&onSuccess(resp?.data)
+  
+  
 }
 
 export const getCarriersDataFromServer = async (params:any,dispatch?:any)=>{

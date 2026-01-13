@@ -6,16 +6,19 @@ import {
     Stack,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditOutlined from "@mui/icons-material/EditOutlined";
 import { BASE_COUNTRY_OPTIONS } from "@/constants/data";
 import InvoiceSpedition from "@/dialogs/invoice_spedition";
 import { useLanguage } from "@/hooks/useLanguage";
-import AddCarrier from "@/components/molecules/add_carrier";
+import AddCarrier from "@/components/molecules/add_carrier"
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveCarrierId } from "@/store/features/carrier/carriersSlice";
+import { setActiveCarrierId, setEditCarrier } from "@/store/features/carrier/carriersSlice";
 import { deleteCarrierDataToServer } from "@/dialogs/invoice_config/services";
 import FreightBasis from "@/components/molecules/freight_basis";
 import Tariffs from "../tariffs";
 import Surcharges from "../surcharges";
+import CustomCarrierChip from "@/components/atoms/custom_carrier_chip";
+import { DEFAULT_DATA_CARRIER } from "@/constants/common";
 
  const CarrierPricingConfigurator = () => {
  const { localeText: text } =useLanguage();
@@ -36,12 +39,19 @@ import Surcharges from "../surcharges";
 
 
   const handleAddCarrier = () => {
+    dispatch(setEditCarrier(DEFAULT_DATA_CARRIER))
       setAddCarrierDialogOpen(true);
   }
 
   const handleRemoveCarrier = (carrierId:any) => {
 deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
   };
+  const handleEditCarrier = (selectedCarr:any) => {
+dispatch(setEditCarrier(selectedCarr))
+      setAddCarrierDialogOpen(true);
+  }
+  
+
   
 
   return (
@@ -71,16 +81,46 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
         {carriers.map((carrier:any) => {
           const isActive = carrier.id === activeCarrier?.id;
           return (
-            <Chip
-              key={carrier.id}
-              label={carrier.name}
-              color={isActive ? "primary" : "default"}
-              variant={isActive ? "filled" : "outlined"}
-              onClick={() =>   dispatch(setActiveCarrierId( carrier.id)) }
-              onDelete={() => handleRemoveCarrier(carrier.id)}
-              deleteIcon={<DeleteOutlineIcon />}
-            />
+
+            <CustomCarrierChip
+            key={carrier.id}
+  carrier={carrier}
+  isActive={activeCarrier}
+  onSelect={(id:any) => dispatch(setActiveCarrierId(id))}
+  onEdit={() =>   handleEditCarrier(carrier)}
+  onDelete={() =>   handleRemoveCarrier(carrier.id)}
+/>
+    //         <Chip
+    //          style={{ cursor: "none" }}
+    //           key={carrier.id}
+    //           label={carrier.name}
+    //           color={isActive ? "primary" : "default"}
+    //           variant={isActive ? "filled" : "outlined"}
+    //           onClick={() =>   dispatch(setActiveCarrierId( carrier.id)) 
+    //           }
+    //           onDelete={() => {}} // required dummy
+    //           deleteIcon={<div style={{ display: "flex", gap: 6 }}>
+    //   <EditOutlined
+    //     onClick={(e) => {
+    //       e.stopPropagation();
+          
+    //     }}
+    //     style={{ cursor: "pointer" }}
+    //   />
+
+    //   <DeleteOutlineIcon
+    //     onClick={(e) => {
+    //       e.stopPropagation();
+    //       handleRemoveCarrier(carrier.id);
+    //     }}
+    //     style={{ cursor: "pointer" }}
+    //   />
+    // </div>}
+              
+    //         />
+            
           );
+          
         })}
       </Box>
       <Typography variant="caption" color="text.secondary">
@@ -89,6 +129,7 @@ deleteCarrierDataToServer({projectId: carrierId},dispatch,carriers)
 
       {activeCarrier ? (
         <Stack spacing={2}>
+          
           <FreightBasis/>
           <Tariffs/>
         <Surcharges />

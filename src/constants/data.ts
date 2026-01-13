@@ -70,6 +70,7 @@ export const LANGUAGE_TEXT :any = {
         currentCarrierLabel: "Aktive Spedition",
         addCarrierDialog: {
           title: "Spedition anlegen",
+          editCarrier:"Spediteur bearbeiten",
           priceFixTitle: "Speditionspreis anlegen",
           name: "Firmenname",
           street: "Straße",
@@ -82,6 +83,7 @@ export const LANGUAGE_TEXT :any = {
           email: "E-Mail",
           customerNumber: "Kundennummer",
           save: "Anlegen",
+          update:"Aktualisieren",
           cancel: "Abbrechen",
         },
         carrierLabel: "Speditionen",
@@ -503,6 +505,7 @@ export const LANGUAGE_TEXT :any = {
         currentCarrierLabel: "Active carrier",
         addCarrierDialog: {
           title: "Add carrier",
+          editCarrier:"Edit carrier",
           priceFixTitle: "Set carrier price",
           name: "Company name",
           street: "Street",
@@ -516,6 +519,7 @@ export const LANGUAGE_TEXT :any = {
           customerNumber: "Customer number",
           save: "Create",
           cancel: "Cancel",
+          update:"Update"
         },
         carrierLabel: "Carriers",
         empty: "No carriers yet.",
