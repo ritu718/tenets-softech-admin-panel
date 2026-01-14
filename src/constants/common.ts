@@ -6,3 +6,15 @@ export const LANGUAGE_FLAGS : any = {
   de: "🇩🇪",
   en: "🇬🇧",
 };
+export  const DEFAULT_DATA_CARRIER={
+            name: "",
+            street: "",
+            streetNo: "",
+            zipCode: "",
+            city: "",
+            country: "",
+            contactName: "",
+            phoneNo: "",
+            email: "",
+            customerNumber: "",
+          }

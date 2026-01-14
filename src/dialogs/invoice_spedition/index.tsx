@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
  
   Button,
@@ -10,6 +10,7 @@ import {
   Stack,
  
 } from "@mui/material"
+import { DEFAULT_DATA_CARRIER } from "@/constants/common";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 import { BASE_COUNTRY_OPTIONS } from "@/constants/data";
 import AddIcon from "@mui/icons-material/Add";
@@ -19,7 +20,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
  import {
   setCarrierConfigs
 } from "@/store/features/invoice_data/invoiceDataSlice";
-import { setActiveCarrierId } from '@/store/features/carrier/carriersSlice';
+import { setActiveCarrierId, setEditCarrier } from '@/store/features/carrier/carriersSlice';
 import { fetchApi } from '@/services/api';
 import { URL_SHIPPER_PROJECTS } from '@/constants/apis';
 import { sendCarrierDataToServer } from '../invoice_config/services';
@@ -30,35 +31,23 @@ function InvoiceSpedition({
      setAddCarrierDialogOpen
 }:any)
  {
-  const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
 const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+    const editCarrier = useAppSelector((state) => state.carriers.editCarrier)||DEFAULT_DATA_CARRIER;
+    console.log("editCarrier: ",editCarrier);
+    
    const { localeText: text } =useLanguage();
     const dispatch = useAppDispatch();
     
-    const [newCarrierName, setNewCarrierName] = useState("");
-
-     const [newCarrierForm, setNewCarrierForm] = useState({
-        name: "",
-        street: "",
-        streetNo: "",
-        zipCode: "",
-        city: "",
-        country: "",
-        contactName: "",
-        phoneNo: "",
-        email: "",
-        customerNumber: "",
-      });
-
         const [errors, setErrors] = useState<any>({});
+
 
   /* ---------------- VALIDATION ---------------- */
   const validateForm = () => {
     const newErrors: any = {};
 
-    Object.keys(newCarrierForm).forEach((key) => {
-      if (!newCarrierForm[key as keyof typeof newCarrierForm].trim()) {
+    Object.keys(editCarrier).forEach((key) => {
+      if (!editCarrier[key as keyof typeof editCarrier]?.trim()) {
         newErrors[key] = "This field is required";
       }
     });
@@ -72,108 +61,43 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
       const handleConfirmAddCarrier = () => {
          if (!validateForm()) return;
           const defaultLabel = `${pricingText.defaults.newCarrierName} ${carriers.length + 1}`;
-          const label = newCarrierForm.name?.trim() || defaultLabel;
+          const label = editCarrier?.name?.trim() || defaultLabel;
           const reqObj = {
-            name:newCarrierForm.name,
-            street: newCarrierForm.street,
-            streetNo: newCarrierForm.streetNo,
-            zipCode: newCarrierForm.zipCode,
-            city: newCarrierForm.city,
-            country: newCarrierForm.country,
-            contactName: newCarrierForm.contactName,
-            phoneNo: newCarrierForm.phoneNo,
-            email: newCarrierForm.email,
-            customerNumber: newCarrierForm.customerNumber,
+            name:editCarrier.name,
+            street: editCarrier.street,
+            streetNo: editCarrier.streetNo,
+            zipCode: editCarrier.zipCode,
+            city: editCarrier.city,
+            country: editCarrier.country,
+            contactName: editCarrier.contactName,
+            phoneNo: editCarrier.phoneNo,
+            email: editCarrier.email,
+            customerNumber: editCarrier.customerNumber,
             userId,
           };
           const nextCarrier = createCarrierConfig(text, label,reqObj );
-            
              console.log('nextCarrier.id: ',nextCarrier.id);
-             
-          
-          
           sendCarrierDataToServer(reqObj,dispatch,(respData?:any)=>{
             console.log("respData: ",respData);
              dispatch(setCarrierConfigs(  [...carriers, respData]))
-setNewCarrierForm({
-            name: "",
-            street: "",
-            streetNo: "",
-            zipCode: "",
-            city: "",
-            country: "",
-            contactName: "",
-            phoneNo: "",
-            email: "",
-            customerNumber: "",
-          });
-
+ dispatch(setEditCarrier(DEFAULT_DATA_CARRIER))
             setErrors({});
     setAddCarrierDialogOpen(false);
 
           })
-        
-          
-
       
         };
       
     
-    const resolvedCountryOptions =
-        countryOptions && countryOptions.length
-          ? countryOptions
-          : BASE_COUNTRY_OPTIONS.map((option:any) => ({
-              ...option,
-              label: option.code,
-            }));
+    
     const pricingText = text.config.pricing;
     
-      const activeCarrier =
-        carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
-      const freightCountryCodes =
-        (activeCarrier && activeCarrier.freight?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-      const [freightCountryIndex, setFreightCountryIndex] = useState(0);
-      const activeCountryCode =
-        freightCountryCodes[freightCountryIndex] || freightCountryCodes[0] || NEBENKOSTEN_INITIAL_COUNTRIES[0];
-      const activeFreight =
-        (activeCarrier && activeCarrier.freight?.byCountry?.[activeCountryCode]) || null;
-      const availableCountryOptions =
-        resolvedCountryOptions.filter((option:any) => !freightCountryCodes.includes(option.code)) || [];
-      const getFlag = (code:any) =>
-        resolvedCountryOptions.find((option:any) => option.code === code)?.flag || "🌐";
-    
-      const tariffCountryCodes =
-        (activeCarrier && activeCarrier.tariffs?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-      const [tariffCountryIndex, setTariffCountryIndex] = useState(0);
-      const activeTariffCountryCode =
-        tariffCountryCodes[tariffCountryIndex] ||
-        tariffCountryCodes[0] ||
-        NEBENKOSTEN_INITIAL_COUNTRIES[0];
-      const activeTariff =
-        (activeCarrier && activeCarrier.tariffs?.byCountry?.[activeTariffCountryCode]) || null;
-      const availableTariffCountryOptions =
-        resolvedCountryOptions.filter((option:any) => !tariffCountryCodes.includes(option.code)) || [];
-      const surchargeCountryCodes =
-        (activeCarrier && activeCarrier.surcharges?.countryCodes) || NEBENKOSTEN_INITIAL_COUNTRIES;
-      const [surchargeCountryIndex, setSurchargeCountryIndex] = useState(0);
-      const activeSurchargeCountryCode =
-        surchargeCountryCodes[surchargeCountryIndex] ||
-        surchargeCountryCodes[0] ||
-        NEBENKOSTEN_INITIAL_COUNTRIES[0];
-      const activeSurcharges =
-        (activeCarrier && activeCarrier.surcharges?.byCountry?.[activeSurchargeCountryCode]) || null;
-      const availableSurchargeCountryOptions =
-        resolvedCountryOptions.filter((option:any) => !surchargeCountryCodes.includes(option.code)) || [];
-         const handleAddCarrier = () => {
-    const defaultLabel = `${pricingText.defaults.newCarrierName} ${carriers.length + 1}`;
-    setNewCarrierForm((prev) => ({
-      ...prev,
-      name: prev.name || newCarrierName.trim() || defaultLabel,
-    }));
-    setAddCarrierDialogOpen(true);
-  }
-  
 
+    const updateDataToStore = (key:any,value:any)=>
+    {
+       dispatch(setEditCarrier({...editCarrier,[key]:value}))
+    }
+     
   return (
  
         
@@ -183,13 +107,13 @@ setNewCarrierForm({
                 maxWidth="sm"
                 fullWidth
               >
-                <DialogTitle>{pricingText.addCarrierDialog.title}</DialogTitle>
+                <DialogTitle>{editCarrier?.id?pricingText.addCarrierDialog.editCarrier:pricingText.addCarrierDialog.title}</DialogTitle>
                 <DialogContent dividers>
                   <Stack spacing={2} sx={{ mt: 1 }}>
                     <TextField
                       label={pricingText.addCarrierDialog.name}
-                      value={newCarrierForm.name}
-                      onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, name: e.target.value }))}
+                      value={editCarrier.name}
+                      onChange={(e) =>updateDataToStore("name", e.target.value) }
                         error={!!errors.name}
                         helperText={errors.name}
                       fullWidth
@@ -198,18 +122,16 @@ setNewCarrierForm({
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
                       <TextField
                         label={pricingText.addCarrierDialog.street}
-                        value={newCarrierForm.street}
-                        onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, street: e.target.value }))}
+                        value={editCarrier.street}
+                        onChange={(e) => updateDataToStore("street", e.target.value)  }
                           error={!!errors.street}
                            helperText={errors.street}
                         fullWidth
                       />
                       <TextField
                         label={pricingText.addCarrierDialog.houseNumber}
-                        value={newCarrierForm.streetNo}
-                        onChange={(e) =>
-                          setNewCarrierForm((prev) => ({ ...prev, streetNo: e.target.value }))
-                        }
+                        value={editCarrier.streetNo}
+                        onChange={(e) =>updateDataToStore("streetNo", e.target.value) }
                          error={!!errors.streetNo}
                         helperText={errors.streetNo}
                         sx={{ width: { xs: "100%", sm: 140 } }}
@@ -218,16 +140,16 @@ setNewCarrierForm({
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
                       <TextField
                         label={pricingText.addCarrierDialog.zip}
-                        value={newCarrierForm.zipCode}
-                        onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, zipCode: e.target.value }))}
+                        value={editCarrier.zipCode}
+                        onChange={(e) =>updateDataToStore("zipCode", e.target.value) }
                             error={!!errors.zipCode}
                            helperText={errors.zipCode}
                         sx={{ width: { xs: "100%", sm: 180 } }}
                       />
                       <TextField
                         label={pricingText.addCarrierDialog.city}
-                        value={newCarrierForm.city}
-                        onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, city: e.target.value }))}
+                        value={editCarrier.city}
+                        onChange={(e) => updateDataToStore("city", e.target.value) }
                           error={!!errors.city}
                           helperText={errors.city}
                         fullWidth
@@ -235,8 +157,8 @@ setNewCarrierForm({
                     </Stack>
                     <TextField
                       label={pricingText.addCarrierDialog.country}
-                      value={newCarrierForm.country}
-                      onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, country: e.target.value }))}
+                      value={editCarrier.country}
+                      onChange={(e) =>updateDataToStore("country", e.target.value) }
                         error={!!errors.country}
                        helperText={errors.country}
                       fullWidth
@@ -244,16 +166,16 @@ setNewCarrierForm({
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1}>
                       <TextField
                         label={pricingText.addCarrierDialog.contact}
-                        value={newCarrierForm.contactName}
-                        onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, contactName: e.target.value }))}
+                        value={editCarrier.contactName}
+                        onChange={(e) => updateDataToStore("contactName", e.target.value) }
                            error={!!errors.contactName}
                          helperText={errors.contactName}
                         fullWidth
                       />
                       <TextField
                         label={pricingText.addCarrierDialog.phone}
-                        value={newCarrierForm.phoneNo}
-                        onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, phoneNo: e.target.value }))}
+                        value={editCarrier.phoneNo}
+                        onChange={(e) => updateDataToStore("phoneNo", e.target.value) }
                            error={!!errors.phoneNo}
                            helperText={errors.phoneNo}
                           fullWidth
@@ -261,8 +183,9 @@ setNewCarrierForm({
                     </Stack>
                     <TextField
                       label={pricingText.addCarrierDialog.email}
-                      value={newCarrierForm.email}
-                      onChange={(e) => setNewCarrierForm((prev) => ({ ...prev, email: e.target.value }))}
+                      value={editCarrier.email}
+                      onChange={(e) => updateDataToStore("email", e.target.value) 
+                       }
                       // type="email"
                           error={!!errors.email}
                         helperText={errors.email}
@@ -270,9 +193,10 @@ setNewCarrierForm({
                     />
                     <TextField
                       label={pricingText.addCarrierDialog.customerNumber}
-                      value={newCarrierForm.customerNumber}
+                      value={editCarrier.customerNumber}
                       onChange={(e) =>
-                        setNewCarrierForm((prev) => ({ ...prev, customerNumber: e.target.value }))
+                        updateDataToStore("customerNumber", e.target.value) 
+                      
                       }
                          error={!!errors.customerNumber}
                        helperText={errors.customerNumber}
@@ -285,7 +209,7 @@ setNewCarrierForm({
                     {pricingText.addCarrierDialog.cancel}
                   </Button>
                   <Button variant="contained" onClick={handleConfirmAddCarrier}>
-                    {pricingText.addCarrierDialog.save}
+                    {editCarrier?.id?pricingText.addCarrierDialog.update:pricingText.addCarrierDialog.save}
                   </Button>
                 </DialogActions>
               </Dialog>

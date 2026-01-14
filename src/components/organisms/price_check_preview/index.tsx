@@ -31,7 +31,9 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import PriceFixingIssue from "../price_fixing_issue";
+import { setpriceFixingDialogData } from "@/store/features/shipment_summary/shipmentSummarySlice";
 
 
 const PriceCheckPreview = ({
@@ -51,7 +53,7 @@ const PriceCheckPreview = ({
   const shipmentSummaryForDisplay =shipmentSummary?.consolidatedShipmentData?.DE||[];
 
  
-
+ const dispatch = useAppDispatch(); 
   const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
   const renderRows = shipmentRows.slice(0, 8);
 
@@ -112,6 +114,7 @@ const PriceCheckPreview = ({
               <TableCell>{text.shipments.table.weight}</TableCell>
               <TableCell>Tarifpreis</TableCell>
               <TableCell>Status</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -127,31 +130,32 @@ const PriceCheckPreview = ({
                   <TableCell>{row.ZipCodeShipper}</TableCell>
                   <TableCell>{row.EffectiveWeight}</TableCell>
                   <TableCell>{row.Price}</TableCell>
+                  
                   <TableCell
                     sx={{ color: result.error ? "error.main" : "success.main", cursor: result.error ? "pointer" : "default" }}
                   onClick={() => {
-                    if (result.error && onFixIssue) {
-                      onFixIssue({
-                        shipment: row,
-                        carrier: carriers[0] || null,
-                        error: result.error,
-                        details: result.details || { zip: row.zipTo, weight: row.weight },
-                      });
-                    }
+dispatch(setpriceFixingDialogData(row))
+               
                   }}
                   >
-                    {result.error ? result.error : "Preis gefunden"}
+                    {row.Message}
                   </TableCell>
+                  
                 </TableRow>
+                
               );
             })}
           </TableBody>
+          
         </Table>
       </TableContainer>
       <Typography variant="caption" color="text.secondary">
         Hinweis: Preisberechnung ist Demo-Logik. Zonenmatching per PLZ-Präfix, Gewicht nach nächster Zeile.
       </Typography>
+
+      <PriceFixingIssue/>
     </Stack>
+    
   );
 };
 

@@ -2,8 +2,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: any = {
-  shipmentSummary:null
+  shipmentSummary:null,
 
+ priceFixingDialogData:null,
 };
 const shipmentSummarySlice = createSlice({
   name: "shipmentSummary",
@@ -14,10 +15,13 @@ const shipmentSummarySlice = createSlice({
       state.shipmentSummary = action.payload;
 
     },
-    
+   
+     setpriceFixingDialogData: (state, action: PayloadAction<any>) => {
+      state.priceFixingDialogData = action.payload;
+    },
 
   },
 });
 
-export const {  setShipmentSummary} = shipmentSummarySlice.actions;
+export const {  setShipmentSummary,setpriceFixingDialogData} = shipmentSummarySlice.actions;
 export default shipmentSummarySlice.reducer;
