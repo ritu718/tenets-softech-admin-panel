@@ -48,7 +48,24 @@ export default function CarrierViewDialog({
   selectedInvoice,
   details,
 }: Props) {
-const overview = useAppSelector((state) => state.invoiceData.overview);
+  const [overview, setOverview] = useState([ {
+    rechnungsnummer: "R-1001",
+    projekt_id: "p1",
+    datum: "2025-11-20T06:42:00.984Z",
+    spedition: "DHL",
+    preis1: 2268.5,      // Order total
+    preis2: 2263.0,      // Invoice total
+    differenz: 2268.5 - 2263.0, // ✅ 5.5
+  },
+  {
+    rechnungsnummer: "R-1002",
+    projekt_id: "p1",
+    datum: "2025-11-18T06:42:00.984Z",
+    spedition: "DB Schenker",
+    preis1: 378,
+    preis2: 448,
+    differenz: 378 - 448, // ✅ -70
+  }]);
 const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
  const [carrierViewMessage, setCarrierViewMessage] = useState("");
    const [viewResponseDialogOpen, setViewResponseDialogOpen] = useState(false);
@@ -63,6 +80,8 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
     onlyNegativeMismatch: false,
   });    
  const { localeText,language } =useLanguage();
+ console.log("localeText :",localeText);
+ 
      
 
 

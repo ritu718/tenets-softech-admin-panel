@@ -64,6 +64,8 @@ const InvoiceDetails = () => {
     spedition: "DHL",
     preis1: 120,
     preis2: 118,
+    differenz: 120 - 118, // ✅ REQUIRED
+    nebenkostenDetails: [], // ✅ REQUIRED
   },
   {
     rowKey: "S-002",
@@ -71,6 +73,8 @@ const InvoiceDetails = () => {
     spedition: "DHL",
     preis1: 45,
     preis2: 46,
+    differenz: 45 - 46,
+    nebenkostenDetails: [],
   },
 ]);
 
