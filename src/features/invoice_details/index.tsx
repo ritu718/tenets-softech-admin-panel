@@ -49,6 +49,7 @@ import Tolerance from "@/components/organisms/tolerance";
 import { getCompaniesDetailsData } from "@/dialogs/invoice_config/services";
 import { useSearchParams } from 'next/navigation'
 import { useGetCommonThings } from "@/hooks/commonThings";
+import CarrierViewDialog from "@/components/organisms/carrier_view_dialog";
 
 
 const InvoiceDetails = () => {
@@ -490,6 +491,13 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
             </TableBody>
           </Table>
            <Tolerance/>
+           <CarrierViewDialog
+  open={carrierViewDialogOpen}
+  onClose={() => setCarrierViewDialogOpen(false)}
+  selectedInvoice={selectedInvoice}
+  details={details}
+/>
+
         </>
   );
 };
