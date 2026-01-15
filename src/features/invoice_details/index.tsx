@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -38,17 +38,24 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { useRouter } from 'next/navigation';
 import { ALL_SPEDITIONS_VALUE } from "@/constants/common";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useLanguage } from "@/hooks/useLanguage";
 import Papa from "papaparse";
 import { setToleranceDialogOpen } from "@/store/features/tolerances/TolerancesSlice";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
+import InvoiceFilter from "@/components/organisms/invoice_filter";
+import Tolerance from "@/components/organisms/tolerance";
+import { getCompaniesDetailsData } from "@/dialogs/invoice_config/services";
+import { useSearchParams } from 'next/navigation'
+import { useGetCommonThings } from "@/hooks/commonThings";
 
 
 const InvoiceDetails = () => {
-   const router = useRouter();
+  const invoiceDetailsData = useAppSelector((state) => state.invoiceData.invoiceDetailsData);
+    const dispatch = useAppDispatch();
+        const {renderStatusChip} = useGetCommonThings();
+  const searchParams = Object.fromEntries(useSearchParams()?.entries())
    const [details, setDetails] = useState([
   {
     rowKey: "S-001",
@@ -96,28 +103,34 @@ const InvoiceDetails = () => {
     invoiceKey && invoiceOverrides[invoiceKey]?.status === "accepted"
   );
 
+      const evaluateStatus = useCallback(
+    (expectedValue:any, actualValue:any, tolerancePercent = 0, onlyNegative = false) => {
+      if (!Number.isFinite(expectedValue) && !Number.isFinite(actualValue)) {
+        return { label: localeText.status.noData, color: "text.secondary", tone: "neutral" };
+      }
+      const expected = Number.isFinite(expectedValue) ? expectedValue : 0;
+      const actual = Number.isFinite(actualValue) ? actualValue : 0;
+      const rawDifference = expected - actual;
+      if (onlyNegative && rawDifference >= 0) {
+        return { label: localeText.status.ok, color: "success.main", tone: "success" };
+      }
+      const base = Math.max(Math.abs(expected), 1);
+      const diff = Math.abs(actual - expected);
+      const allowed = (Math.max(tolerancePercent, 0) / 100) * base;
+      const ok = diff <= allowed;
+      return ok
+        ? { label: localeText.status.ok, color: "success.main", tone: "success" }
+        : { label: localeText.status.error, color: "error.main", tone: "error" };
+    },
+    [localeText]
+  );
+
    const handleOpenResponseViewer = (key:any) => {
     setActiveResponseKey(key);
     setViewResponseDialogOpen(true);
   };
 
-      const renderStatusChip = (status:any) => (
-    <Chip
-      size="small"
-      label={status.label}
-      sx={{
-        bgcolor:
-          status.tone === "success"
-            ? "success.light"
-            : status.tone === "error"
-            ? "error.light"
-            : "grey.200",
-        color: status.color,
-        fontWeight: "bold",
-      }}
-    />
-  );
-
+ 
     const exportCsv = () => {
     const csv = Papa.unparse(
       (selectedInvoice ? details : filteredOverview).map((row:any) => ({
@@ -240,27 +253,6 @@ const InvoiceDetails = () => {
       });
   }, [overview, speditionFilter, search]);
 
-    const evaluateStatus = useCallback(
-    (expectedValue:any, actualValue:any, tolerancePercent = 0, onlyNegative = false) => {
-      if (!Number.isFinite(expectedValue) && !Number.isFinite(actualValue)) {
-        return { label: localeText.status.noData, color: "text.secondary", tone: "neutral" };
-      }
-      const expected = Number.isFinite(expectedValue) ? expectedValue : 0;
-      const actual = Number.isFinite(actualValue) ? actualValue : 0;
-      const rawDifference = expected - actual;
-      if (onlyNegative && rawDifference >= 0) {
-        return { label: localeText.status.ok, color: "success.main", tone: "success" };
-      }
-      const base = Math.max(Math.abs(expected), 1);
-      const diff = Math.abs(actual - expected);
-      const allowed = (Math.max(tolerancePercent, 0) / 100) * base;
-      const ok = diff <= allowed;
-      return ok
-        ? { label: localeText.status.ok, color: "success.main", tone: "success" }
-        : { label: localeText.status.error, color: "error.main", tone: "error" };
-    },
-    [localeText]
-  );
 
  
 
@@ -279,19 +271,22 @@ const formatDate = useCallback(
     (value:any) => (typeof value === "number" ? currencyFormatter.format(value) : "—"),
     [currencyFormatter]
   );
+console.log("invoiceDetailsData: ",invoiceDetailsData);
+  
 
+    useEffect(()=>{ 
+             searchParams&& getCompaniesDetailsData(searchParams,dispatch)
+            },[  ])
 
   return (
     <>
-          <Button startIcon={<ArrowBackIcon />} onClick={() => setSelectedInvoice(null)} sx={{ mb: 2 }}>
-            {localeText.detail.back}
-          </Button>
+         
           <Typography variant="h6" gutterBottom>
-            {localeText.detail.invoice}: {selectedInvoice?.rechnungsnummer}
+            {localeText.detail.invoice}: {invoiceDetailsData?.invoice_number}
           </Typography>
-          {selectedInvoice.projektId && (
+          {invoiceDetailsData.carrier && (
             <Typography variant="body2" color="text.secondary" gutterBottom>
-              {localeText.detail.project}: {selectedInvoice.projektId}
+              {localeText.detail.project}: {invoiceDetailsData.carrier}
             </Typography>
           )}
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
@@ -299,6 +294,11 @@ const formatDate = useCallback(
             <Button variant="outlined" onClick={() => setToleranceDialogOpen(true)}>
               {localeText.buttons.tolerance}
             </Button>
+            <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ mb: 2, gap: 2, }}>
+                    
+                    <InvoiceFilter  />
+                    
+                  </Box>
           </Box>
 
           {invoiceDetailStatus && (
@@ -381,7 +381,7 @@ const formatDate = useCallback(
               </TableRow>
             </TableHead>
             <TableBody>
-              {details.map((row:any, idx:any) => {
+              {invoiceDetailsData?.shipments?.map((row:any, idx:any) => {
                 const baseFreightStatus = evaluateStatus(
                   row.preis1,
                   row.preis2,
@@ -389,7 +389,7 @@ const formatDate = useCallback(
                 );
                 const freightStatus = invoiceAccepted ? acceptedStatus : baseFreightStatus;
                 return (
-                  <React.Fragment key={row.rowKey || idx}>
+                  <React.Fragment key={row.id || idx}>
                     <TableRow
                       hover
                       sx={{ cursor: row.nebenkostenDetails?.length ? "pointer" : "default" }}
@@ -421,16 +421,16 @@ const formatDate = useCallback(
                             )}
                           </IconButton>
                         ) : null}
-                        {row.sendungsID}
+                        {row.shipment_id}
                       </TableCell>
                       <TableCell>{row.spedition}</TableCell>
-                      <TableCell>{formatCurrency(row.nebenkostenTotal)}</TableCell>
-                      <TableCell>{formatCurrency(row.preis1)}</TableCell>
-                      <TableCell>{formatCurrency(row.preis2)}</TableCell>
-                      <TableCell sx={{ color: row.differenz > 0 ? "green" : "red", fontWeight: "bold" }}>
+                      <TableCell>{formatCurrency(row?.charges?.freightCostSystemR)}</TableCell>
+                      <TableCell>{formatCurrency(row?.order_total)}</TableCell>
+                      <TableCell>{formatCurrency(row?.net_amount_eur)}</TableCell>
+                      <TableCell sx={{ color: row?.difference > 0 ? "green" : "red", fontWeight: "bold" }}>
                         {formatCurrency(row.differenz)}
                       </TableCell>
-                      <TableCell>{renderStatusChip(freightStatus)}</TableCell>
+                      <TableCell>{renderStatusChip(row?.status)}</TableCell>
                     </TableRow>
                     {row.nebenkostenDetails?.length ? (
                       <TableRow>
@@ -489,6 +489,7 @@ const formatDate = useCallback(
               })}
             </TableBody>
           </Table>
+           <Tolerance/>
         </>
   );
 };

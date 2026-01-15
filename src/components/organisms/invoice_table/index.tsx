@@ -9,33 +9,19 @@ import {
 } from "@mui/material";
 
 import { useLanguage } from '@/hooks/useLanguage';
-import {   useAppSelector } from "@/store/hooks";
+import {   useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from 'next/navigation';
+import { setInvoiceDetailsData } from '@/store/features/invoice_data/invoiceDataSlice';
+import { useGetCommonThings } from '@/hooks/commonThings';
 
  const InvoiceTable =()=> {
    const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
+     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+     const dispatch = useAppDispatch();
       const { localeText,formatDate,formatCurrency } =useLanguage();
          const router = useRouter();
-       const renderStatusChip = (status:any) => 
-        {
-          
-          return (
-          <Chip
-            size="small"
-            label={status}
-            sx={{
-              bgcolor:
-                status === "success"
-                  ? "success.light"
-                  : status === "error"
-                  ? "error.light"
-                  : "grey.200",
-              color: status,
-              fontWeight: "bold",
-            }}
-          />
-        )};
-           
+         const {renderStatusChip} = useGetCommonThings();
+      
             
   return (
      <Table>
@@ -60,7 +46,7 @@ import { useRouter } from 'next/navigation';
                      key={idx}
                      sx={{ cursor: "pointer", "&:hover": { background: "#f3f3f3" } }}
                      onClick={() =>{
-router.push("/invoice-details")
+router.push(`/invoice-details?invoice_number=${row.invoice_number}&company_id=${userId}`)
                      }
                      }
                    >

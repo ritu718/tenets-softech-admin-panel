@@ -5,6 +5,7 @@ import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasis
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { v4 as uuidv4 } from "uuid";
 
+
 /**
  * Function to check the value is numeric or not.
  *
@@ -402,3 +403,5 @@ export const addZipCode = (data:any, newZip:any) => {
     }, {})
   };
 };
+
+
