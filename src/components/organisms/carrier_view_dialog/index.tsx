@@ -32,40 +32,20 @@ import {
   RadioGroup,
 } from "@mui/material";
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setCarrierViewDialogOpen } from '@/store/features/invoice_data/invoiceDataSlice';
 
 
-type Props = {
-  open: boolean;
-  onClose: () => void;
-  selectedInvoice: any;
-  details: any[];
-};
 
-export default function CarrierViewDialog({
-  open,
-  onClose,
-  selectedInvoice,
-  details,
-}: Props) {
-  const [overview, setOverview] = useState([ {
-    rechnungsnummer: "R-1001",
-    projekt_id: "p1",
-    datum: "2025-11-20T06:42:00.984Z",
-    spedition: "DHL",
-    preis1: 2268.5,      // Order total
-    preis2: 2263.0,      // Invoice total
-    differenz: 2268.5 - 2263.0, // ✅ 5.5
-  },
-  {
-    rechnungsnummer: "R-1002",
-    projekt_id: "p1",
-    datum: "2025-11-18T06:42:00.984Z",
-    spedition: "DB Schenker",
-    preis1: 378,
-    preis2: 448,
-    differenz: 378 - 448, // ✅ -70
-  }]);
+
+export default function CarrierViewDialog() {
+   const overview = useAppSelector((state) => state.invoiceData.overview);
+    const invoiceDetailsData = useAppSelector((state) => state.invoiceData.invoiceDetailsData);
+ 
+     const carrierViewDialogOpen = useAppSelector((state) => state.invoiceData.carrierViewDialogOpen);
+      const details = useAppSelector((state) => state.invoiceData.details);
+       const selectedInvoice = useAppSelector((state) => state.invoiceData.selectedInvoice);
+      const dispatch = useAppDispatch();
 const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
  const [carrierViewMessage, setCarrierViewMessage] = useState("");
    const [viewResponseDialogOpen, setViewResponseDialogOpen] = useState(false);
@@ -103,8 +83,10 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
     [language]
   );
 
+  console.log("invoiceDetailsDataDialog: ",invoiceDetailsData);
+
     const carrierViewRows = useMemo(() => {
-    if (!selectedInvoice || !details.length) return [];
+    if (!selectedInvoice || !details?.length) return [];
     const rows:any = [];
     details.forEach((row:any) => {
       if (
@@ -182,7 +164,7 @@ const persistCarrierResponse = useCallback(
     setResponseText("");
     setCarrierViewMessage("");
     setResponseInputDialogOpen(false);
-     onClose();
+   dispatch(setCarrierViewDialogOpen(false))
     setActiveResponseKey(key);
     setViewResponseDialogOpen(true);
 
@@ -196,8 +178,8 @@ const persistCarrierResponse = useCallback(
   
      return (
         <Dialog
-        open={open}
-        onClose={onClose}
+        open={carrierViewDialogOpen}
+        onClose={() =>dispatch(setCarrierViewDialogOpen(false))}
         fullWidth
         maxWidth="md"
       >
@@ -219,16 +201,16 @@ const persistCarrierResponse = useCallback(
                       {localeText.carrierView.summary.invoice}
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {selectedOverviewEntry.rechnungsnummer}
+                      {invoiceDetailsData?.invoice_number}
                     </Typography>
                   </Box>
-                  {selectedOverviewEntry.projekt_id && (
+                  {invoiceDetailsData.carrier && (
                     <Box>
                       <Typography variant="caption" color="text.secondary">
                         {localeText.carrierView.summary.project}
                       </Typography>
                       <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {selectedOverviewEntry.projekt_id}
+                        {invoiceDetailsData.carrier}
                       </Typography>
                     </Box>
                   )}
@@ -237,7 +219,7 @@ const persistCarrierResponse = useCallback(
                       {localeText.carrierView.summary.orderTotal}
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {formatCurrency(selectedOverviewEntry.preis1)}
+                      {formatCurrency(invoiceDetailsData?.order_total)}
                     </Typography>
                   </Box>
                   <Box>
@@ -245,7 +227,7 @@ const persistCarrierResponse = useCallback(
                       {localeText.carrierView.summary.invoiceTotal}
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {formatCurrency(selectedOverviewEntry.preis2)}
+                      {formatCurrency(invoiceDetailsData.invoice_total)}
                     </Typography>
                   </Box>
                   <Box>
@@ -256,10 +238,10 @@ const persistCarrierResponse = useCallback(
                       variant="body2"
                       sx={{
                         fontWeight: 600,
-                        color: selectedOverviewEntry.differenz > 0 ? "error.main" : "success.main",
+                        color: invoiceDetailsData.difference > 0 ? "error.main" : "success.main",
                       }}
                     >
-                      {formatCurrency(selectedOverviewEntry.differenz)}
+                      {formatCurrency(invoiceDetailsData.difference)}
                     </Typography>
                   </Box>
                 </Stack>
@@ -335,7 +317,7 @@ const persistCarrierResponse = useCallback(
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => onClose()}>
+          <Button onClick={() => dispatch(setCarrierViewDialogOpen(false))}>
             {localeText.dialogs.close}
           </Button>
         </DialogActions>

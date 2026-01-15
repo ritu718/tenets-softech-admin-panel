@@ -50,41 +50,22 @@ import { getCompaniesDetailsData } from "@/dialogs/invoice_config/services";
 import { useSearchParams } from 'next/navigation'
 import { useGetCommonThings } from "@/hooks/commonThings";
 import CarrierViewDialog from "@/components/organisms/carrier_view_dialog";
+import { setCarrierViewDialogOpen } from "@/store/features/invoice_data/invoiceDataSlice";
 
 
 const InvoiceDetails = () => {
   const invoiceDetailsData = useAppSelector((state) => state.invoiceData.invoiceDetailsData);
+   const carrierViewDialogOpen = useAppSelector((state) => state.invoiceData.carrierViewDialogOpen);
     const dispatch = useAppDispatch();
         const {renderStatusChip} = useGetCommonThings();
   const searchParams = Object.fromEntries(useSearchParams()?.entries())
-   const [details, setDetails] = useState([
-  {
-    rowKey: "S-001",
-    sendungsID: "S-001",
-    spedition: "DHL",
-    preis1: 120,
-    preis2: 118,
-    differenz: 120 - 118, // ✅ REQUIRED
-    nebenkostenDetails: [], // ✅ REQUIRED
-  },
-  {
-    rowKey: "S-002",
-    sendungsID: "S-002",
-    spedition: "DHL",
-    preis1: 45,
-    preis2: 46,
-    differenz: 45 - 46,
-    nebenkostenDetails: [],
-  },
-]);
-
-     const [responseInputDialogOpen, setResponseInputDialogOpen] = useState(false);
+   const details = useAppSelector((state) => state.invoiceData.details);
+    const selectedInvoice = useAppSelector((state) => state.invoiceData.selectedInvoice);
+const [responseInputDialogOpen, setResponseInputDialogOpen] = useState(false);
   const overview = useAppSelector((state) => state.invoiceData.overview);
   const [speditionFilter, setSpeditionFilter] = useState<any>(ALL_SPEDITIONS_VALUE);
     const [search, setSearch] = useState("");
-      const [selectedInvoice, setSelectedInvoice] = useState<any>({rechnungsnummer: 'R-1001', projektId: 'p1'});
     const { localeText,language } =useLanguage();
-      const [carrierViewDialogOpen, setCarrierViewDialogOpen] = useState(false);
     const [invoiceOverrides, setInvoiceOverrides] = useState<any>({});
      const [carrierResponses, setCarrierResponses] = useState<any>({});
       const [activeResponseKey, setActiveResponseKey] = useState<any>(null);
@@ -96,6 +77,8 @@ const InvoiceDetails = () => {
     surchargeOverrides: [],
     onlyNegativeMismatch: false,
   });
+
+  
 
   const makeInvoiceKey = (rechnungsnummer:any, projektId:any) =>
   `${rechnungsnummer || "unbekannt"}__${projektId || "all"}`;
@@ -337,7 +320,7 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
                 variant="contained"
                 color="inherit"
                 sx={{ ml: { xs: 0, sm: 2 }, mt: { xs: 2, sm: 0 } }}
-                onClick={() => setCarrierViewDialogOpen(true)}
+                onClick={() =>dispatch(setCarrierViewDialogOpen(true)) }
               >
                 {localeText.carrierView.button}
               </Button>
@@ -495,12 +478,7 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
             </TableBody>
           </Table>
            <Tolerance/>
-           <CarrierViewDialog
-  open={carrierViewDialogOpen}
-  onClose={() => setCarrierViewDialogOpen(false)}
-  selectedInvoice={selectedInvoice}
-  details={details}
-/>
+           <CarrierViewDialog/>
 
         </>
   );
