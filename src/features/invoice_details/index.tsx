@@ -49,10 +49,15 @@ import Tolerance from "@/components/organisms/tolerance";
 import { getCompaniesDetailsData } from "@/dialogs/invoice_config/services";
 import { useSearchParams } from 'next/navigation'
 import { useGetCommonThings } from "@/hooks/commonThings";
+import InvoiceCaptStatement from "@/components/molecules/invoice_capt_ statement";
+import { setResponseInputDialogOpen } from "@/store/features/invoice_data/invoiceDataSlice";
+import InvoiceDetailsTable from "@/components/organisms/invoice_details_table";
+
 
 
 const InvoiceDetails = () => {
   const invoiceDetailsData = useAppSelector((state) => state.invoiceData.invoiceDetailsData);
+      const responseInputDialogOpen = useAppSelector((state) => state.invoiceData.responseInputDialogOpen);
     const dispatch = useAppDispatch();
         const {renderStatusChip} = useGetCommonThings();
   const searchParams = Object.fromEntries(useSearchParams()?.entries())
@@ -72,8 +77,10 @@ const InvoiceDetails = () => {
     preis2: 46,
   },
 ]);
-
-     const [responseInputDialogOpen, setResponseInputDialogOpen] = useState(false);
+ 
+     
+     
+    //  const [responseInputDialogOpen, setResponseInputDialogOpen] = useState(false);
   const overview = useAppSelector((state) => state.invoiceData.overview);
   const [speditionFilter, setSpeditionFilter] = useState<any>(ALL_SPEDITIONS_VALUE);
     const [search, setSearch] = useState("");
@@ -321,12 +328,14 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
               <Typography variant="body2" sx={{ mb: 1 }}>
                 {localeText.detail.errorNotice}
               </Typography>
+             
               <Button
                 variant="outlined"
                 color="inherit"
-                onClick={() => setResponseInputDialogOpen(true)}
+                onClick={() => dispatch(setResponseInputDialogOpen(true))}
               >
                 {localeText.detail.errorButton}
+               
               </Button>
               <Button
                 variant="contained"
@@ -367,8 +376,9 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
               </Button>
             </Box>
           )}
+          <InvoiceDetailsTable/>
 
-          <Table>
+          {/* <Table>
             <TableHead>
               <TableRow>
                 <TableCell>{localeText.detail.columns.sendung}</TableCell>
@@ -488,8 +498,10 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
                 );
               })}
             </TableBody>
-          </Table>
+          </Table> */}
+          
            <Tolerance/>
+          {responseInputDialogOpen?<InvoiceCaptStatement/>:null}
         </>
   );
 };

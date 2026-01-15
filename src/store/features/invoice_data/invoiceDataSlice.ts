@@ -9,9 +9,10 @@ const initialState: any = {
   carrierConfigs:[],
   isInvoiceDataApiCalled:true,
   invoiceDetailsData:[],
+  responseInputDialogOpen:false,
 };
 
-
+ 
 const invoiceDataSlice = createSlice({
   name: "invoiceData",
   initialState,
@@ -38,8 +39,11 @@ const invoiceDataSlice = createSlice({
      setInvoiceDetailsData: (state, action: PayloadAction<any>) => {
       state.invoiceDetailsData = action.payload;
     } ,
+     setResponseInputDialogOpen: (state, action: PayloadAction<any>) => {
+      state.responseInputDialogOpen = action.payload;
+    } ,
   },
 });
 
-export const { setOverview, setInvoiceData,setConfigDialogOpen,setCarrierConfigs,setIsInvoiceDataApiCalled,setInvoiceDetailsData } = invoiceDataSlice.actions;
+export const { setOverview, setInvoiceData,setConfigDialogOpen,setCarrierConfigs,setIsInvoiceDataApiCalled,setInvoiceDetailsData,setResponseInputDialogOpen } = invoiceDataSlice.actions;
 export default invoiceDataSlice.reducer;

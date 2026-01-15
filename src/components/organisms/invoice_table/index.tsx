@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { setInvoiceDetailsData } from '@/store/features/invoice_data/invoiceDataSlice';
 import { useGetCommonThings } from '@/hooks/commonThings';
 
+
  const InvoiceTable =()=> {
    const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
      const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
@@ -64,6 +65,7 @@ router.push(`/invoice-details?invoice_number=${row.invoice_number}&company_id=${
                    </TableRow>
                  )})}
                </TableBody>
+              
              </Table>
   )
 }
