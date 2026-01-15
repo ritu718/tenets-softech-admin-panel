@@ -1,7 +1,6 @@
 
 export const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}`;
 
-
 export const URL_SHIPPER_PROJECTS = `${BASE_URL}/shipper-projects`;
 
 // Freight basis 
@@ -23,7 +22,6 @@ export const URL_TOLERANCE = `${BASE_URL}/tolerance-limits`;
 export const URL_SHIPMENT_SUMMARY = `${BASE_URL}/summary`;
 
 
-// http://localhost:8085/api/v1/summary/692af31934df801237c8fdda
 //invoice table
 export const URL_COMPANIES = `${BASE_URL}/companies`;
 

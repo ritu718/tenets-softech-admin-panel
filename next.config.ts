@@ -2,8 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['www.synarionit.com'], // <-- allow this hostname
+    domains: ['www.tenetssoftech.com'], // <-- allow this hostname
   },
+
 }
 
 module.exports = nextConfig;
