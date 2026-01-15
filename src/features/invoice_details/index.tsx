@@ -50,43 +50,32 @@ import { getCompaniesDetailsData } from "@/dialogs/invoice_config/services";
 import { useSearchParams } from 'next/navigation'
 import { useGetCommonThings } from "@/hooks/commonThings";
 import InvoiceCaptStatement from "@/components/molecules/invoice_capt_ statement";
-import { setResponseInputDialogOpen } from "@/store/features/invoice_data/invoiceDataSlice";
+import { setResponseInputDialogOpen, setCarrierViewDialogOpen } from "@/store/features/invoice_data/invoiceDataSlice";
 import InvoiceDetailsTable from "@/components/organisms/invoice_details_table";
 
+import CarrierViewDialog from "@/components/organisms/carrier_view_dialog";
 
 
 const InvoiceDetails = () => {
   const invoiceDetailsData = useAppSelector((state) => state.invoiceData.invoiceDetailsData);
       const responseInputDialogOpen = useAppSelector((state) => state.invoiceData.responseInputDialogOpen);
-    const dispatch = useAppDispatch();
-        const {renderStatusChip} = useGetCommonThings();
-  const searchParams = Object.fromEntries(useSearchParams()?.entries())
-   const [details, setDetails] = useState([
-  {
-    rowKey: "S-001",
-    sendungsID: "S-001",
-    spedition: "DHL",
-    preis1: 120,
-    preis2: 118,
-  },
-  {
-    rowKey: "S-002",
-    sendungsID: "S-002",
-    spedition: "DHL",
-    preis1: 45,
-    preis2: 46,
-  },
-]);
+
+
  
      
      
     //  const [responseInputDialogOpen, setResponseInputDialogOpen] = useState(false);
+   const carrierViewDialogOpen = useAppSelector((state) => state.invoiceData.carrierViewDialogOpen);
+    const dispatch = useAppDispatch();
+        const {renderStatusChip} = useGetCommonThings();
+  const searchParams = Object.fromEntries(useSearchParams()?.entries())
+   const details = useAppSelector((state) => state.invoiceData.details);
+    const selectedInvoice = useAppSelector((state) => state.invoiceData.selectedInvoice);
+
   const overview = useAppSelector((state) => state.invoiceData.overview);
   const [speditionFilter, setSpeditionFilter] = useState<any>(ALL_SPEDITIONS_VALUE);
     const [search, setSearch] = useState("");
-      const [selectedInvoice, setSelectedInvoice] = useState<any>({rechnungsnummer: 'R-1001', projektId: 'p1'});
     const { localeText,language } =useLanguage();
-      const [carrierViewDialogOpen, setCarrierViewDialogOpen] = useState(false);
     const [invoiceOverrides, setInvoiceOverrides] = useState<any>({});
      const [carrierResponses, setCarrierResponses] = useState<any>({});
       const [activeResponseKey, setActiveResponseKey] = useState<any>(null);
@@ -98,6 +87,8 @@ const InvoiceDetails = () => {
     surchargeOverrides: [],
     onlyNegativeMismatch: false,
   });
+
+  
 
   const makeInvoiceKey = (rechnungsnummer:any, projektId:any) =>
   `${rechnungsnummer || "unbekannt"}__${projektId || "all"}`;
@@ -341,7 +332,7 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
                 variant="contained"
                 color="inherit"
                 sx={{ ml: { xs: 0, sm: 2 }, mt: { xs: 2, sm: 0 } }}
-                onClick={() => setCarrierViewDialogOpen(true)}
+                onClick={() =>dispatch(setCarrierViewDialogOpen(true)) }
               >
                 {localeText.carrierView.button}
               </Button>
@@ -377,131 +368,10 @@ console.log("invoiceDetailsData: ",invoiceDetailsData);
             </Box>
           )}
           <InvoiceDetailsTable/>
-
-          {/* <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>{localeText.detail.columns.sendung}</TableCell>
-                <TableCell>{localeText.detail.columns.carrier}</TableCell>
-                <TableCell>{localeText.detail.columns.surcharges}</TableCell>
-                <TableCell>{localeText.detail.columns.orderSum}</TableCell>
-                <TableCell>{localeText.detail.columns.invoiceSum}</TableCell>
-                <TableCell>{localeText.detail.columns.difference}</TableCell>
-                <TableCell>{localeText.detail.columns.status}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {invoiceDetailsData?.shipments?.map((row:any, idx:any) => {
-                const baseFreightStatus = evaluateStatus(
-                  row.preis1,
-                  row.preis2,
-                  toleranceSettings.freightPercent
-                );
-                const freightStatus = invoiceAccepted ? acceptedStatus : baseFreightStatus;
-                return (
-                  <React.Fragment key={row.id || idx}>
-                    <TableRow
-                      hover
-                      sx={{ cursor: row.nebenkostenDetails?.length ? "pointer" : "default" }}
-                      onClick={() => {
-                        if (row.nebenkostenDetails?.length) {
-                          setExpandedRows((prev:any) => ({
-                            ...prev,
-                            [row.rowKey]: !prev[row.rowKey],
-                          }));
-                        }
-                      }}
-                    >
-                      <TableCell sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                        {row.nebenkostenDetails?.length ? (
-                          <IconButton
-                            size="small"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setExpandedRows((prev:any) => ({
-                                ...prev,
-                                [row.rowKey]: !prev[row.rowKey],
-                              }));
-                            }}
-                          >
-                            {expandedRows[row.rowKey] ? (
-                              <KeyboardArrowUpIcon fontSize="small" />
-                            ) : (
-                              <KeyboardArrowDownIcon fontSize="small" />
-                            )}
-                          </IconButton>
-                        ) : null}
-                        {row.shipment_id}
-                      </TableCell>
-                      <TableCell>{row.spedition}</TableCell>
-                      <TableCell>{formatCurrency(row?.charges?.freightCostSystemR)}</TableCell>
-                      <TableCell>{formatCurrency(row?.order_total)}</TableCell>
-                      <TableCell>{formatCurrency(row?.net_amount_eur)}</TableCell>
-                      <TableCell sx={{ color: row?.difference > 0 ? "green" : "red", fontWeight: "bold" }}>
-                        {formatCurrency(row.differenz)}
-                      </TableCell>
-                      <TableCell>{renderStatusChip(row?.status)}</TableCell>
-                    </TableRow>
-                    {row.nebenkostenDetails?.length ? (
-                      <TableRow>
-                        <TableCell colSpan={7} sx={{ py: 0 }}>
-                          <Collapse in={Boolean(expandedRows[row.rowKey])} timeout="auto" unmountOnExit>
-                            <Box sx={{ m: 1 }}>
-                              <Typography variant="subtitle2" gutterBottom>
-                                {localeText.detail.surchargeTable.title}
-                              </Typography>
-                              <Table size="small">
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell>{localeText.detail.surchargeTable.label}</TableCell>
-                                      <TableCell>{localeText.detail.surchargeTable.orderSum}</TableCell>
-                                      <TableCell>{localeText.detail.surchargeTable.invoiceSum}</TableCell>
-                                      <TableCell>{localeText.detail.surchargeTable.difference}</TableCell>
-                                      <TableCell>{localeText.detail.surchargeTable.status}</TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                <TableBody>
-                                  {row.nebenkostenDetails.map((detail:any) => {
-                                    const baseSurchargeStatus = evaluateStatus(
-                                      detail.preis1 ?? 0,
-                                      detail.preis2 ?? 0,
-                                      getSurchargeTolerance(detail.label)
-                                    );
-                                    const surchargeStatus = invoiceAccepted
-                                      ? acceptedStatus
-                                      : baseSurchargeStatus;
-                                    return (
-                                      <TableRow key={detail.key}>
-                                        <TableCell>{detail.label}</TableCell>
-                                        <TableCell>{formatCurrency(detail.preis1)}</TableCell>
-                                        <TableCell>{formatCurrency(detail.preis2)}</TableCell>
-                                        <TableCell
-                                          sx={{
-                                            color: detail.differenz > 0 ? "green" : "red",
-                                            fontWeight: "bold",
-                                          }}
-                                        >
-                                          {formatCurrency(detail.differenz)}
-                                        </TableCell>
-                                        <TableCell>{renderStatusChip(surchargeStatus)}</TableCell>
-                                      </TableRow>
-                                    );
-                                  })}
-                                </TableBody>
-                              </Table>
-                            </Box>
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    ) : null}
-                  </React.Fragment>
-                );
-              })}
-            </TableBody>
-          </Table> */}
-          
            <Tolerance/>
           {responseInputDialogOpen?<InvoiceCaptStatement/>:null}
+           <CarrierViewDialog/>
+
         </>
   );
 };

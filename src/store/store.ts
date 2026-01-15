@@ -12,6 +12,9 @@ import shipmentSummaryReducer from "./features/shipment_summary/shipmentSummaryS
 
 import AllApisCallingStatusReducer from "./features/all_apis_calling_status/AllApisCallingStatusSlice";
  import invoiceFilterReducer from "./features/invoice_filter/invoiceFilterSlice";
+ import carrierViewDialogOpenReducer from "./features/invoice_data/invoiceDataSlice";
+  import detailsReducer from "./features/invoice_data/invoiceDataSlice";
+    import selectedInvoiceReducer from "./features/invoice_data/invoiceDataSlice";
 
 export const makeStore = () =>
   configureStore({
@@ -27,7 +30,10 @@ export const makeStore = () =>
       shipmentData:shipmentDataReducer,
       shipmentSummary:shipmentSummaryReducer,
       allApisCallingStatus:AllApisCallingStatusReducer,
-      invoiceFilter:invoiceFilterReducer
+      invoiceFilter:invoiceFilterReducer,
+      carrierViewDialogOpen:carrierViewDialogOpenReducer,
+      details:detailsReducer,
+      selectedInvoice:selectedInvoiceReducer,
     },
   });
 
