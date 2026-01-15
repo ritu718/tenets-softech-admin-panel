@@ -103,6 +103,8 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
     token: string,
     data: any
   ) => {
+    console.log("token value is: ",token);
+    
     return { success: true };
   };
 
