@@ -23,6 +23,7 @@
     "@testing-library/user-event": "^13.5.0",
     "abort-controller": "^3.0.0",
     "aos": "^2.3.4",
+    "firebase": "^12.8.0",
     "formik": "^2.4.9",
     "framer-motion": "^12.23.22",
     "next": "15.5.4",

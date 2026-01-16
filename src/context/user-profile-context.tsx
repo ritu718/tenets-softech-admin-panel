@@ -23,6 +23,9 @@ import { useRouter } from "next/navigation";
 import { firebase } from "@/services/firebase";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setFirebaseId, setFirebaseToken, setUserProfile } from "@/store/features/user_details/userDetailsSlice";
+import { getUserDataByFireBase } from "@/dialogs/invoice_config/services";
+import { cookies } from "next/headers";
+
 
 /* ---------------- Types ---------------- */
 
@@ -125,11 +128,11 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
 
     try {
       const user =
-        await getUser(
+        await getUserDataByFireBase(
           firebaseId,
           firebaseToken
         );
-
+   console.log("fetched user: ",user);
       if (!user) return;
       dispatch(setUserProfile(user));
     } catch (error) {
@@ -189,12 +192,12 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
 
       const token =
         await result.user.getIdToken();
-
       await updateUser(
         { firebaseId: result.user.uid },
         token,
         { loggedIn: true }
       );
+    
 
       const profile =
         await getUser(
