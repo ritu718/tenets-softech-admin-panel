@@ -37,6 +37,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useAppSelector } from "@/store/hooks";
 import AuftragsdatenPreviewTable from "../auftragsdaten_preview_table";
+import HeaderIntake from "@/components/molecules/header_intake";
 const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
   
   const {shipmentData} = useAppSelector((state) => state.shipmentData);
@@ -75,8 +76,9 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
         </Box>
       ))}
     </Paper> */}
+    
 
-    <Stack direction={{ xs: "column", md: "row" }} spacing={1} flexWrap="wrap">
+    {/* <Stack direction={{ xs: "column", md: "row" }} spacing={1} flexWrap="wrap">
       <Button startIcon={<AddCircleIcon />} variant="contained" disabled>
         {text.shipments.buttons.add}
       </Button>
@@ -89,8 +91,8 @@ const AuftragsdatenPreview = ({ text, summaryItems, shipmentRows }:any) => {
       <Button startIcon={<DeleteForeverIcon />} variant="outlined" color="error" disabled>
         {text.shipments.buttons.clear}
       </Button>
-    </Stack>
-
+    </Stack> */}
+<HeaderIntake/>
     <AuftragsdatenPreviewTable text={text} />
 
     <Paper variant="outlined" sx={{ p: 2, borderRadius: 2 }}>
