@@ -1,4 +1,4 @@
-import { BASE_URL, URL_COMPANIES, URL_SHIPMENT, URL_SHIPMENT_SUMMARY, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE } from "@/constants/apis";
+import { BASE_URL, URL_COMPANIES, URL_SHIPMENT, URL_SHIPMENT_SUMMARY, URL_SHIPPER_EXTRA_COSTS, URL_SHIPPER_FREIGHT_CALCULATION_BASIS, URL_SHIPPER_PROJECTS, URL_SHIPPER_RATES, URL_TOLERANCE, URL_USER } from "@/constants/apis";
 import { fetchApi } from "@/services/api";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setCarrierConfigs, setInvoiceData, setInvoiceDetailsData, setIsInvoiceDataApiCalled } from "@/store/features/invoice_data/invoiceDataSlice";
@@ -9,6 +9,8 @@ import { setToleranecData } from "@/store/features/tolerances/TolerancesSlice";
 import { setIsApisCalledForSelectedCarier } from "@/store/features/all_apis_calling_status/AllApisCallingStatusSlice";
 import { setShipmentSummary } from "@/store/features/shipment_summary/shipmentSummarySlice";
 import { isEmpty, removeInvalidKeys } from "@/utils/helper";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "@/services/firebase/firebase";
 
 export const sendCarrierDataToServer = async (params:any,dispatch?:any, onSuccess?:any)=>{
  
@@ -309,6 +311,45 @@ export const getCompaniesDetailsData = async (params:any,dispatch?:any)=>{
        dispatch&& dispatch(setInvoiceDetailsData(null))
     } 
 }
+
+export const getUserDataByFireBase = async (firebaseUserId: string,
+    token: string) => {
+  try {
+    // 🔒 SSR guard
+    if (typeof window === "undefined") return null;
+
+    // 🔑 Firebase user
+    const auth = getAuth(firebaseApp);
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.warn("User not logged in");
+      return null;
+    }
+
+    // 🌐 API call (tumhara existing pattern)
+    const resp: any = await fetchApi(
+      undefined,
+      `${URL_USER}?firebaseId=${firebaseUserId}`,
+      "get",
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+
+    console.log("getShipmentSummary resp:", resp);
+
+    const respData = getValidDataFromResp(resp);
+    console.log("respData:", respData);
+
+    
+
+    return respData;
+  } catch (error) {
+    console.error("getUserDataByFireBase error:", error);
+    return error;
+  }
+};
  
 
 

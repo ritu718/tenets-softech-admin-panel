@@ -45,31 +45,36 @@ console.log("loginData: ",loginData);
     
       const loginState = await login(loginData);
 
-      if (!loginState.success) {
-        if (loginState.tooManyRequests) {
-          setShowTooManyRequests(true);
-        } else if (loginState.errorFields) {
-          !loginState.errorFields.email && formik.setFieldError("email", "Die von Ihnen eingegebene Email Adresse wurde nicht gefunden.");
-          !loginState.errorFields.password && formik.setFieldError("password", "Bitte geben Sie ein gültiges Passwort ein.");
-        } else {
-          setShowApiServerRequestErrorMessage(true);
-        }
+  if (!loginState.success) {
+  if (loginState.tooManyRequests) {
+    setShowTooManyRequests(true);
+  } else if (loginState.errorFields) {
+    !loginState.errorFields.email && 
+      formik.setFieldError("email", "Die von Ihnen eingegebene Email Adresse wurde nicht gefunden.");
+    !loginState.errorFields.password && 
+      formik.setFieldError("password", "Bitte geben Sie ein gültiges Passwort ein.");
+  } else {
+    setShowApiServerRequestErrorMessage(true);
+  }
 
-        setIsLoading(false);
+  setIsLoading(false);
+  return;
+}
 
-        return;
-      }
+  setIsLoading(false);
+    router.push("/dashboard");
 
+    /* ---------- LOGOUT (optional flag) ---------- */
+    if (loginState?.isLogout) {
       setIsLoading(false);
-      router.push("/dashboard")
+      router.replace("/login");
+      return;
+    }
     },
   });
- 
-
- 
 
   
-  return (
+    return (
     
      <form onSubmit={formik.handleSubmit}><Box
       
@@ -84,7 +89,8 @@ console.log("loginData: ",loginData);
         type="email"
         fullWidth
         margin="normal"
-        
+         autoComplete="email"
+  InputLabelProps={{ shrink: true }}
                   name="email"
                 
                   placeholder="Email"
@@ -100,6 +106,8 @@ console.log("loginData: ",loginData);
                   name="password"
                   label="Passwort*"
                   placeholder="Passwort"
+                   autoComplete="current-password"
+  InputLabelProps={{ shrink: true }} 
                   onFocus={() => formik.setFieldError("password", "")}
                   onChange={formik.handleChange}
                   value={formik.values.password}
