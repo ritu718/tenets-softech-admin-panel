@@ -1,8 +1,9 @@
 'use client'
 
+import LoginForm from '@/features/login_form/LoginForm'
 import React from 'react'
 
-import LoginForm from '@/components/organisms/LoginForm'
+
 
 export default function Page() {
   return <LoginForm />

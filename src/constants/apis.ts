@@ -25,3 +25,8 @@ export const URL_SHIPMENT_SUMMARY = `${BASE_URL}/summary`;
 //invoice table
 export const URL_COMPANIES = `${BASE_URL}/companies`;
 
+export const URL_USER =`${BASE_URL}/user`;
+
+
+
+
