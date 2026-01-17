@@ -272,6 +272,16 @@ export const getShipmentSummary = async (params:any,dispatch?:any)=>{
         return error;
       }
     }
+
+export const sendShipmentSummary = async (params:any,dispatch?:any, onSuccess?:any)=>{
+       const resp:any = await fetchApi(params,URL_SHIPMENT_SUMMARY,"post");
+      if(resp.success)
+{
+       onSuccess&&onSuccess(resp?.data)
+}
+}
+
+
 export const getCompaniesData = async (params:any,dispatch?:any)=>{
     try {
       dispatch(setIsInvoiceDataApiCalled(true))
