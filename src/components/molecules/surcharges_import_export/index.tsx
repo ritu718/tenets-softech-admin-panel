@@ -38,6 +38,7 @@ import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlic
 import { prepareDataSurcharge } from '@/utils/csvImportHelper';
 
 export default function SurchargesImportExport() {
+ const surchargeFileInputRef = React.useRef<any>(null);
 
     const { pricingText,localeText } =useLanguage();
     const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
@@ -52,38 +53,29 @@ export default function SurchargesImportExport() {
                NEBENKOSTEN_INITIAL_COUNTRIES[0];
          const activeSurcharges =
        (activeCarrier && activeCarrier.surcharges?.byCountry?.[activeSurchargeCountryCode]) || null;
-        const surchargeFileInputRef = React.useRef<any>(null);
-
+       
     const handleSurchargeImport = (file:any) => {
             //  if (!activeCarrier || !activeSurchargeCountryCode || !file) return;
              Papa.parse(file, {
+              delimiter:";",
+              skipEmptyLines:true,
                complete: (result) => {
                  const rows:any = result.data;
                  if (!rows || !rows.length) return;
 
                  const [header, ...dataRows] = rows;
                  if (!header) return;
-const extraCosts =prepareDataSurcharge(rows);
+const Base =prepareDataSurcharge(rows);
 
-                 const columns = header.map((h:any) => (h || "").toString().trim().toLowerCase());
-                 const labelIdx = columns.findIndex((c:any) => c.includes("label") || c.includes("bezeichnung"));
-                 const amountIdx = columns.findIndex((c:any) => c.includes("amount") || c.includes("wert") || c === "");
-                 const unitIdx = columns.findIndex((c:any) => c.includes("unit") || c.includes("einheit"));
-                 const descIdx = columns.findIndex((c:any) => c.includes("desc"));
-                 const rowsParsed = dataRows
-                   .filter((cells:any) => cells.some((c:any) => c !== null && c !== undefined && `${c}`.trim() !== ""))
-                   .map((cells:any) =>
-                     createSurchargeRow(localeText, {
-                       label: labelIdx >= 0 ? cells[labelIdx] : cells[0],
-                       amount: amountIdx >= 0 ? cells[amountIdx] : cells[1],
-                       unit: unitIdx >= 0 ? cells[unitIdx] : "€",
-                       description: descIdx >= 0 ? cells[descIdx] : "",
-                     })
-                   );
-                   const parsed:any = SHIPPER_EXTRA_COSTS;
-                                   parsed.projectId = activeCarrierId;
-                                   
-                                          //  sendShipperExtraCost(parsed,dispatch);
+                
+                   
+                                   const shipperExtraCosts={
+  "projectId": activeCarrierId,
+    "extraCosts": {
+      "DE": {Base}}}
+      console.log("shipperExtraCosts: ",shipperExtraCosts);
+      
+                                           sendShipperExtraCost(shipperExtraCosts,dispatch);
     
                 //  updateCarrier(activeCarrier.id, (carrier:any) => {
                 //    const codes = carrier.surcharges?.countryCodes || [activeSurchargeCountryCode];
