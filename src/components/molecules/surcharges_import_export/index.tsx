@@ -31,7 +31,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Papa from "papaparse";
 import { createSurchargeBase, createSurchargeRow } from '@/utils/helper';
 import { sendShipperExtraCost } from '@/dialogs/invoice_config/services';
-import { SHIPPER_EXTRA_COSTS } from '@/data/dummy';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
@@ -71,8 +70,8 @@ const Base =prepareDataSurcharge(result.data);
 
            const handleSurchargeExport = () => {
             
-            // exportSurchargeCSV(surchargesData);
-             exportSurchargeCSV(SHIPPER_EXTRA_COSTS);
+            exportSurchargeCSV(surchargesData);
+            
             
           };
           
