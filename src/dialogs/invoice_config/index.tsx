@@ -147,20 +147,21 @@ const  InvoiceConfig = () => {
                   {activeConfigSection.key === "pricing" ? (
                     <CarrierPricingConfigurator />
                   ) : activeConfigSection.key === "price-check" ? (
-                    <PriceCheckPreview
-                      text={localeText}
-                      shipmentRows={shipmentRows}
-                      overrides={priceCheckOverrides}
-                      onFixIssue={({ shipment, carrier, error }:any) =>
-                        setPriceFixDialog({
-                          open: true,
-                          shipment,
-                          carrier,
-                          error,
-                          countryCode: "DE",
-                        })
-                      }
-                    />
+                    <></>
+                    // <PriceCheckPreview
+                    //   text={localeText}
+                    //   shipmentRows={shipmentRows}
+                    //   overrides={priceCheckOverrides}
+                    //   onFixIssue={({ shipment, carrier, error }:any) =>
+                    //     setPriceFixDialog({
+                    //       open: true,
+                    //       shipment,
+                    //       carrier,
+                    //       error,
+                    //       countryCode: "DE",
+                    //     })
+                    //   }
+                    // />
                   ) : activeConfigSection.key === "nebenkosten" ? (
                     <>
                       <NebenkostenPreview

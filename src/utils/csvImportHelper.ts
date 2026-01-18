@@ -81,3 +81,41 @@ export const prepareDataSurcharge = (rows: any) => {
 
   return Base;
 };
+
+
+export const prepareDataFreightBasis = (rows: any) => {
+   const frightCalculation: any = {};
+  const [header, ...dataRows] = rows;
+  console.log("prepareDataFreightBasis: header: ", header);
+
+  const consolidated = dataRows[0];
+  const bulkiness = dataRows[1];
+   console.log("prepareDataFreightBasis: consolidated: ", consolidated);
+  header.map((item: any, index: any) => {
+    if (!isEmpty(item)) {
+      const calcType = item.split("-")[0].trim();
+      frightCalculation[calcType] = {
+        ...(frightCalculation[calcType] || {}),
+        consolidated: consolidated[index],  
+        calculation: item.split("-")[1]?.trim() || "default",
+        bulkiness: bulkiness[index],
+        calculationType: item.split("-")[2]?.trim() || "default"
+
+      
+
+
+     };
+      console.log("prepareDataFreightBasis: item: ", item)
+      console.log(" consolidated[index]: ", consolidated[index])
+      console.log(" bulkiness[index]: ", bulkiness[index]);
+      
+    } 
+
+  });
+    
+
+
+
+  return frightCalculation;
+};
+    
