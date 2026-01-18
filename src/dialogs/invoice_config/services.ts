@@ -124,7 +124,7 @@ export const getShipperRates = async (params:any,dispatch?:any)=>{
 }
 
 export const sendShipperRates = async (params:any,dispatch?:any)=>{
-    try {
+    try {    
       const resp:any =await fetchApi(params,`${URL_SHIPPER_RATES}`,"post")
        console.log("sendShipperRates:  resp: ",resp);
       const rates= getValidDataFromResp(resp);
@@ -160,6 +160,7 @@ export const getShipperExtraCost = async (params:any,dispatch?:any)=>{
 
 export const sendShipperExtraCost = async (params:any,dispatch?:any)=>{
     try {
+       console.log("params value is: ",params);
       const resp:any =await fetchApi(params,`${URL_SHIPPER_EXTRA_COSTS}`,"post")
        console.log("sendShipperExtraCost:  resp: ",resp);
        

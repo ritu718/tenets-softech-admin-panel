@@ -504,199 +504,217 @@ export const  SHIPPER_RATES={
 
 
 export const SHIPPER_EXTRA_COSTS={
-  "projectId": "6951453aca1464ba20c68942",
     "extraCosts": {
-      "DE": {
-        "Base": [
-          {
-            "id": "016cabaf-23fc-485b-8ba3-bf9da3707f7b",
-            "Term": "Maut",
-            "Value": 2,
-            "Unit": "%",
-            "Description": "Fester Zuschlag in Euro / Prozentualer Zuschlag"
-          },
-          {
-            "id": "b3016abc-874b-49b6-8d47-8e19e3ddebd5",
-            "Term": "Dieselzuschlag",
-            "Value": 0,
-            "Unit": "%",
-            "Description": "Prozentualer Zuschlag / Floatermodell"
-          },
-          {
-            "id": "e1fbb143-17a8-4944-bdc4-4e0e85105b04",
-            "Term": "Express Next Day",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "843668f0-7a82-4e19-9b3a-624dbaee926f",
-            "Term": "Express 12:00 Uhr",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "69ea57df-9061-419b-8daf-861760d008c2",
-            "Term": "Express 10:00 Uhr",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "1e2e1679-9962-4afd-b6f2-e93d5587339b",
-            "Term": "Express 08:00 Uhr",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "81fbf3a7-9488-4e5b-b35e-f13caff5cbaa",
-            "Term": "Hebebühnenzuschlag",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "893a7a32-72f5-4332-a111-7cf77f536186",
-            "Term": "Fixtermin",
-            "Value": 1,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "ced1285f-04da-4481-8438-e46f680f6953",
-            "Term": "E-Mail Avis",
-            "Value": 2,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "1a4a333a-8508-4b82-a2b5-aba10cbe6d54",
-            "Term": "Telefonisches Avis",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "fe6a86e1-1a84-4d24-8c48-c8f399ac10f3",
-            "Term": "Booking in Avis",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "54afc398-5763-4a0e-9885-f132e496c27a",
-            "Term": "Gefahrgutzuschlag",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "6f840d74-c947-4335-91d5-0e0c5e6116ed",
-            "Term": "Langgutzuschlag",
-            "Value": 0,
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "a5fb3746-e6fe-45d0-aac0-448e0a6c432e",
-            "Term": "Kurzwochenzuschlag",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "b4bdd687-efd6-405c-9601-b2e658d4587b",
-            "Term": "Palettentausch",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Feste Gebühr je Palette in Euro"
-          },
-          {
-            "id": "9d10cbe6-2031-4853-8060-130733168141",
-            "Term": "Gitterboxtausch",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Feste Gebühr je Gitterbox in Euro"
-          },
-          {
-            "id": "a79b3a46-fcdc-4ab2-81cc-c587d3cdca4d",
-            "Term": "Spediteurbescheinigung",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "46d0dc63-f123-47ca-a8d7-267127543c29",
-            "Term": "B2C Zuschlag (national)",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "208c0e43-fe27-4a03-b78a-ef2bb5726e8c",
-            "Term": "B2C Zuschlag (international)",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "484fbe2b-dbbe-46bc-9817-d011c7b4b74f",
-            "Term": "Security Fee",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Sendung in Euro"
-          },
-          {
-            "id": "89946c5d-743e-4cf4-affc-25e93bf9c629",
-            "Term": "Versicherung",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Prämie nach Warenwert  daher kann auch ein Text eingegeben werden"
-          },
-          {
-            "id": "1f8f9c85-19eb-4f2a-8f0f-9e89b38b044c",
-            "Term": "Porti/Papiere",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "Fester Zuschlag je Rechnung in Euro"
-          },
-          {
-            "id": "f6cc520c-92bc-4a31-be3d-64418e2535a5",
-            "Term": "Eigene 1",
-            "Value": 0,
-            "Unit": "€",
-            "Description": ""
-          },
-          {
-            "id": "7715d756-9afa-43bf-8e11-207fd2d1bebc",
-            "Term": "Eigene 2",
-            "Value": 0,
-            "Unit": "€",
-            "Description": ""
-          },
-          {
-            "id": "5d836fe3-6a11-46ea-949d-096e543f3139",
-            "Term": "Eigene 3",
-            "Value": 0,
-            "Unit": "€",
-            "Description": ""
-          },
-          {
-            "id": "f7477a42-6a36-4e33-9ff3-fd5f726dcd82",
-            "Term": "Eigene 4",
-            "Value": 0,
-            "Unit": "€",
-            "Description": ""
-          },
-          {
-            "id": "72665ff6-ce78-47a0-9bcd-4e44b1f8fcb7",
-            "Term": "Eigene 5",
-            "Value": 0,
-            "Unit": "€",
-            "Description": "test111222222"
-          }
-        ]
-      }
-    }
+        "DE": {
+            "Base": [
+                {
+                    "id": "f25b1850-e6a3-4330-91c7-fdaf5263b733",
+                    "Term": "Maut",
+                    "Value": "2",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag in Euro / Prozentualer Zuschlag",
+                    "Type": "flat"
+                },
+                {
+                    "id": "47bdc4a9-35b2-4cb5-a138-8aa146195baf",
+                    "Term": "Express Next Day",
+                    "Value": "40",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "009c37f3-b2f0-4548-89c5-18b37c73fcda",
+                    "Term": "Express 12:00 Uhr",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "745d99b0-454b-4b14-9b52-88a5f058abe4",
+                    "Term": "Express 10:00 Uhr",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "8f5618e4-2961-42b4-8f77-2735d0eb1bc5",
+                    "Term": "Express 08:00 Uhr",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "4d4057d9-6048-4ba5-9e48-4eafe4781dd7",
+                    "Term": "Hebebühnenzuschlag",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "451c5577-8564-49c1-a769-0a04db253527",
+                    "Term": "Fixtermin",
+                    "Value": "10",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "add74233-59cd-44ba-abcb-f10e9cb433b5",
+                    "Term": "E-Mail Avis",
+                    "Value": "20",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "a9c7d99d-fc6d-4325-83bf-126de7d6ed4d",
+                    "Term": "Telefonisches Avis",
+                    "Value": "5",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "0c052372-fe24-4153-9d62-28639dd9065b",
+                    "Term": "Booking in Avis",
+                    "Value": "5",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "36c24f9f-457f-4a6b-a2ce-c4ccc52ea1ec",
+                    "Term": "Gefahrgutzuschlag",
+                    "Value": "7",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "79bd4690-4333-4f65-ac3c-00b0ec10a5bb",
+                    "Term": "Kurzwochenzuschlag",
+                    "Value": "8",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "2b6cfa18-2262-4065-9702-25118425e8bb",
+                    "Term": "Palettentausch",
+                    "Value": "5",
+                    "Unit": "",
+                    "Description": "Feste Gebühr je Palette in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "492c6cf3-e972-41cf-83fa-ac952f8ae303",
+                    "Term": "Gitterboxtausch",
+                    "Value": "10",
+                    "Unit": "",
+                    "Description": "Feste Gebühr je Gitterbox in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "2612dd11-c766-4645-a1e3-8d23559daca1",
+                    "Term": "Spediteurbescheinigung",
+                    "Value": "4",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "5f58db1c-ed39-417f-a4d9-6b6e6b1d8523",
+                    "Term": "B2C Zuschlag (national)",
+                    "Value": "6",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "9dd14343-ffde-409c-902d-d54db4540363",
+                    "Term": "B2C Zuschlag (international)",
+                    "Value": "70",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "ad75456c-46b3-4cd3-ac73-d35e54a036b8",
+                    "Term": "Security Fee",
+                    "Value": "8",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Sendung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "bc3e16f9-0094-49f6-b955-89a5440152bd",
+                    "Term": "Versicherung",
+                    "Value": "1",
+                    "Unit": "",
+                    "Description": "Prämie nach Warenwert  daher kann auch ein Text eingegeben werden",
+                    "Type": "flat"
+                },
+                {
+                    "id": "be9654cd-3bd1-4899-82e8-b3bc67777c06",
+                    "Term": "Porti/Papiere",
+                    "Value": "2",
+                    "Unit": "",
+                    "Description": "Fester Zuschlag je Rechnung in Euro",
+                    "Type": "flat"
+                },
+                {
+                    "id": "e8b297ef-f81c-4e51-b8f4-1f85dbf764e2",
+                    "Term": "Eigene 1",
+                    "Value": "4",
+                    "Unit": "",
+                    "Description": "Paper",
+                    "Type": "flat"
+                },
+                {
+                    "id": "cb60146c-eb05-4e11-aa6a-990c4843c49f",
+                    "Term": "Eigene 2",
+                    "Value": "6",
+                    "Unit": "",
+                    "Description": "Call",
+                    "Type": "flat"
+                },
+                {
+                    "id": "f3aba642-bcda-48cd-b7a1-965952a0eeeb",
+                    "Term": "Eigene 3",
+                    "Value": "6",
+                    "Unit": "",
+                    "Description": "double up",
+                    "Type": "flat"
+                },
+                {
+                    "id": "bdab9915-b2ad-4841-9c69-16b09c5a21eb",
+                    "Term": "Eigene 4",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "",
+                    "Type": "flat"
+                },
+                {
+                    "id": "f91220a5-c691-4898-a152-33b053c6c290",
+                    "Term": "Eigene 5",
+                    "Value": "0",
+                    "Unit": "",
+                    "Description": "",
+                    "Type": "flat"
+                },
+                {
+                    "id": "cd910bbc-0d71-433d-9dd7-0b8aae1f4ed2",
+                    "Term": "",
+                    "Type": "flat"
+                }
+            ]
+        }
+    },
+    "id": "696c516a13b29cffb5cee4ee",
+    "projectId": "6951453aca1464ba20c68942"
 }

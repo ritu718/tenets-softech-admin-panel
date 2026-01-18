@@ -45,3 +45,50 @@ export const revertTariffsToCSV = (countryCode:any,rates:any) => {
 
   return rows;
 };
+
+export const exportSurchargeCSV = (response: any) => {
+
+  const extraCosts = response?.extraCosts || {};
+
+  // Get dynamic country key (DE, FR, NL etc)
+  const countryCode = Object.keys(extraCosts)[0];
+
+  if (!countryCode) {
+    alert("No country data found");
+    return;
+  }
+
+  const data = extraCosts[countryCode]?.Base || [];
+
+  if (!data.length) {
+    alert("No data found for " + countryCode);
+    return;
+  }
+
+  const headers = ["Term", "Value", "Unit", "Description", "Type"];
+
+  const csvRows = [
+    headers.join(","),
+
+    ...data.map((row: any) =>
+      headers.map(h => `"${row[h] ?? ""}"`).join(",")
+    )
+  ];
+
+  const csvString = csvRows.join("\n");
+
+  const blob = new Blob([csvString], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `extra-costs-${countryCode}.csv`;
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};

@@ -11,7 +11,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { deleteCarrierDataToServer, sendShipperFreightCalc } from "@/dialogs/invoice_config/services";
+import { deleteCarrierDataToServer, sendShipperFreightCalc, sendShipperRates } from "@/dialogs/invoice_config/services";
 import { SHIPPER_PROJECT_FREIGHT_BASIC } from "@/data/dummy";
 import { cleanString, isEmpty } from "@/utils/helper";
 import { prepareDataFreightBasis } from "@/utils/csvImportHelper";
@@ -110,7 +110,7 @@ const handleFreightBasisImport = (file: any) => {
            frightCalculation,
         };
         // const resp = await sendShipperRates(payload, dispatch);
-        // console.log("✅ POST RESPONSE", resp);
+        // console.log("✅ POST RESPONSE export: ", resp);
 
       } catch (err) {
         console.error("❌ CSV Import Error:", err);

@@ -70,19 +70,17 @@ export const prepareDataTariffs = (rows: any) => {
 
 export const prepareDataSurcharge = (rows: any) => {
   const Base: any = [];
-  // console.log("prepareDataSurcharge: rows: ", rows);
  let headers:any = [];
-
   let rowsWithoutHeadersIndex = 0;
   for (let index = 0; index < rows.length; index++) {
     const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
-   
+   ++rowsWithoutHeadersIndex;
     if(element.includes("Term"))
     {
 headers = [...element];
 break;
     }
-     ++rowsWithoutHeadersIndex;
+     
   }
 if(headers?.length)
 {
@@ -99,9 +97,9 @@ if(headers?.length)
             "id":uuidv4(),
             "Term":termIndex>=0?element[termIndex]:"",
             "Value":valueIndex>=0?element[valueIndex]:"",
-            "Unit":unitIndex>=0?element[unitIndex]:"",
+            "Unit":unitIndex>=0?element[unitIndex]:"€",
             "Description":descriptionIndex>=0?element[descriptionIndex]:"",
-            Type:typeIndex>=0?element[typeIndex]:"",
+            Type:typeIndex>=0?element[typeIndex]:"flat",
           }
 Base.push(objectValue);
 

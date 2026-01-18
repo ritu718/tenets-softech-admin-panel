@@ -36,6 +36,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from '@/constants/common';
 import { setCarrierConfigs } from '@/store/features/invoice_data/invoiceDataSlice';
 import { prepareDataSurcharge } from '@/utils/csvImportHelper';
+import { exportSurchargeCSV } from '@/utils/csvExportHelper';
 
 export default function SurchargesImportExport() {
  const surchargeFileInputRef = React.useRef<any>(null);
@@ -51,72 +52,28 @@ export default function SurchargesImportExport() {
                surchargesCountryCodes[surchargesCountryIndex] ||
                surchargesCountryCodes[0] ||
                NEBENKOSTEN_INITIAL_COUNTRIES[0];
-         const activeSurcharges =
-       (activeCarrier && activeCarrier.surcharges?.byCountry?.[activeSurchargeCountryCode]) || null;
        
     const handleSurchargeImport = (file:any) => {
-            //  if (!activeCarrier || !activeSurchargeCountryCode || !file) return;
+             if (!activeCarrier || !activeSurchargeCountryCode || !file) return;
              Papa.parse(file, {
               delimiter:";",
               skipEmptyLines:true,
                complete: (result) => {
-                 const rows:any = result.data;
-                 if (!rows || !rows.length) return;
-
-                 const [header, ...dataRows] = rows;
-                 if (!header) return;
-const Base =prepareDataSurcharge(rows);
-
-                
-                   
-                                   const shipperExtraCosts={
-  "projectId": activeCarrierId,
-    "extraCosts": {
-      "DE": {Base}}}
-      console.log("shipperExtraCosts: ",shipperExtraCosts);
+const Base =prepareDataSurcharge(result.data);
+ const shipperExtraCosts={
+  projectId: activeCarrierId,
+    extraCosts: {[activeSurchargeCountryCode]: {Base}}}
       
-                                           sendShipperExtraCost(shipperExtraCosts,dispatch);
-    
-                //  updateCarrier(activeCarrier.id, (carrier:any) => {
-                //    const codes = carrier.surcharges?.countryCodes || [activeSurchargeCountryCode];
-                //    const current =
-                //      carrier.surcharges?.byCountry?.[activeSurchargeCountryCode] || createSurchargeBase(text);
-                //    return {
-                //      ...carrier,
-                //      surcharges: {
-                //        countryCodes: codes,
-                //        byCountry: {
-                //          ...(carrier.surcharges?.byCountry || {}),
-                //          [activeSurchargeCountryCode]: { ...current, rows: rowsParsed },
-                //        },
-                //      },
-                //    };
-                //  });
+         sendShipperExtraCost(shipperExtraCosts,dispatch);
                },
              });
            };
+
            const handleSurchargeExport = () => {
             
-            const header = [
-              pricingText.surcharges.columns.label,
-              pricingText.surcharges.columns.amount,
-              pricingText.surcharges.columns.unit,
-              pricingText.surcharges.columns.description,
-            ];
-            const rows = (activeSurcharges.rows || []).map((row:any) => [
-              row.label,
-              row.amount,
-              row.unit,
-              row.description,
-            ]);
-            const csv = Papa.unparse([header, ...rows]);
-            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `surcharges-${activeSurchargeCountryCode}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // exportSurchargeCSV(surchargesData);
+             exportSurchargeCSV(SHIPPER_EXTRA_COSTS);
+            
           };
           
           const updateCarrier = (carrierId:any, updater:any) => {
