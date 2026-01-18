@@ -112,6 +112,8 @@ Base.push(objectValue);
 
 
 export const prepareDataFreightBasis = (rows: any,countryCode="DE",projectId:any) => {
+  console.log(": ",rows);
+  
    const frightCalculation: any = {};
    const Additional:any =[];
    let CalculationType=-1;
