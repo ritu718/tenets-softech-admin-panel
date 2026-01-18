@@ -15,6 +15,7 @@ import { deleteCarrierDataToServer, sendShipperFreightCalc, sendShipperRates } f
 import { SHIPPER_PROJECT_FREIGHT_BASIC } from "@/data/dummy";
 import { cleanString, isEmpty } from "@/utils/helper";
 import { prepareDataFreightBasis } from "@/utils/csvImportHelper";
+import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 
 export default function FreightBasisImportExport() {
   const fileInputRef = useRef<any>(null);
@@ -25,6 +26,12 @@ const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
      const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
     const activeCarrier =
     carriers.find((carrier:any) => carrier.id === activeCarrierId) || carriers[0] || null;
+const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelector((state) => state.freightBasis);
+       
+ const activeFreightCountryCodes =
+               freightCountryCodes[freightCountryIndex] ||
+               freightCountryCodes[0] ||
+               NEBENKOSTEN_INITIAL_COUNTRIES [0];
 
         const exportFreight = () => {
     if (!activeCarrier) return;
@@ -104,7 +111,7 @@ const handleFreightBasisImport = (file: any) => {
        
         const rows: any[] = result?.data||[];
         if (!rows.length) return;
-         const frightCalculation: any = prepareDataFreightBasis(rows);
+         const frightCalculation: any = prepareDataFreightBasis(rows,activeFreightCountryCodes,activeCarrierId);
         const payload = {
           projectId: activeCarrierId,
            frightCalculation,

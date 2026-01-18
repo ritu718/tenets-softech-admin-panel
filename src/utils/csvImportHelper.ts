@@ -110,7 +110,7 @@ Base.push(objectValue);
 };
 
 
-export const prepareDataFreightBasis = (rows: any) => {
+export const prepareDataFreightBasis = (rows: any,countryCode="DE",projectId:any) => {
    const frightCalculation: any = {};
   const [header, ...dataRows] = rows;
   console.log("prepareDataFreightBasis: header: ", header);
@@ -118,30 +118,58 @@ export const prepareDataFreightBasis = (rows: any) => {
   const consolidated = dataRows[0];
   const bulkiness = dataRows[1];
    console.log("prepareDataFreightBasis: consolidated: ", consolidated);
-  header.map((item: any, index: any) => {
-    if (!isEmpty(item)) {
-      const calcType = item.split("-")[0].trim();
-      frightCalculation[calcType] = {
-        ...(frightCalculation[calcType] || {}),
-        consolidated: consolidated[index],  
-        calculation: item.split("-")[1]?.trim() || "default",
-        bulkiness: bulkiness[index],
-        calculationType: item.split("-")[2]?.trim() || "default"
-
-      
 
 
-     };
-      console.log("prepareDataFreightBasis: item: ", item)
-      console.log(" consolidated[index]: ", consolidated[index])
-      console.log(" bulkiness[index]: ", bulkiness[index]);
-      
-    } 
-
-  });
+  const Base: any = {};
+ let headers:any = [];
+  let rowsWithoutHeadersIndex = 0;
+  for (let index = 0; index < rows.length; index++) {
+    const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
+    console.log("element value is inside calc: ",element);
     
+   ++rowsWithoutHeadersIndex;
+    if(element.includes("Kürzel"))
+    {
+headers = [...element];
+break;
+    }
+     
+  }
 
 
+  if(headers?.length)
+{
+  
+  
+   const abbreviationsIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "kürzel")
+   const internalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "internes kürzel");
+     const descriptionIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "beschreibung");
+
+      const internalDescrIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "interne beschreibung");
+       
+            const weightInKgIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "gewicht in kg");
+              for (let index = rowsWithoutHeadersIndex; index < rows.length; index++) {
+    const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
+   
+    Base[element[abbreviationsIndex]] =  {
+"InternalShorthand": internalCodeIndex>=0?element[internalCodeIndex]: "",
+"Description": descriptionIndex>=0?element[descriptionIndex]:"",
+"InternalDescription": internalDescrIndex>=0?element[internalDescrIndex]: "",
+"Weight":  weightInKgIndex>=0?element[weightInKgIndex]:""
+}
+  }
+}
+
+if(Object.keys(Base).length)
+{
+frightCalculation.projectId = projectId;
+
+frightCalculation.countries ??= {};
+frightCalculation.countries[countryCode] ??= {};
+
+frightCalculation.countries[countryCode].MinimumWeight = { Base };
+}
+console.log("frightCalculation: ",frightCalculation);
 
   return frightCalculation;
 };
