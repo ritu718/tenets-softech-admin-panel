@@ -11,8 +11,8 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import Papa from "papaparse";
-import { prepareDataTariffs } from "@/utils/csvImportHelper";
-import { sendShipperRates } from "@/dialogs/invoice_config/services";
+import { prepareDataIntake, prepareDataTariffs } from "@/utils/csvImportHelper";
+import { sendShipmentData, sendShipperRates } from "@/dialogs/invoice_config/services";
 
 
 function HeaderIntake() {
@@ -34,13 +34,10 @@ const handleTariffImport = (file: any) => {
        
         const rows: any[] = result?.data||[];
         if (!rows.length) return;
-         const rates: any = prepareDataTariffs(rows);
-        const payload = {
-          projectId: activeCarrierId,
-          rates
-        };
-        const resp = await sendShipperRates(payload, dispatch);
-        console.log("✅ POST RESPONSE", resp);
+         const reqObj: any = prepareDataIntake(rows,activeCarrierId);
+       
+        const resp = await sendShipmentData(reqObj, dispatch);
+        // console.log("✅ POST RESPONSE", resp);
 
       } catch (err) {
         console.error("❌ CSV Import Error:", err);

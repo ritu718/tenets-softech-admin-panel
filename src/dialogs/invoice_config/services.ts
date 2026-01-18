@@ -121,6 +121,7 @@ export const getShipperRates = async (params:any,dispatch?:any)=>{
 
 export const sendShipperRates = async (params:any,dispatch?:any)=>{
     try {    
+        console.log("sendShipperRates:  params: ",params);
       const resp:any =await fetchApi(params,`${URL_SHIPPER_RATES}`,"post")
        console.log("sendShipperRates:  resp: ",resp);
       const rates= getValidDataFromResp(resp);
@@ -217,13 +218,24 @@ export const getShipmentData = async (params:any,dispatch?:any)=>{
     } 
 }
 
-export const sendShipmentData = async (params:any,dispatch?:any, onSuccess?:any)=>{
-       const resp:any = await fetchApi(params,URL_SHIPMENT,"post");
-      if(resp.success)
-{
-       onSuccess&&onSuccess(resp?.data)
+
+export const sendShipmentData = async (params:any,dispatch?:any)=>{
+    try {
+       console.log("params value is: ",params);
+      const resp:any =await fetchApi(params,`${URL_SHIPMENT}`,"post")
+       console.log("sendShipmentData:  resp: ",resp);
+       
+     const dataValue= getValidDataFromResp(resp);
+     console.log("sendShipmentData: dataValue: ",dataValue);
+     
+      dispatch(setShipmentData(dataValue));
+     
+      }catch (error) {
+       return error;
+    } 
 }
-}
+
+
 
 
 export const getToleranceData = async (params:any,dispatch?:any)=>{

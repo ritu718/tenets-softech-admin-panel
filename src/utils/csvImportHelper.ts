@@ -223,3 +223,140 @@ console.log("frightCalculation: ",frightCalculation);
   return frightCalculation;
 };
     
+
+export const prepareDataIntake = (rows: any,projectId:any) => {
+ 
+  const shipmentData: any = [];
+ let headers:any = [];
+  let rowsWithoutHeadersIndex = 0;
+  for (let index = 0; index < rows.length; index++) {
+    const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
+
+   ++rowsWithoutHeadersIndex;
+    if(element.includes("Sendungs-ID"))
+    {
+headers = [...element];
+break;
+    }
+  }
+
+
+  if(headers?.length)
+{  
+  console.log("headers: ",headers);
+  
+   const shipmentIdIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Sendungs-ID")
+   const shippingDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versanddatum");
+     const shippingPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versand Postleitzahl");
+      const recipientPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Empfangs Postleitzahl");
+            const locationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Ort");
+             const countryIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Land");
+              const lengthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Länge (cm)");
+               const widthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Breite (cm)");
+               const heightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Höhe (cm)");
+               const loadingMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Lademeter");
+               const cubicMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Kubikmeter");
+               const numberOfPackagesIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Anzahl Packstücke");
+               const packagingTypeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Verpackungsart");
+               const effectiveWeightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Effektives Gewicht");
+                const expressNextDayIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express Next Day");
+                const express12PMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 12:00 Uhr");
+                const express10AMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 10:00 Uhr");
+                const express8AMtIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 08:00 Uhr");
+                const fixedDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Fixtermin");
+                const emailNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "E-Mail Avis");
+                const telephoneNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Telefonisches Avis");
+                const bookingWithAvisIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Booking in Avis");
+                const hazardousGoodsSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Gefahrgutzuschlag");
+                const shortWeekSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Kurzwochenzuschlag");
+                 const forwardercertificateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Spediteurbescheinigung");
+                  const b2CSurchargeNationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "B2C Zuschlag (national)");
+                   const b2CSurchargeInternationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "B2C Zuschlag (international)");
+                    const securityFeeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Security Fee");
+                    const insuranceIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versicherung");
+                    const portsDocumentsIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Porti/Papiere");
+
+              for (let index = rowsWithoutHeadersIndex; index < rows.length; index++) {
+    const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
+   
+const Id =uuidv4();
+    shipmentData.push({
+           Id,
+            "id": Id,
+            "ShipmentId": shipmentIdIndex>=0?element[shipmentIdIndex]: "",
+            "ShipmentDate": shippingDateIndex>=0?element[shippingDateIndex]: "",
+            "ZipCodeShipper": shippingPostalCodeIndex>=0?element[shippingPostalCodeIndex]: "",
+            "ZipCodeConsignee":  recipientPostalCodeIndex>=0?element[recipientPostalCodeIndex]: "",
+            "City":  locationIndex>=0?element[locationIndex]: "",
+            "Country": countryIndex>=0?element[countryIndex]: "",
+            "Length":  lengthIndex>=0?element[lengthIndex]: "",
+            "Wide":  widthIndex>=0?element[widthIndex]: "",
+            "Height": heightIndex>=0?element[heightIndex]: "",
+            "LoadingMeters": loadingMetersIndex>=0?element[loadingMetersIndex]: "",
+            "CubicMeters":  cubicMetersIndex>=0?element[cubicMetersIndex]: "",
+            "PalletCount":  numberOfPackagesIndex>=0?element[numberOfPackagesIndex]: "",
+            "PackagingType":  packagingTypeIndex>=0?element[packagingTypeIndex]: "",
+            "EffectiveWeight": effectiveWeightIndex>=0?element[effectiveWeightIndex]: "",
+            "ChargeableWeight":0.0,
+            "MinimumWeight":0.0,
+            "WeightByCubicMeters":0.0,
+            "WeightByLoadingMeters": 0.0,
+            "Stackable": false,
+            "StackFactor": 1,
+            "StackId": "",
+            "StackFootprintLoadingMeters": 0.0,
+            "ExpressNextDay": expressNextDayIndex>=0?element[expressNextDayIndex]: "",
+            "Express12":express12PMIndex>=0?element[express12PMIndex]: "",
+            "Express10":express10AMIndex>=0?element[express10AMIndex]: "",
+            "Express8": express8AMtIndex>=0?element[express8AMtIndex]: "",
+            "Fixtermin":fixedDateIndex>=0?element[fixedDateIndex]: "",
+            "EmailAvis": emailNotificationIndex>=0?element[emailNotificationIndex]: "",
+            "PhoneAvis": telephoneNotificationIndex>=0?element[telephoneNotificationIndex]: "",
+            "BookingInAvis":bookingWithAvisIndex>=0?element[bookingWithAvisIndex]: "",
+            "DangerousGoodsSurcharge": false,
+            "LongGoodsSurcharge": hazardousGoodsSurchargeIndex>=0?element[hazardousGoodsSurchargeIndex]: "",
+            "ShortWeekSurcharge": shortWeekSurchargeIndex>=0?element[shortWeekSurchargeIndex]: "",
+            "PalletExchange": false,
+            "PalletBoxExchange": false,
+            "CarrierCertificate": forwardercertificateIndex>=0?element[forwardercertificateIndex]: "",
+            "B2CNationalSurcharge": b2CSurchargeNationalIndex>=0?element[b2CSurchargeNationalIndex]: "",
+            "B2CInternationalSurcharge":b2CSurchargeInternationalIndex>=0?element[b2CSurchargeInternationalIndex]: "",
+            "SecurityFee": securityFeeIndex>=0?element[securityFeeIndex]: "",
+            "Insurance": insuranceIndex>=0?element[insuranceIndex]: "",
+            "PortiPapiere": portsDocumentsIndex>=0?element[portsDocumentsIndex]: "",
+            "Custom1": false,
+            "Custom2": false,
+            "Custom3": false,
+            "Custom4": false,
+            "Custom5": false,
+            "Message": "",
+            "ErrorType": 0,
+            "Price": 0.0,
+            "TotalPrice": 0.0,
+            "ExtraCostsTotalPrice": 0.0,
+            "Toll": 0.0,
+            "TollPercent": 0.0,
+            "Diesel": 0.0,
+            "DieselPercent": 0.0,
+            "IsConsolidated": false,
+            "IsConsolidatedSum": false,
+            "hasPackagingType": false,
+            "projectType": 0,
+            "undefined": "1"
+        })
+    
+  }
+}
+
+
+  
+
+
+console.log("shipmentData: ",shipmentData);
+const prepareData={
+  "projectId": projectId,
+ shipmentData,
+  "append": true
+}
+  return prepareData;
+};
