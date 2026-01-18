@@ -88,11 +88,7 @@ export const getShipperFreightCalc = async (params: any) => {
 
 export const sendShipperFreightCalc = async (params:any,dispatch?:any)=>{
     try {
-      console.log("sendShipperFreightCalc: ",params);
-      
-      const resp:any =await fetchApi(params,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}`,"post")
-       console.log("sendShipperFreightCalc:  resp: ",resp);
-      return getValidDataFromResp(resp);
+      dispatch?.(setFreightBasisData(getValidDataFromResp(await fetchApi(params,`${URL_SHIPPER_FREIGHT_CALCULATION_BASIS}`,"post"))));
       }catch (error) {
        return error;
     } 
@@ -362,15 +358,7 @@ export const getUserDataByFireBase = async (firebaseUserId: string,
   }
 };
 
-export const sendDataFreightBasis = async (params:any,dispatch?:any, onSuccess?:any)=>{
-    const resp:any = await fetchApi(params,URL_SHIPPER_FREIGHT_CALCULATION_BASIS,"post");
-      console.log("RAW APRESPI  👉", resp)
-   if (resp?.success) {
-    onSuccess && onSuccess(resp.data);
-    return resp.data; // 🔥 IMPORTANT
-  }
-  return null;
-}
+
  
 
 

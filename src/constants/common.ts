@@ -18,3 +18,9 @@ export  const DEFAULT_DATA_CARRIER={
             email: "",
             customerNumber: "",
           }
+
+          export  const CALCUTION_TYPE_MAPPER: any={
+            "Lademeter werden berücksichtigt": 2,
+            "Nein":false,
+            "Ja":true,
+          }

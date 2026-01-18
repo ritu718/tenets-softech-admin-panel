@@ -11,8 +11,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { deleteCarrierDataToServer, sendShipperFreightCalc, sendShipperRates } from "@/dialogs/invoice_config/services";
-import { SHIPPER_PROJECT_FREIGHT_BASIC } from "@/data/dummy";
+import { deleteCarrierDataToServer,  sendShipperFreightCalc } from "@/dialogs/invoice_config/services";
+
 import { cleanString, isEmpty } from "@/utils/helper";
 import { prepareDataFreightBasis } from "@/utils/csvImportHelper";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
@@ -111,12 +111,8 @@ const handleFreightBasisImport = (file: any) => {
        
         const rows: any[] = result?.data||[];
         if (!rows.length) return;
-         const frightCalculation: any = prepareDataFreightBasis(rows,activeFreightCountryCodes,activeCarrierId);
-        const payload = {
-          projectId: activeCarrierId,
-           frightCalculation,
-        };
-        // const resp = await sendShipperRates(payload, dispatch);
+           const data = prepareDataFreightBasis(rows,activeFreightCountryCodes,activeCarrierId);
+        await sendShipperFreightCalc( data, dispatch);
         // console.log("✅ POST RESPONSE export: ", resp);
 
       } catch (err) {
