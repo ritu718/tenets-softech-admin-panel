@@ -16,6 +16,7 @@ import { deleteCarrierDataToServer,  sendShipperFreightCalc } from "@/dialogs/in
 import { cleanString, isEmpty } from "@/utils/helper";
 import { prepareDataFreightBasis } from "@/utils/csvImportHelper";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
+import { exportFreightCalcCSV } from "@/utils/csvExportHelper";
 
 export default function FreightBasisImportExport() {
   const fileInputRef = useRef<any>(null);
@@ -34,15 +35,8 @@ const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelect
                NEBENKOSTEN_INITIAL_COUNTRIES [0];
 
         const exportFreight = () => {
-    if (!activeCarrier) return;
-    const data = JSON.stringify({ freight: activeCarrier.freight }, null, 2);
-    const blob = new Blob([data], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${activeCarrier.name || "freight"}-freight.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+          exportFreightCalcCSV(freightBasisData);
+  
   };
 
   

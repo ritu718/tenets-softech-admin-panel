@@ -92,3 +92,63 @@ export const exportSurchargeCSV = (response: any) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
+
+
+export const exportFreightCalcCSV = (response: any) => {
+  console.log("exportFreightCalcCSV: ",response);
+  
+
+  const countries = response?.countries || {};
+
+  // Get dynamic country key (DE, FR, NL etc)
+  const countryCode = Object.keys(countries)[0];
+
+  if (!countryCode) {
+    alert("No country data found");
+    return;
+  }
+
+  const { Base } = countries[countryCode]?.MinimumWeight || {};
+  console.log("Base: ",Base);
+  
+const abbreviations = Object.keys(Base);
+console.log("abbreviations: ",abbreviations);
+  if (!abbreviations.length) {
+    alert("No data found for " + countryCode);
+    return;
+  }
+
+  const headers = ["Kürzel", "Internes Kürzel", "Beschreibung", "Interne Beschreibung", "Gewicht in Kg"];
+  const abbreviationsRows:any=[];
+
+
+
+  abbreviations.forEach((abbr:any)=>{
+   abbreviationsRows.push([abbr,Base[abbr]?.InternalShorthand||"",Base[abbr]?.Description||"",Base[abbr]?.InternalDescription||"",Base[abbr]?.Weight||""]); 
+
+  });
+
+
+  const csvRows = [
+    headers,
+
+    ...abbreviationsRows,
+  ];
+
+  const csvString = csvRows.join("\n");
+
+  const blob = new Blob([csvString], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `extra-costs-${countryCode}.csv`;
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
