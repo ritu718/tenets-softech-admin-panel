@@ -361,6 +361,16 @@ export const getUserDataByFireBase = async (firebaseUserId: string,
     return error;
   }
 };
+
+export const sendDataFreightBasis = async (params:any,dispatch?:any, onSuccess?:any)=>{
+    const resp:any = await fetchApi(params,URL_SHIPPER_FREIGHT_CALCULATION_BASIS,"post");
+      console.log("RAW APRESPI  👉", resp)
+   if (resp?.success) {
+    onSuccess && onSuccess(resp.data);
+    return resp.data; // 🔥 IMPORTANT
+  }
+  return null;
+}
  
 
 
