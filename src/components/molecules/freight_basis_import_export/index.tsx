@@ -51,54 +51,6 @@ const {freightCountryCodes, freightCountryIndex,freightBasisData} = useAppSelect
       };
 
 
-      //   const handleFreightBasisImport = (event:any) => {
-      //     const file = event.target.files?.[0];
-      //     if (!file || !activeCarrier) return;
-      //     const reader:any = new FileReader();
-      //     reader.onload = () => {
-      //       try {
-      //         console.log("reader.result: ",reader.result);
-              
-      //         // const parsed = JSON.parse(reader.result);
-      //         const parsed:any = SHIPPER_PROJECT_FREIGHT_BASIC;
-      
-      
-      //         // if (!parsed.freight || typeof parsed.freight !== "object") return;
-      //         // const parsedFreight = parsed.freight;
-      //         // const baseFreight = activeCarrier.freight || {};
-      //         // const countryCodes =
-      //         //   parsedFreight.countryCodes || baseFreight.countryCodes || NEBENKOSTEN_INITIAL_COUNTRIES;
-      //         // const parsedByCountry = parsedFreight.byCountry || {};
-      //         // const baseByCountry = baseFreight.byCountry || {};
-      //         // const byCountry:any = {};
-      //         // countryCodes.forEach((code:any) => {
-      //         //   const source =
-      //         //     parsedByCountry[code] || baseByCountry[code] || parsedFreight || createFreightBase(text);
-      //         //   byCountry[code] = createFreightBase(text, source);
-      //         // });
-      // parsed.projectId = activeCarrierId;
-      // parsed["_id"]["$oid"] = activeCarrierId;
-      //         sendShipperFreightCalc(parsed,dispatch)
-              
-      //         // console.log("",{ countryCodes,
-      //         //     byCountry,});
-      
-      
-      //         // updateCarrier(activeCarrier.id, (carrier:any) => ({
-      //         //   ...carrier,
-      //         //   freight: {
-      //         //     countryCodes,
-      //         //     byCountry,
-      //         //   },
-      //         // }));
-      //       } catch (err) {
-      //         // silent fail; in real app surface toast
-      //       } 
-      //     };
-      //     reader.readAsText(file);
-      //     event.target.value = "";
-      //   };
-
 const handleFreightBasisImport = (file: any) => {
   if (!activeCarrierId || !file) return;
 
@@ -111,10 +63,8 @@ const handleFreightBasisImport = (file: any) => {
        
         const rows: any[] = result?.data||[];
         if (!rows.length) return;
-           const data = prepareDataFreightBasis(rows,activeFreightCountryCodes,activeCarrierId);
-        await sendShipperFreightCalc( data, dispatch);
-        // console.log("✅ POST RESPONSE export: ", resp);
-
+        await sendShipperFreightCalc( prepareDataFreightBasis(rows,activeFreightCountryCodes,activeCarrierId), dispatch);
+        
       } catch (err) {
         console.error("❌ CSV Import Error:", err);
       }
