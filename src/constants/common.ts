@@ -24,3 +24,9 @@ export  const DEFAULT_DATA_CARRIER={
             "Nein":false,
             "Ja":true,
           }
+
+           export  const CALCUTION_TYPE_MAPPER_REVERSE: any={
+            "Lademeter werden berücksichtigt": 2,
+            "Nein":false,
+            "Ja":true,
+          }

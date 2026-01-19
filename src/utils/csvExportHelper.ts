@@ -1,3 +1,5 @@
+import { CALCUTION_TYPE_MAPPER_REVERSE } from "@/constants/common";
+
 export const revertTariffsToCSV = (countryCode:any,rates:any) => {
   const header = [""];
   const zipRow:any[] = [""];
@@ -214,11 +216,11 @@ export const exportDataIntakeCSV = (shipmentData: any) => {
     shipmentObj?.Express8||"",
     shipmentObj?.Fixtermin||"",
     shipmentObj?.EmailAvis||"",
-    shipmentObj?.PhoneAvis||"",
+    CALCUTION_TYPE_MAPPER_REVERSE[shipmentObj?.PhoneAvis]||"Nein",
     shipmentObj?.BookingInAvis||"",
     shipmentObj?.LongGoodsSurcharge||"",
     shipmentObj?.ShortWeekSurcharge||"",
-    shipmentObj?.CarrierCertificate||"",
+    CALCUTION_TYPE_MAPPER_REVERSE[ shipmentObj?.CarrierCertificate]||"Nein",
     shipmentObj?.B2CNationalSurcharge||"",
     shipmentObj?.B2CInternationalSurcharge||"",
     shipmentObj?.SecurityFee||"",

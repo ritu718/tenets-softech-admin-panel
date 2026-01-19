@@ -272,7 +272,7 @@ const respData= getValidDataFromResp(resp);
 
 export const getShipmentSummary = async (params:any,dispatch?:any)=>{
     try {
-      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT_SUMMARY}/${params.projectId}`,"get");
+      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT_SUMMARY}/${params.projectId}/with-message`,"get");
         console.log("getShipmentSummary:  resp: ",resp);  
      const respData= getValidDataFromResp(resp);
          console.log("respDatasu:",respData);
