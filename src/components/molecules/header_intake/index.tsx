@@ -13,10 +13,15 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import Papa from "papaparse";
 import { prepareDataIntake, prepareDataTariffs } from "@/utils/csvImportHelper";
 import { sendShipmentData, sendShipperRates } from "@/dialogs/invoice_config/services";
+import { exportDataIntakeCSV } from '@/utils/csvExportHelper';
 
 
 function HeaderIntake() {
        const activeCarrierId = useAppSelector((state) => state.carriers.activeCarrierId);
+        const {shipmentData} = useAppSelector((state) => state.shipmentData);
+           
+           const shipmentDataForExport =shipmentData?.shipmentData||[];
+         
     const dispatch = useAppDispatch();
     const tariffFileInputRef = React.useRef<any>(null);
       const { localeText } = useLanguage();
@@ -54,7 +59,7 @@ const handleTariffImport = (file: any) => {
   };
 
   const handleExport = () => {
-    alert("Export clicked");
+  shipmentDataForExport.length&& exportDataIntakeCSV(shipmentDataForExport)
   };
 
   const handleClear = () => {

@@ -247,40 +247,42 @@ break;
 {  
   console.log("headers: ",headers);
   
-   const shipmentIdIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Sendungs-ID")
-   const shippingDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versanddatum");
-     const shippingPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versand Postleitzahl");
-      const recipientPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Empfangs Postleitzahl");
-            const locationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Ort");
-             const countryIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Land");
-              const lengthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Länge (cm)");
-               const widthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Breite (cm)");
-               const heightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Höhe (cm)");
-               const loadingMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Lademeter");
-               const cubicMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Kubikmeter");
-               const numberOfPackagesIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Anzahl Packstücke");
-               const packagingTypeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Verpackungsart");
-               const effectiveWeightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Effektives Gewicht");
-                const expressNextDayIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express Next Day");
-                const express12PMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 12:00 Uhr");
-                const express10AMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 10:00 Uhr");
-                const express8AMtIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Express 08:00 Uhr");
-                const fixedDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Fixtermin");
-                const emailNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "E-Mail Avis");
-                const telephoneNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Telefonisches Avis");
-                const bookingWithAvisIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Booking in Avis");
-                const hazardousGoodsSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Gefahrgutzuschlag");
-                const shortWeekSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Kurzwochenzuschlag");
-                 const forwardercertificateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Spediteurbescheinigung");
-                  const b2CSurchargeNationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "B2C Zuschlag (national)");
-                   const b2CSurchargeInternationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "B2C Zuschlag (international)");
-                    const securityFeeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Security Fee");
-                    const insuranceIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Versicherung");
-                    const portsDocumentsIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "Porti/Papiere");
+   const shipmentIdIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "sendungs-id")
+   const shippingDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versanddatum");
+     const shippingPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versand postleitzahl");
+      const recipientPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "empfangs postleitzahl");
+            const locationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "ort");
+             const countryIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "land");
+              const lengthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "länge (cm)");
+               const widthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "breite (cm)");
+               const heightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "höhe (cm)");
+               const loadingMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "lademeter");
+               const cubicMetersIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "kubikmeter");
+               const numberOfPackagesIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "anzahl packstücke");
+               const packagingTypeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "verpackungsart");
+               const effectiveWeightIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "effektives gewicht");
+                const expressNextDayIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "express next day");
+                const express12PMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "express 12:00 uhr");
+                const express10AMIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "express 10:00 uhr");
+                const express8AMtIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "express 08:00 uhr");
+                const fixedDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "fixtermin");
+                const emailNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "e-mail avis");
+                const telephoneNotificationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "telefonisches avis");
+                const bookingWithAvisIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "booking in avis");
+                const hazardousGoodsSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "gefahrgutzuschlag");
+                const shortWeekSurchargeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "kurzwochenzuschlag");
+                 const forwardercertificateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "spediteurbescheinigung");
+                  const b2CSurchargeNationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "b2c zuschlag (national)");
+                   const b2CSurchargeInternationalIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "b2c zuschlag (international)");
+                    const securityFeeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "security fee");
+                    const insuranceIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versicherung");
+                    const portsDocumentsIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "porti/papiere");
 
               for (let index = rowsWithoutHeadersIndex; index < rows.length; index++) {
     const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
    
+    console.log("element value is: ",element);
+    
 const Id =uuidv4();
     shipmentData.push({
            Id,
@@ -293,8 +295,8 @@ const Id =uuidv4();
             "Country": countryIndex>=0?element[countryIndex]: "",
             "Length":  lengthIndex>=0?element[lengthIndex]: "",
             "Wide":  widthIndex>=0?element[widthIndex]: "",
-            "Height": heightIndex>=0?element[heightIndex]: "",
-            "LoadingMeters": loadingMetersIndex>=0?element[loadingMetersIndex]: "",
+            "Height": heightIndex>=0?element[heightIndex]: "0",
+            "LoadingMeters": loadingMetersIndex>=0?element[loadingMetersIndex]: "0",
             "CubicMeters":  cubicMetersIndex>=0?element[cubicMetersIndex]: "",
             "PalletCount":  numberOfPackagesIndex>=0?element[numberOfPackagesIndex]: "",
             "PackagingType":  packagingTypeIndex>=0?element[packagingTypeIndex]: "",
@@ -344,17 +346,12 @@ const Id =uuidv4();
             "IsConsolidatedSum": false,
             "hasPackagingType": false,
             "projectType": 0,
-            "undefined": "1"
+           
         })
     
   }
 }
 
-
-  
-
-
-console.log("shipmentData: ",shipmentData);
 const prepareData={
   "projectId": projectId,
  shipmentData,

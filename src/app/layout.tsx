@@ -6,6 +6,7 @@ import Footer from "@/components/organisms/footer";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { UserProfileProvider } from "@/context/user-profile-context";
+import ProtectedRoute from "@/protected_route";
 
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
 <Headers/>
         {/* Main Content */}
-        <main className="min-h-screen"><ReduxProvider> <UserProfileProvider>{children}</UserProfileProvider></ReduxProvider></main>
+        <main className="min-h-screen"><ReduxProvider> <UserProfileProvider><ProtectedRoute>{children}</ProtectedRoute></UserProfileProvider></ReduxProvider></main>
         <Footer/>
         </AppRouterCacheProvider>
       </body>

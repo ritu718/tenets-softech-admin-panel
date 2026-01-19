@@ -1,6 +1,6 @@
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
 import { BASE_COUNTRY_OPTIONS, MIN_WEIGHT_DEFAULTS, SHIPMENT_SAMPLE_ROWS_BASE } from "@/constants/data";
-import { editShipperFreightCalc, editShipperRates } from "@/dialogs/invoice_config/services";
+import { addEditToleranceData, editShipperFreightCalc, editShipperRates } from "@/dialogs/invoice_config/services";
 import { setFreightBasisData } from "@/store/features/freight_basis/FreightBasisSlice";
 import { setTariffsData } from "@/store/features/tariffs/TariffsSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -403,5 +403,21 @@ export const addZipCode = (data:any, newZip:any) => {
     }, {})
   };
 };
+
+
+export function removeFullyEmptyObjects(arr:any) {
+  return arr.filter((obj:any) => {
+    return Object.values(obj).some(value => {
+      if (typeof value === "string") {
+        return value.trim() !== "";
+      }
+      return value !== null && value !== undefined;
+    });
+  });
+}
+export function addEditTolrances (toleranecData:any,userId:any,dispatch:any)
+{
+    addEditToleranceData(toleranecData,dispatch,userId)
+}
 
 

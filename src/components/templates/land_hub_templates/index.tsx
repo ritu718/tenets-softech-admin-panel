@@ -5,20 +5,27 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const LandHub = ({ setView }:any) => {
   return (
-    <Box>
-      <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => setView("shipperHub")}
-        sx={{ mb: 2 }}
-      >
-        Zurück zum Tender-Hub
-      </Button>
+    // <Box>
+    //   <Button
+    //     startIcon={<ArrowBackIcon />}
+    //     onClick={() => setView("shipperHub")}
+    //     sx={{ mb: 2 }}
+    //   >
+    //     Zurück zum Tender-Hub
+    //   </Button>
 
-      <Typography variant="h4" gutterBottom>
-        🚚 Landverkehr Hub
-      </Typography>
-      <Typography>Tenderübersicht für den Landverkehr.</Typography>
-    </Box>
+    //   <Typography variant="h4" gutterBottom>
+    //     🚚 Landverkehr Hub
+    //   </Typography>
+    //   <Typography>Tenderübersicht für den Landverkehr.</Typography>
+    // </Box>
+    <iframe 
+  src="https://app.jokati.de/login"
+  width="100%"
+  height="700px"
+ >
+</iframe>
+
   );
 };
 

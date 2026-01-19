@@ -98,6 +98,8 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
     api: string,
     token: string
   ): Promise<UserProfile> => {
+   
+    
     return {} as UserProfile; // replace
   };
 
@@ -240,6 +242,10 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
         }
       );
 
+    console.log("userProfile vl: ",userProfile);
+    
+      
+
     return () => unsubscribe();
   }, []);
 
@@ -267,6 +273,9 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
         loading,
       ]
     );
+
+    console.log("userProfile: ",userProfile);
+    
 
   return (
     <UserProfileContext.Provider

@@ -16,36 +16,24 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { setToleranceDialogOpen, setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
 import { addEditToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
+import { addEditTolrances, cleanObjectArray } from '@/utils/helper';
 
 
 function Tolerance() {
-  const isFirstRender = useRef(true);
     const dispatch = useAppDispatch();
-     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+     const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
     const {toleranceDialogOpen,toleranecData} = useAppSelector((state:any) => state?.tolerances); 
     const { localeText } =useLanguage();
    
   useEffect(()=>{
   toleranceDialogOpen&&getToleranceData({userId},dispatch)
-  if(!toleranceDialogOpen)
-  {
-    isFirstRender.current = true;
-  }
   },[toleranceDialogOpen])
 
-
-   useEffect(()=>{
-    if(toleranceDialogOpen)
-    {
- if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    addEditToleranceData(toleranecData,dispatch,userId)
-    }
-  },[toleranecData])
-       const handleToleranceFieldChange = (field:any) => (event:any) => dispatch(setToleranecData({...toleranecData,[field]:event.target.value}));
+       const handleToleranceFieldChange = (field:any) => (event:any) =>{
+        const tolObj = {...toleranecData,[field]:event.target.value};
+         dispatch(setToleranecData(tolObj));
+        addEditTolrances(tolObj,userId,dispatch)
+       }
 
   return (
    <Dialog

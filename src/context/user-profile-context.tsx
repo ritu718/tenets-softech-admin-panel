@@ -48,6 +48,7 @@ interface UserProfileContextType {
     data: LoginPayload
   ) => Promise<any>;
   logout: () => Promise<void>;
+  firebaseToken:string;
 }
 
 /* ---------------- Context ---------------- */
@@ -87,6 +88,7 @@ export function UserProfileProvider({
 const {userProfile,
 firebaseId,
 firebaseToken} = useAppSelector((state) => state?.userDetails);
+  console.log("userProfile: ",userProfile);
   
  
   const [loading, setLoading] =
@@ -267,6 +269,10 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
         loading,
       ]
     );
+
+    const isLoggedIn = !!firebaseToken && !!firebaseId;
+    console.log("isLoggedIn: ",isLoggedIn);
+    
 
   return (
     <UserProfileContext.Provider

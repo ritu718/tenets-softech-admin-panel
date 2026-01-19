@@ -32,7 +32,7 @@ function InvoiceSpedition({
 }:any)
  {
 const carriers = useAppSelector((state) => state.invoiceData.carrierConfigs);
-    const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+    const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
     const editCarrier = useAppSelector((state) => state.carriers.editCarrier)||DEFAULT_DATA_CARRIER;
     console.log("editCarrier: ",editCarrier);
     

@@ -13,13 +13,12 @@ import { useLanguage } from "@/hooks/useLanguage";
 import InvoiceTable from "./invoice_table";
 
 import InvoiceConfig from "@/dialogs/invoice_config";
-import { setUserInfo } from "@/store/features/user_details/userDetailsSlice";
 import Tolerance from "./tolerance";
 import { getCarrierConfFomServer, getCompaniesData } from "@/dialogs/invoice_config/services";
 
 const CsvComparison = () => {
    const dispatch = useAppDispatch();
-     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+     const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
      const invoiceFilter = useAppSelector((state) => state?.invoiceFilter);
   const { localeText } =useLanguage();
    
@@ -30,10 +29,7 @@ const CsvComparison = () => {
               useEffect(()=>{
            userId&& getCompaniesData({userId,...invoiceFilter},dispatch)
           },[invoiceFilter,userId])
-    
-    useEffect(() => {
-     dispatch(setUserInfo({"userId": "692af2fe34df801237c8fdd1" }));
-  }, []);
+ 
 
   const {isInvoiceDataApiCalled} = useAppSelector((state) => state.invoiceData);
 

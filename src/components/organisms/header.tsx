@@ -86,7 +86,9 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { firebaseApp } from "@/services/firebase/firebase";
 
 
-export default function HomeHeader() {
+export default function HomeHeader(props:any) {
+
+  
   const router = useRouter();
   const auth = getAuth(firebaseApp);
 
@@ -110,8 +112,9 @@ export default function HomeHeader() {
     handleMenuClose();
     router.push("/login");
   };
+console.log("user value is: ",user);
 
-  return (
+  return user?(
     <AppBar position="static">
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Typography
@@ -149,5 +152,5 @@ export default function HomeHeader() {
         )}
       </Toolbar>
     </AppBar>
-  );
+  ):null;
 }

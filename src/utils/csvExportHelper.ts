@@ -152,3 +152,104 @@ console.log("abbreviations: ",abbreviations);
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
+
+
+export const exportDataIntakeCSV = (shipmentData: any) => {
+
+
+  const headers = [
+    "Sendungs-ID",
+    "Versanddatum",
+    "Versand Postleitzahl",
+    "Empfangs Postleitzahl",
+    "Ort",
+    "Land",
+    "Länge (cm)",
+    "Breite (cm)",
+    "Höhe (cm)",
+    "Lademeter (m²)",
+    "Kubikmeter (m³)",
+    "Anzahl Packstücke",
+    "Verpackungsart",
+    "Effektives Gewicht (kg)",
+    "Express Next Day",
+    "Express 12:00 Uhr",
+    "Express 10:00 Uhr",
+    "Express 08:00 Uhr",
+    "Fixtermin",
+    "E-Mail Avis",
+    "Telefonisches Avis",
+    "Booking in Avis",
+    "Gefahrgutzuschlag",
+    "Kurzwochenzuschlag",
+    "Spediteurbescheinigung",
+    "B2C Zuschlag (national)",
+    "B2C Zuschlag (international)",
+    "Security Fee",
+    "Versicherung",
+    "Porti/Papiere",
+    "undefined"
+];
+  const shipmentDataRows:any=[];
+
+  shipmentData.forEach((shipmentObj:any)=>{
+   shipmentDataRows.push([
+    shipmentObj?.ShipmentId||"",
+    shipmentObj?.ShipmentDate||"",
+     shipmentObj?.ZipCodeShipper||"", 
+     shipmentObj?.ZipCodeConsignee||"0",
+      shipmentObj?.City||"",
+       shipmentObj?.Country||"",
+    shipmentObj?.Length||"0",
+    shipmentObj?.Wide||"0",
+    shipmentObj?.Height||"0",
+    shipmentObj?.LoadingMeters||"0",
+    shipmentObj?.CubicMeters||"0",
+    shipmentObj?.PalletCount||"0",
+    shipmentObj?.PackagingType||"",
+    shipmentObj?.EffectiveWeight||"0",
+    shipmentObj?.ExpressNextDay||"",
+    shipmentObj?.Express12||"",
+    shipmentObj?.Express10||"",
+    shipmentObj?.Express8||"",
+    shipmentObj?.Fixtermin||"",
+    shipmentObj?.EmailAvis||"",
+    shipmentObj?.PhoneAvis||"",
+    shipmentObj?.BookingInAvis||"",
+    shipmentObj?.LongGoodsSurcharge||"",
+    shipmentObj?.ShortWeekSurcharge||"",
+    shipmentObj?.CarrierCertificate||"",
+    shipmentObj?.B2CNationalSurcharge||"",
+    shipmentObj?.B2CInternationalSurcharge||"",
+    shipmentObj?.SecurityFee||"",
+    shipmentObj?.Insurance||"",
+    shipmentObj?.PortiPapiere||"",
+   ]); 
+
+  });
+
+
+  const csvRows = [
+    headers,
+
+    ...shipmentDataRows,
+  ];
+  console.log("csvRows: ",csvRows);
+  
+  const csvString = csvRows.join("\n");
+
+  const blob = new Blob([csvString], {
+    type: "text/csv;charset=utf-8;"
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `data-intake.csv`;
+  document.body.appendChild(link);
+  link.click();
+
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};

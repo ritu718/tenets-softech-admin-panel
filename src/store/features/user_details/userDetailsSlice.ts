@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 
 const initialState: any = {
- userInfo:null,
 userProfile:null,
 firebaseId:null,
 firebaseToken:null
@@ -13,11 +12,7 @@ const userDetailsSlice = createSlice({
   name: "carriers",
   initialState,
   reducers: {
-      setUserInfo: (state, action: PayloadAction<any>) => {
-      state.userInfo = action.payload;
-    },
-
-    setUserProfile: (state, action: PayloadAction<any>) => {
+      setUserProfile: (state, action: PayloadAction<any>) => {
       state.userProfile = action.payload;
     },
 
@@ -30,5 +25,5 @@ const userDetailsSlice = createSlice({
   },
 });
 
-export const {  setUserInfo,setUserProfile,setFirebaseId,setFirebaseToken } = userDetailsSlice.actions;
+export const {  setUserProfile,setFirebaseId,setFirebaseToken } = userDetailsSlice.actions;
 export default userDetailsSlice.reducer;

@@ -17,7 +17,7 @@ import { useGetCommonThings } from '@/hooks/commonThings';
 
  const InvoiceTable =()=> {
    const invoiceData = useAppSelector((state) => state.invoiceData.invoiceData);
-     const userId = useAppSelector((state) => state?.userDetails?.userInfo?.userId);
+     const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
      const dispatch = useAppDispatch();
       const { localeText,formatDate,formatCurrency } =useLanguage();
          const router = useRouter();

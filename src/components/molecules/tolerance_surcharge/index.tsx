@@ -14,26 +14,35 @@ import { useLanguage } from '@/hooks/useLanguage';
 import AddIcon from "@mui/icons-material/Add";
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
+import { addEditTolrances } from '@/utils/helper';
 
 
 export default function ToleranceSurcharge() {
     const dispatch = useAppDispatch();
         const {toleranecData} = useAppSelector((state:any) => state?.tolerances);
+           const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
     console.log("toleranecData: ",toleranecData);
         const {ancillaryTolerances} = toleranecData||{};
     const { localeText } =useLanguage();
+
+
       const handleRemoveOverride = (itemObj:any) => {
         const ancillaryTolerancesTmp =[...ancillaryTolerances,].filter(
   (item: any) => item !== itemObj
 );
-dispatch(setToleranecData({...toleranecData,ancillaryTolerances:ancillaryTolerancesTmp}))
-   
+const tolObj ={...toleranecData,ancillaryTolerances:ancillaryTolerancesTmp};
+   dispatch(setToleranecData(tolObj))
+   addEditTolrances(tolObj,userId,dispatch)
   };
   
 
   const handleAddOverride = () => {
-   dispatch(setToleranecData({...toleranecData,ancillaryTolerances:[...ancillaryTolerances,{designation: '', tolerancePercent:"" }]}))
+    const tolObj ={...toleranecData,ancillaryTolerances:[...ancillaryTolerances,{designation: '', tolerancePercent:"" }]};
+   dispatch(setToleranecData(tolObj))
+   
+
   };
+
 
       const handleOverrideChange = (index:any, field:any, value:any) => {
 const ancillaryTolerancesTmp = ancillaryTolerances.map(
@@ -42,13 +51,13 @@ const ancillaryTolerancesTmp = ancillaryTolerances.map(
       ? { ...item, [field]: value }
       : item
 );
-
-dispatch(
-  setToleranecData({
+const tolObj ={
     ...toleranecData,
     ancillaryTolerances: ancillaryTolerancesTmp,
-  })
-);
+  };
+   dispatch(setToleranecData(tolObj))
+   addEditTolrances(tolObj,userId,dispatch)
+
   };
 
     
@@ -64,6 +73,7 @@ dispatch(
                    )}
                    {ancillaryTolerances?.map((override:any,index:any) => (
                      <Stack
+                     
                        direction={{ xs: "column", sm: "row" }}
                        spacing={1}
                        alignItems="center"
