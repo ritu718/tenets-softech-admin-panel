@@ -1,5 +1,4 @@
-
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,28 +8,14 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  CircularProgress,
   Button,
-  TextField,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
-  Collapse,
   IconButton,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Stack,
   Paper,
   Tabs,
   Tab,
-  Checkbox,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { NEBENKOSTEN_INITIAL_COUNTRIES } from "@/constants/common";
@@ -38,24 +23,26 @@ import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import { buildCountryPreset } from "@/utils/helper";
 
-
-
-const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
-  const [countryCodes, setCountryCodes] = useState(NEBENKOSTEN_INITIAL_COUNTRIES);
+const NebenkostenPreview = ({ text, presets, countryOptions }: any) => {
+  const [countryCodes, setCountryCodes] = useState(
+    NEBENKOSTEN_INITIAL_COUNTRIES,
+  );
   const [tabIndex, setTabIndex] = useState(0);
   const [selectedCountryOption, setSelectedCountryOption] = useState("");
 
   const availableCountryOptions = countryOptions.filter(
-    (option:any) => !countryCodes.includes(option.code)
+    (option: any) => !countryCodes.includes(option.code),
   );
 
   const activeCode = countryCodes[tabIndex] || countryCodes[0];
-  const activeCountry = activeCode ? buildCountryPreset(activeCode, presets, text) : null;
+  const activeCountry = activeCode
+    ? buildCountryPreset(activeCode, presets, text)
+    : null;
 
-  const getFlag = (code:any) =>
-    countryOptions.find((option:any) => option.code === code)?.flag || "🌐";
+  const getFlag = (code: any) =>
+    countryOptions.find((option: any) => option.code === code)?.flag || "🌐";
 
-  const handleAddCountry = (code:any) => {
+  const handleAddCountry = (code: any) => {
     if (!code) return;
     setCountryCodes((prev) => {
       if (prev.includes(code)) return prev;
@@ -65,11 +52,11 @@ const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
     });
   };
 
-  const handleDeleteCountry = (index:any) => {
-    setCountryCodes((prev:any) => {
+  const handleDeleteCountry = (index: any) => {
+    setCountryCodes((prev: any) => {
       if (prev.length <= 1) return prev;
-      const next = prev.filter((_:any, idx:any) => idx !== index);
-      setTabIndex((current:any) => {
+      const next = prev.filter((_: any, idx: any) => idx !== index);
+      setTabIndex((current: any) => {
         if (!next.length) return 0;
         if (current > next.length - 1) return next.length - 1;
         if (index <= current && current > 0) return current - 1;
@@ -79,7 +66,7 @@ const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
     });
   };
 
-  const handleSelectCountry = (event:any) => {
+  const handleSelectCountry = (event: any) => {
     const value = event.target.value;
     if (!value) return;
     handleAddCountry(value);
@@ -134,14 +121,16 @@ const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
             sx={{ mt: 2 }}
             renderValue={(value) => {
               if (!value) return text.nebPreview.addPlaceholder;
-              const selected = countryOptions.find((option:any) => option.code === value);
+              const selected = countryOptions.find(
+                (option: any) => option.code === value,
+              );
               return `${text.nebPreview.addLabel} ${selected?.label || value}`;
             }}
           >
             <MenuItem value="">
               <em>{text.nebPreview.addPlaceholder}</em>
             </MenuItem>
-            {availableCountryOptions.map((option:any) => (
+            {availableCountryOptions.map((option: any) => (
               <MenuItem key={option.code} value={option.code}>
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="body2">{option.flag}</Typography>
@@ -161,8 +150,16 @@ const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
               {activeCountry.note}
             </Typography>
             <TableContainer component={Paper} variant="outlined">
-              <Stack direction="row" spacing={2} sx={{ p: 2, flexWrap: "wrap" }}>
-                <Button startIcon={<DownloadIcon />} variant="contained" disabled>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{ p: 2, flexWrap: "wrap" }}
+              >
+                <Button
+                  startIcon={<DownloadIcon />}
+                  variant="contained"
+                  disabled
+                >
                   {text.nebPreview.export}
                 </Button>
                 <Button startIcon={<UploadIcon />} variant="outlined" disabled>
@@ -180,7 +177,7 @@ const NebenkostenPreview = ({ text, presets, countryOptions }:any) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {activeCountry.rows.map((row:any, index:any) => (
+                  {activeCountry.rows.map((row: any, index: any) => (
                     <TableRow key={`${activeCountry.code}-${index}`}>
                       <TableCell>{row.cost}</TableCell>
                       <TableCell>{row.description}</TableCell>

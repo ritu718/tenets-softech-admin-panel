@@ -82,8 +82,9 @@ import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { useRouter } from "next/navigation";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth,  signOut } from "firebase/auth";
 import { firebaseApp } from "@/services/firebase/firebase";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 
 
 export default function HomeHeader(props:any) {
@@ -92,17 +93,10 @@ export default function HomeHeader(props:any) {
   const router = useRouter();
   const auth = getAuth(firebaseApp);
 
-  const [user, setUser] = useState<any>(null);
+      const user = useAppSelector((state:any) => state?.userDetails?.userProfile||null);
+ 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  // 🔐 Listen to Firebase auth state
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-
-    return () => unsubscribe();
-  }, [auth]);
 
   const handleMenuOpen = (event: any) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
@@ -111,6 +105,7 @@ export default function HomeHeader(props:any) {
     await signOut(auth);
     handleMenuClose();
     router.push("/login");
+    
   };
 console.log("user value is: ",user);
 

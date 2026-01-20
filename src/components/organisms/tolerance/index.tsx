@@ -16,7 +16,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { setToleranceDialogOpen, setToleranecData } from '@/store/features/tolerances/TolerancesSlice';
 import { addEditToleranceData, getToleranceData } from '@/dialogs/invoice_config/services';
 import ToleranceSurcharge from '@/components/molecules/tolerance_surcharge';
-import { addEditTolrances, cleanObjectArray } from '@/utils/helper';
+import { addEditTolrances } from '@/utils/helper';
 
 
 function Tolerance() {
@@ -30,8 +30,7 @@ function Tolerance() {
   },[toleranceDialogOpen])
 
        const handleToleranceFieldChange = (field:any) => (event:any) =>{
-        const tolObj = {...toleranecData,[field]:event.target.value};
-         dispatch(setToleranecData(tolObj));
+        const tolObj = {...toleranecData,[field]:Number( event.target.value)};
         addEditTolrances(tolObj,userId,dispatch)
        }
 

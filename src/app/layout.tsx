@@ -25,10 +25,13 @@ export default function RootLayout({
         {/* Header */}
        {/* <Header/> */}
         <AppRouterCacheProvider>
-<Headers/>
+
         {/* Main Content */}
-        <main className="min-h-screen"><ReduxProvider> <UserProfileProvider><ProtectedRoute>{children}</ProtectedRoute></UserProfileProvider></ReduxProvider></main>
-        <Footer/>
+        <main className="min-h-screen"><ReduxProvider> <UserProfileProvider><ProtectedRoute><><Headers/>
+        {children}
+         <Footer/>
+        </></ProtectedRoute></UserProfileProvider></ReduxProvider></main>
+       
         </AppRouterCacheProvider>
       </body>
     </html>

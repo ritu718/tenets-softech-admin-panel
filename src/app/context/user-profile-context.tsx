@@ -274,7 +274,6 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
       ]
     );
 
-    console.log("userProfile: ",userProfile);
     
 
   return (

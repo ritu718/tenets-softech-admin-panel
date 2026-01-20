@@ -248,6 +248,7 @@ export const getToleranceData = async (params:any,dispatch?:any)=>{
     "freightCostsPercent": "",
     "standardAdditionalCostsPercent":"",
     "onlyPositiveDeviation": false,
+    ancillaryTolerances:[]
     
   }:respObj))
       }catch (error) {

@@ -1,5 +1,5 @@
 
-import React, {  useContext, useState } from "react";
+import React, {  useContext, useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -13,6 +13,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { useRouter } from "next/navigation";
 import { useUserProfileContext } from "@/context/user-profile-context";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setFirebaseId, setFirebaseToken, setUserProfile } from "@/store/features/user_details/userDetailsSlice";
 
 const FormSchemaLogin = yup.object().shape({
   email: yup.string().email("Bitte geben Sie eine gültige Email Adresse ein.").required("Bitte geben Sie eine gültige Email Adresse ein."),
@@ -20,6 +22,8 @@ const FormSchemaLogin = yup.object().shape({
 });
 
 const LoginForm = () => {
+       const userId = useAppSelector((state:any) => state?.userDetails?.userProfile?.id);
+        const dispatch = useAppDispatch();
       const theme = useTheme();
        const router = useRouter();
  const { login }:any = useUserProfileContext();
@@ -67,14 +71,18 @@ console.log("loginData: ",loginData);
     /* ---------- LOGOUT (optional flag) ---------- */
     if (loginState?.isLogout) {
       setIsLoading(false);
+         dispatch(setFirebaseId(undefined));
+            dispatch(setFirebaseToken(undefined));
+              dispatch(setUserProfile({}));
       router.replace("/login");
       return;
     }
     },
   });
 
+
   
-    return (
+    return userId?null: (
     
      <form onSubmit={formik.handleSubmit}><Box
       

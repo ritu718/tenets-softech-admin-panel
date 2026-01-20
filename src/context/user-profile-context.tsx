@@ -88,7 +88,6 @@ export function UserProfileProvider({
 const {userProfile,
 firebaseId,
 firebaseToken} = useAppSelector((state) => state?.userDetails);
-  console.log("userProfile: ",userProfile);
   
  
   const [loading, setLoading] =
@@ -157,9 +156,8 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
 
     await signOut(auth);
 
-    dispatch(setFirebaseId(undefined));
-    dispatch(setFirebaseToken(undefined));
-    setUserProfile(null);
+  
+    
 
     router.replace("/login");
   }
@@ -230,6 +228,9 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
         auth,
         async (user: User | null) => {
           if (!user) {
+              dispatch(setFirebaseId(undefined));
+    dispatch(setFirebaseToken(undefined));
+      dispatch(setUserProfile(null));
             setLoading(false);
             return;
           }
@@ -243,7 +244,7 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
       );
 
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     setFetchedUser();
@@ -270,9 +271,7 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
       ]
     );
 
-    const isLoggedIn = !!firebaseToken && !!firebaseId;
-    console.log("isLoggedIn: ",isLoggedIn);
-    
+     
 
   return (
     <UserProfileContext.Provider
