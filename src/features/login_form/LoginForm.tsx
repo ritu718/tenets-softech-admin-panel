@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useUserProfileContext } from "@/context/user-profile-context";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setFirebaseId, setFirebaseToken, setUserProfile } from "@/store/features/user_details/userDetailsSlice";
+import { usePathname } from "next/navigation";
 
 const FormSchemaLogin = yup.object().shape({
   email: yup.string().email("Bitte geben Sie eine gültige Email Adresse ein.").required("Bitte geben Sie eine gültige Email Adresse ein."),
@@ -80,7 +81,9 @@ console.log("loginData: ",loginData);
     },
   });
 
-
+useEffect(()=>{
+    userId&&router.replace("/dashboard");
+},[userId])
   
     return userId?null: (
     
