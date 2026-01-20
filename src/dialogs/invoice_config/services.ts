@@ -219,6 +219,19 @@ export const getShipmentData = async (params:any,dispatch?:any)=>{
 }
 
 
+export const deleteShipmentData = async (params:any,dispatch?:any)=>{
+    try {
+      const resp:any =await fetchApi(undefined,`${URL_SHIPMENT}?projectId=${params.projectId}`,"delete")
+       console.log("getShipmentData:  resp: ",resp);
+     const respData= getValidDataFromResp(resp);
+      console.log("respData:",respData);
+     dispatch&&dispatch(setShipmentData(respData))
+      }catch (error) {
+       return error;
+    } 
+}
+
+
 export const sendShipmentData = async (params:any,dispatch?:any)=>{
     try {
        console.log("params value is: ",params);
