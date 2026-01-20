@@ -16,6 +16,8 @@ import { deleteShipmentData, sendShipmentData } from "@/dialogs/invoice_config/s
 import { exportDataIntakeCSV } from "@/utils/csvExportHelper";
 
 import ConfirmationPopup from "@/components/organisms/confirmation_popup";
+import { CShipmentRow } from "@/classes";
+import { setShipmentData } from "@/store/features/shipment_data/shipmentDataSlice";
 
 function HeaderIntake() {
   const activeCarrierId = useAppSelector(
@@ -64,7 +66,15 @@ function HeaderIntake() {
   };
 
   const handleAdd = () => {
-    alert("Add clicked");
+    const projectType =0;
+let  cShipmentRowItem= new CShipmentRow(projectType);
+    if(shipmentDataForExport.length)
+    {
+      const {ShipmentDate,ZipCodeShipper,ShipmentId,ZipCodeConsignee} = shipmentDataForExport[shipmentDataForExport.length-1];
+cShipmentRowItem={...cShipmentRowItem,ShipmentDate,ZipCodeShipper,ShipmentId,ZipCodeConsignee}
+    }
+    const shipmentDataForExportTmp =[...shipmentDataForExport,cShipmentRowItem];
+        dispatch(setShipmentData({...shipmentData,shipmentData:shipmentDataForExportTmp}))
   };
 
   const handleExport = () => {

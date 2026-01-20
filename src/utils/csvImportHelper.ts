@@ -1,6 +1,7 @@
 import { CALCUTION_TYPE_MAPPER } from "@/constants/common";
 import { cleanString, isEmpty, norm } from "./helper";
 import { v4 as uuidv4 } from "uuid";
+import { CShipmentRow } from "@/classes";
 
 export const prepareDataTariffs = (rows: any) => {
   const rates: any = {};
@@ -251,7 +252,7 @@ break;
    const shippingDateIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versanddatum");
      const shippingPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versand postleitzahl");
       const recipientPostalCodeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "empfangs postleitzahl");
-            const locationIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "ort");
+            const cityIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "ort");
              const countryIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "land");
               const lengthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "länge (cm)");
                const widthIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "breite (cm)");
@@ -277,76 +278,48 @@ break;
                     const securityFeeIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "security fee");
                     const insuranceIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "versicherung");
                     const portsDocumentsIndex = headers.findIndex((h:any) => h.trim().toLowerCase() == "porti/papiere");
-
+const projectType =0;
               for (let index = rowsWithoutHeadersIndex; index < rows.length; index++) {
     const element = rows[index].toString().replace(/^\s*[\r\n]+/, '').split(",");
-   
-    console.log("element value is: ",element);
-    
+     
 const Id =uuidv4();
     shipmentData.push({
+... new CShipmentRow(projectType),
            Id,
             "id": Id,
             "ShipmentId": shipmentIdIndex>=0?element[shipmentIdIndex]: "",
             "ShipmentDate": shippingDateIndex>=0?element[shippingDateIndex]: "",
             "ZipCodeShipper": shippingPostalCodeIndex>=0?element[shippingPostalCodeIndex]: "",
             "ZipCodeConsignee":  recipientPostalCodeIndex>=0?element[recipientPostalCodeIndex]: "",
-            "City":  locationIndex>=0?element[locationIndex]: "",
+            "City":  cityIndex>=0?element[cityIndex]: "",
             "Country": countryIndex>=0?element[countryIndex]: "",
-            "Length":  lengthIndex>=0?element[lengthIndex]: "",
-            "Wide":  widthIndex>=0?element[widthIndex]: "",
-            "Height": heightIndex>=0?element[heightIndex]: "0",
-            "LoadingMeters": loadingMetersIndex>=0?element[loadingMetersIndex]: "0",
-            "CubicMeters":  cubicMetersIndex>=0?element[cubicMetersIndex]: "",
-            "PalletCount":  numberOfPackagesIndex>=0?element[numberOfPackagesIndex]: "",
+            "Length":  lengthIndex>=0?Number(element[lengthIndex]): 0,
+            "Wide":  widthIndex>=0?Number(element[widthIndex]): 0,
+            "Height": heightIndex>=0?Number(element[heightIndex]): 0,
+            "LoadingMeters": loadingMetersIndex>=0?Number(element[loadingMetersIndex]): 0,
+            "CubicMeters":  cubicMetersIndex>=0?Number(element[cubicMetersIndex]): 0,
+            "PalletCount":  numberOfPackagesIndex>=0?Number(element[numberOfPackagesIndex]): 0,
             "PackagingType":  packagingTypeIndex>=0?element[packagingTypeIndex]: "",
-            "EffectiveWeight": effectiveWeightIndex>=0?element[effectiveWeightIndex]: "",
-            "ChargeableWeight":0.0,
-            "MinimumWeight":0.0,
-            "WeightByCubicMeters":0.0,
-            "WeightByLoadingMeters": 0.0,
-            "Stackable": false,
-            "StackFactor": 1,
-            "StackId": "",
-            "StackFootprintLoadingMeters": 0.0,
-            "ExpressNextDay": expressNextDayIndex>=0?element[expressNextDayIndex]: "",
-            "Express12":express12PMIndex>=0?element[express12PMIndex]: "",
-            "Express10":express10AMIndex>=0?element[express10AMIndex]: "",
-            "Express8": express8AMtIndex>=0?element[express8AMtIndex]: "",
-            "Fixtermin":fixedDateIndex>=0?element[fixedDateIndex]: "",
-            "EmailAvis": emailNotificationIndex>=0?element[emailNotificationIndex]: "",
-            "PhoneAvis": telephoneNotificationIndex>=0?CALCUTION_TYPE_MAPPER[element[telephoneNotificationIndex]]: false,
-            "BookingInAvis":bookingWithAvisIndex>=0?element[bookingWithAvisIndex]: "",
-            "DangerousGoodsSurcharge": false,
-            "LongGoodsSurcharge": hazardousGoodsSurchargeIndex>=0?element[hazardousGoodsSurchargeIndex]: "",
-            "ShortWeekSurcharge": shortWeekSurchargeIndex>=0?element[shortWeekSurchargeIndex]: "",
-            "PalletExchange": false,
-            "PalletBoxExchange": false,
-            "CarrierCertificate": forwardercertificateIndex>=0?CALCUTION_TYPE_MAPPER[element[forwardercertificateIndex]]: false,
-            "B2CNationalSurcharge": b2CSurchargeNationalIndex>=0?element[b2CSurchargeNationalIndex]: "",
-            "B2CInternationalSurcharge":b2CSurchargeInternationalIndex>=0?element[b2CSurchargeInternationalIndex]: "",
-            "SecurityFee": securityFeeIndex>=0?element[securityFeeIndex]: "",
-            "Insurance": insuranceIndex>=0?element[insuranceIndex]: "",
-            "PortiPapiere": portsDocumentsIndex>=0?element[portsDocumentsIndex]: "",
-            "Custom1": false,
-            "Custom2": false,
-            "Custom3": false,
-            "Custom4": false,
-            "Custom5": false,
-            "Message": "",
-            "ErrorType": 0,
-            "Price": 0.0,
-            "TotalPrice": 0.0,
-            "ExtraCostsTotalPrice": 0.0,
-            "Toll": 0.0,
-            "TollPercent": 0.0,
-            "Diesel": 0.0,
-            "DieselPercent": 0.0,
-            "IsConsolidated": false,
-            "IsConsolidatedSum": false,
-            "hasPackagingType": false,
-            "projectType": 0,
+            "EffectiveWeight": effectiveWeightIndex>=0?Number(element[effectiveWeightIndex]): 0,
            
+            "ExpressNextDay": expressNextDayIndex>=0?CALCUTION_TYPE_MAPPER[element[expressNextDayIndex]]: false,
+            "Express12":express12PMIndex>=0?CALCUTION_TYPE_MAPPER[element[express12PMIndex]]: false,
+            "Express10":express10AMIndex>=0?CALCUTION_TYPE_MAPPER[element[express10AMIndex]]: false,
+            "Express8": express8AMtIndex>=0?CALCUTION_TYPE_MAPPER[element[express8AMtIndex]]: false,
+            "Fixtermin":fixedDateIndex>=0?CALCUTION_TYPE_MAPPER[element[fixedDateIndex]]: false,
+            "EmailAvis": emailNotificationIndex>=0?CALCUTION_TYPE_MAPPER[element[emailNotificationIndex]]: false,
+            "PhoneAvis": telephoneNotificationIndex>=0?CALCUTION_TYPE_MAPPER[element[telephoneNotificationIndex]]: false,
+            "BookingInAvis":bookingWithAvisIndex>=0?CALCUTION_TYPE_MAPPER[element[bookingWithAvisIndex]]: false,
+            "DangerousGoodsSurcharge": false,
+            "LongGoodsSurcharge": hazardousGoodsSurchargeIndex>=0?CALCUTION_TYPE_MAPPER[element[hazardousGoodsSurchargeIndex]]:false,
+            "ShortWeekSurcharge": shortWeekSurchargeIndex>=0?CALCUTION_TYPE_MAPPER[element[shortWeekSurchargeIndex]]:false,
+           
+            "CarrierCertificate": forwardercertificateIndex>=0?CALCUTION_TYPE_MAPPER[element[forwardercertificateIndex]]: false,
+            "B2CNationalSurcharge": b2CSurchargeNationalIndex>=0?CALCUTION_TYPE_MAPPER[element[b2CSurchargeNationalIndex]]: false,
+            "B2CInternationalSurcharge":b2CSurchargeInternationalIndex>=0?CALCUTION_TYPE_MAPPER[element[b2CSurchargeInternationalIndex]]:false,
+            "SecurityFee": securityFeeIndex>=0?CALCUTION_TYPE_MAPPER[element[securityFeeIndex]]: false,
+            "Insurance": insuranceIndex>=0?CALCUTION_TYPE_MAPPER[element[insuranceIndex]]: false,
+            "PortiPapiere": portsDocumentsIndex>=0?CALCUTION_TYPE_MAPPER[element[portsDocumentsIndex]]:false,          
         })
     
   }
