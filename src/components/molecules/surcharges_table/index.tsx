@@ -22,25 +22,55 @@ import {
   Paper,
   Tabs,
   Tab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useLanguage } from '@/hooks/useLanguage';
 import { useGetSurchargesChange } from '@/hooks/useGetSurchargesChange';
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useHandleSurchargesChanges } from '@/hooks/useHandleSurchargesChanges';
+import SerchargesPopup from '@/components/organisms/surcharge_popup';
 
 export default function SurchargesTable() {
  const {handleSurchargeRowChange}= useHandleSurchargesChanges();
      const { pricingText } =useLanguage();
      const {Base}= useGetSurchargesChange();
+     const [open, setOpen] = useState(false);
 
       
                  
                      const handleSurchargeRemove = (rowId:any) => {
                        
                        };
+
+                       const dieselExtraCost:any= {
+    "id": "ae4324c2-ea97-4c98-892a-f316f2d6a2bd",
+    "Term": "Dieselzuschlag",
+    "Value": 0,
+    "Unit": "%",
+    "Description": "Prozentualer Zuschlag / Floatermodell",
+    "DieselFloater": {
+        "DieselFloaterSource": "EN2X2",
+        "DieselFloaterBaseValue": 56,
+        "DieselFloaterValues": [
+            {
+                "65": 45
+            },
+            {
+                "0": 0
+            }
+        ]
+    }
+}
      
-  return (
+  return (<>
+
+  <Button variant="outlined" size="small" onClick={() => setOpen(true)} sx={{ mb: 2 }}>
+            {pricingText.surcharges.viewOverview}
+          </Button>
       <Table size="small">
                     <TableHead>
                       <TableRow>
@@ -109,5 +139,28 @@ export default function SurchargesTable() {
                       ))}
                     </TableBody>
                   </Table>
+                  <Dialog open={open} onClose={() => setOpen(false)} maxWidth={false} scroll="paper">
+          <Stack direction="row">
+            <DialogTitle> Übersicht</DialogTitle>
+
+            <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+              <IconButton onClick={() => setOpen(false)}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </div>
+          </Stack>
+
+          <DialogContent>
+
+
+            <SerchargesPopup
+                    dieselExtraCost={dieselExtraCost}
+                    dieselFloaterSources={["ddfs"]}
+                    dataUpdateCallback={() => {}}
+                  />
+          </DialogContent>
+        </Dialog> 
+                  
+                   </>
   )
 }
