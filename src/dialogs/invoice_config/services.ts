@@ -232,6 +232,27 @@ export const deleteShipmentData = async (params:any,dispatch?:any)=>{
 }
 
 
+
+export const deleteShipmentDataByID = async (params:any,dispatch?:any)=>{
+    try {
+
+      if(Object.keys(params).length>0){
+  const queryString = new URLSearchParams(params).toString();
+const url=`${URL_SHIPMENT}?${queryString}`;
+console.log("url value is : ",url);
+
+const resp:any =await fetchApi(undefined,url,"delete")
+       console.log("getShipmentData:  resp: ",resp);
+     const respData= getValidDataFromResp(resp);
+      console.log("respData:",respData);
+     dispatch&&dispatch(setShipmentData(respData))
+}
+      
+      }catch (error) {
+       return error;
+    } 
+}
+
 export const sendShipmentData = async (params:any,dispatch?:any)=>{
     try {
        console.log("params value is: ",params);

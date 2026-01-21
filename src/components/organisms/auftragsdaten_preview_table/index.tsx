@@ -1,51 +1,66 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
-  Box,
-  Typography,
   Table,
   TableContainer,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  CircularProgress,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Collapse,
   IconButton,
   Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Stack,
   Paper,
-  Tabs,
-  Tab,
-  Checkbox,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
 } from "@mui/material";
-import { useAppSelector } from '@/store/hooks';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import ConfirmationPopup from '../confirmation_popup';
+import { deleteShipmentData, deleteShipmentDataByID } from "@/dialogs/invoice_config/services";
 
+export default function AuftragsdatenPreviewTable({ text }: any) {
 
-export default function AuftragsdatenPreviewTable({ text }:any) {
- 
- 
-  const {shipmentData} = useAppSelector((state) => state.shipmentData);
-    console.log("shipmentData value is: ",shipmentData);
-    const shipmentDataForDisplay =shipmentData?.shipmentData||[];
+  const dispatch = useAppDispatch();
+ const userId = useAppSelector((state) => state?.userDetails?.userProfile?.id);
+  const activeCarrierId = useAppSelector(
+    (state) => state.carriers.activeCarrierId
+  );
+
+  const { shipmentData } = useAppSelector((state) => state.shipmentData);
+  const shipmentDataForDisplay = shipmentData?.shipmentData || [];
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [selectedIitem, setSelectedIitem] = useState<any | null>(null);
+
+  // CLICK DELETE ICON (sirf us row ki ID save hogi)
+  const handleRowDelete = (item: any) => {
+    setSelectedIitem(item);     // 👈 current row id
+    setOpenConfirm(true);
+  };
+
+  // CONFIRM DELETE (sirf wahi id delete hogi)
+  const handleClear = async () => {
+
+    if (!selectedIitem) return;
+console.log("selectedIitem: ",selectedIitem);
+
+    const {ShipmentId,id}= selectedIitem;
+    await deleteShipmentDataByID(
+      { 
+        projectId: activeCarrierId, 
+        shipmentId:ShipmentId,id,userId
+      },
+      dispatch
+    );
+
+    setOpenConfirm(false);
+    setSelectedIitem(null);
+  };
   
-  
-  
-    return (
-     <TableContainer component={Paper} variant="outlined">
+
+  return (
+    <>
+
+      <TableContainer component={Paper} variant="outlined">
         <Table size="small">
+
           <TableHead>
             <TableRow>
               <TableCell>{text.shipments.table.shipmentId}</TableCell>
@@ -59,20 +74,26 @@ export default function AuftragsdatenPreviewTable({ text }:any) {
               <TableCell>{text.shipments.table.loadingMeters}</TableCell>
               <TableCell>{text.shipments.table.express}</TableCell>
               <TableCell>{text.shipments.table.b2c}</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {shipmentDataForDisplay.map((row:any, index:any) => (
+            {shipmentDataForDisplay.map((row: any, index: number) => (
               <TableRow key={`${row.ShipmentId}-${index}`}>
+
                 <TableCell>{row.ShipmentId}</TableCell>
                 <TableCell>{row.ShipmentDate}</TableCell>
-                <TableCell>{row.ZipCodeShipper }</TableCell>
+                <TableCell>{row.ZipCodeShipper}</TableCell>
                 <TableCell>{row.ZipCodeConsignee}</TableCell>
                 <TableCell>{row.City}</TableCell>
-                <TableCell>{text.countries[row.Country] || row.country}</TableCell>
+                <TableCell>
+                  {text.countries[row.Country] || row.country}
+                </TableCell>
                 <TableCell>{row.PackagingType}</TableCell>
                 <TableCell>{row.EffectiveWeight}</TableCell>
                 <TableCell>{row.LoadingMeters}</TableCell>
+
                 <TableCell>
                   {row.ExpressNextDay ? (
                     <Chip size="small" color="primary" label={text.common.booleanYes} />
@@ -80,6 +101,7 @@ export default function AuftragsdatenPreviewTable({ text }:any) {
                     <Chip size="small" label={text.common.booleanNo} />
                   )}
                 </TableCell>
+
                 <TableCell>
                   {row.B2CNationalSurcharge ? (
                     <Chip size="small" color="primary" label={text.common.booleanYes} />
@@ -87,10 +109,33 @@ export default function AuftragsdatenPreviewTable({ text }:any) {
                     <Chip size="small" label={text.common.booleanNo} />
                   )}
                 </TableCell>
+
+                {/* DELETE ICON */}
+                <TableCell align="right">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleRowDelete(row)} // 👈 EXACT ID
+                  >
+                    <DeleteOutlineIcon />
+                  </IconButton>
+                </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
+
         </Table>
       </TableContainer>
+
+      {/* CONFIRM POPUP */}
+      <ConfirmationPopup
+        open={openConfirm}
+        title="Confirm Delete"
+        message={`Do you want to delete this shipment?\nShipment ID: ${selectedIitem?.shipmentId}`}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleClear}   
+      />
+
+    </>
   )
 }

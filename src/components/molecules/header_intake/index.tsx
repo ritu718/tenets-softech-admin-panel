@@ -59,7 +59,7 @@ function HeaderIntake() {
 
           await sendShipmentData(reqObj, dispatch);
         } catch (err) {
-          console.error("❌ CSV Import Error:", err);
+          console.error("❌ CSV tokImport Error:", err);
         }
       },
     });

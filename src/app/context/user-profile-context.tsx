@@ -206,6 +206,7 @@ firebaseToken} = useAppSelector((state) => state?.userDetails);
           result.user.uid,
           token
         );
+console.log("token:  ",token);
 
       dispatch(setFirebaseToken(token));
       dispatch(setUserProfile(profile));
