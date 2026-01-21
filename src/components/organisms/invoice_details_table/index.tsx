@@ -78,7 +78,7 @@ const [selectedInvoice, setSelectedInvoice] = useState<any>({rechnungsnummer: 'R
       const invoiceKey = selectedInvoice
     ? makeInvoiceKey(selectedInvoice.rechnungsnummer, selectedInvoice.projektId)
     : null;
-  const currentCarrierResponse = invoiceKey ? carrierResponses[invoiceKey] : null;
+
       const invoiceAccepted = Boolean(
     invoiceKey && invoiceOverrides[invoiceKey]?.status === "accepted"
   );
@@ -133,12 +133,9 @@ const formatCurrency = useCallback(
             </TableHead>
             <TableBody>
               {invoiceDetailsData?.shipments?.map((row:any, idx:any) => {
-                const baseFreightStatus = evaluateStatus(
-                  row.preis1,
-                  row.preis2,
-                  toleranceSettings.freightPercent
-                );
-                const freightStatus = invoiceAccepted ? acceptedStatus : baseFreightStatus;
+                console.log("Row response: ",row);
+                
+              
                 return (
                   <React.Fragment key={row.id || idx}>
                     <TableRow
@@ -172,7 +169,7 @@ const formatCurrency = useCallback(
                             )}
                           </IconButton>
                         ) : null}
-                        {row.shipment_id}
+                        {row.shipmentId}
                       </TableCell>
                       <TableCell>{row.spedition}</TableCell>
                       <TableCell>{formatCurrency(row?.charges?.freightCostSystemR)}</TableCell>
