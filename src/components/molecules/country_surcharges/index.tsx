@@ -76,38 +76,44 @@ const code= freightCountryCodesTmp.length>0?freightCountryCodesTmp[indexTmp]:"";
   return (
      <>
               <Typography variant="subtitle2">{pricingText.surcharges.countryTitle}</Typography>
-                  <Tabs
-                    value={Math.min(surchargesCountryIndex, surchargesCountryCodes.length - 1)}
-                    onChange={onChangeCountryTab}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    sx={{ borderBottom: 1, borderColor: "divider" }}
-                  >
-                    {surchargesCountryCodes.map((code:any, index:any) => (
-                      <Tab
-                        key={`${code}-${index}`}
-                        value={index}
-                        label={
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography variant="body2">
-                              {getFlag(code)} {code}
-                            </Typography>
-                            {surchargesCountryCodes.length > 1 && (
-                              <IconButton
-                                size="small"
-                                onClick={(event) => {
-                                  event.stopPropagation();
-                                  handleRemoveCountry(index);
-                                }}
-                              >
-                                <DeleteOutlineIcon fontSize="inherit" />
-                              </IconButton>
-                            )}
-                          </Stack>
-                        }
-                      />
-                    ))}
-                  </Tabs>
+                 <Tabs
+  value={Math.min(
+    surchargesCountryIndex,
+    surchargesCountryCodes.length - 1
+  )}
+  onChange={onChangeCountryTab}
+  variant="scrollable"
+  scrollButtons="auto"
+  sx={{ borderBottom: 1, borderColor: "divider" }}
+>
+  {surchargesCountryCodes.map((code: any, index: any) => (
+    <Tab
+      key={`${code}-${index}`}
+      value={index}
+      label={
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="body2">
+            {getFlag(code)} {code}
+          </Typography>
+
+          {surchargesCountryCodes.length > 1 && (
+            <IconButton
+              component="span"   // ✅ FIX HERE
+              size="small"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleRemoveCountry(index);
+              }}
+            >
+              <DeleteOutlineIcon fontSize="inherit" />
+            </IconButton>
+          )}
+        </Stack>
+      }
+    />
+  ))}
+</Tabs>
+
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems="center">
                     <FormControl size="small" sx={{ minWidth: 220 }}>
                       <InputLabel>{pricingText.surcharges.countryAddLabel}</InputLabel>

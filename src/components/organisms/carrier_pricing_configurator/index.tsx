@@ -131,7 +131,7 @@ dispatch(setEditCarrier(selectedCarr))
         <Stack spacing={2}>
           
           <FreightBasis/>
-          <Tariffs/>
+          {/* <Tariffs/> */}
         <Surcharges />
         </Stack>
       ) : (

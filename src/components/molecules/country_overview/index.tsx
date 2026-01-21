@@ -70,47 +70,54 @@ const code= freightCountryCodesTmp.length>0?freightCountryCodesTmp[indexTmp]:"";
   
     const handleAddCountry = (code:any) => {
       
-   dispatch( setFreightCountryIndex(freightCountryCodes.length+1));
+   dispatch( setFreightCountryIndex(freightCountryCodes?.length+1));
    dispatch(setFreightCountryCodes([...freightCountryCodes, code]));
     setSelectedCountryOption(code);
    
   };
+  
 
   return (
      <Stack spacing={1.5}>
               <Typography variant="subtitle2">{pricingText.freight.countryTitle}</Typography>
-                <Tabs
-                  value={Math.min(freightCountryIndex, freightCountryCodes.length - 1)}
-                  onChange={onChangeCountryTab}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  sx={{ borderBottom: 1, borderColor: "divider" }}
-                >
-                  {freightCountryCodes.map((code:any, index:any) => (
-                    <Tab
-                      key={`${code}-${index}`}
-                      value={index}
-                      label={
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Typography variant="body2">
-                            {getFlag(code)} {code}
-                          </Typography>
-                          {freightCountryCodes.length > 1 && (
-                            <IconButton
-                              size="small"
-                              onClick={(event) => {
-                                event.stopPropagation();
-                                handleRemoveCountry(index);
-                              }}
-                            >
-                              <DeleteOutlineIcon fontSize="inherit" />
-                            </IconButton>
-                          )}
-                        </Stack>
-                      }
-                    />
-                  ))}
-                </Tabs>
+               <Tabs
+  value={Math.min(
+    freightCountryIndex,
+    freightCountryCodes?.length - 1
+  )}
+  onChange={onChangeCountryTab}
+  variant="scrollable"
+  scrollButtons="auto"
+  sx={{ borderBottom: 1, borderColor: "divider" }}
+>
+  {freightCountryCodes.map((code: any, index: any) => (
+    <Tab
+      key={`${code}-${index}`}
+      value={index}
+      label={
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography variant="body2">
+            {getFlag(code)} {code}
+          </Typography>
+
+          {freightCountryCodes?.length > 1 && (
+            <IconButton
+              component="span"   // ✅ FIX HERE
+              size="small"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleRemoveCountry(index);
+              }}
+            >
+              <DeleteOutlineIcon fontSize="inherit" />
+            </IconButton>
+          )}
+        </Stack>
+      }
+    />
+  ))}
+</Tabs>
+
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={1} alignItems="center">
                   <FormControl size="small" sx={{ minWidth: 220 }}>
                     <InputLabel>{pricingText.freight.countryAddLabel}</InputLabel>
